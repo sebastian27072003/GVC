@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/etiquetas")
-public class EtiquetaController {
+public class EtiquetaControlador {
 
     @Autowired
     private EtiquetasRepositorio etiquetaRepository;

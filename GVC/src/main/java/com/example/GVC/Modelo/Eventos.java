@@ -9,19 +9,37 @@ import java.time.LocalDate;
 public class Eventos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_eventos")
     private Long idEventos;
 
-    private String NomEvento;
-    private String Facultad;
-    private LocalTime HoraInicio;
-    private LocalTime HoraFinal;
-    private LocalDate Fecha;
-    private String Lugar;
-    private String Descripcion;
-    private String Imagen;
-    private String Encargado;
+    @Column(name = "nom_evento")
+    private String nomEvento;
 
-    // Getters and Setters
+    @Column(name = "facultad")
+    private String facultad;
+
+    @Column(name = "hora_inicio")
+    private LocalTime horaInicio;
+
+    @Column(name = "hora_final")
+    private LocalTime horaFinal;
+
+    @Column(name = "fecha")
+    private LocalDate fecha;
+
+    @Column(name = "lugar")
+    private String lugar;
+
+    @Column(name = "descripcion")
+    private String descripcion;
+
+    @Column(name = "imagen")
+    private String imagen;
+
+    @Column(name = "encargado")
+    private String encargado;
+
+
     public Long getIdEventos() {
         return idEventos;
     }
@@ -31,74 +49,74 @@ public class Eventos {
     }
 
     public String getNomEvento() {
-        return NomEvento;
+        return nomEvento;
     }
 
     public void setNomEvento(String nomEvento) {
-        NomEvento = nomEvento;
+        this.nomEvento = nomEvento;
     }
 
     public String getFacultad() {
-        return Facultad;
+        return facultad;
     }
 
     public void setFacultad(String facultad) {
-        Facultad = facultad;
+        this.facultad = facultad;
     }
 
     public LocalTime getHoraInicio() {
-        return HoraInicio;
+        return horaInicio;
     }
 
     public void setHoraInicio(LocalTime horaInicio) {
-        HoraInicio = horaInicio;
+        this.horaInicio = horaInicio;
     }
 
     public LocalTime getHoraFinal() {
-        return HoraFinal;
+        return horaFinal;
     }
 
     public void setHoraFinal(LocalTime horaFinal) {
-        HoraFinal = horaFinal;
+        this.horaFinal = horaFinal;
     }
 
     public LocalDate getFecha() {
-        return Fecha;
+        return fecha;
     }
 
     public void setFecha(LocalDate fecha) {
-        Fecha = fecha;
+        this.fecha = fecha;
     }
 
     public String getLugar() {
-        return Lugar;
+        return lugar;
     }
 
     public void setLugar(String lugar) {
-        Lugar = lugar;
+        this.lugar = lugar;
     }
 
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
 
     public String getImagen() {
-        return Imagen;
+        return imagen;
     }
 
     public void setImagen(String imagen) {
-        Imagen = imagen;
+        this.imagen = imagen;
     }
 
     public String getEncargado() {
-        return Encargado;
+        return encargado;
     }
 
     public void setEncargado(String encargado) {
-        Encargado = encargado;
+        this.encargado = encargado;
     }
 }
