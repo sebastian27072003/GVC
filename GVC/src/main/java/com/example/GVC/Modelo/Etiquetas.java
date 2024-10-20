@@ -7,42 +7,49 @@ import jakarta.persistence.*;
 public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idEtiquetas")
     private Long idEtiquetas;
 
-    private String NomEtiquetas;
-    private String Color;
-    private String Descripcion;
+    @Column(name = "NomEtiquetas")
+    private String nomEtiquetas;
+
+    @Column(name = "Color")
+    private String color;
+
+    @Column(name = "Descripcion")
+    private String descripcion;
 
 
     public Long getIdEtiquetas() {
         return idEtiquetas;
     }
 
+    public String getNomEtiquetas() {
+        return nomEtiquetas;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+
     public void setIdEtiquetas(Long idEtiquetas) {
         this.idEtiquetas = idEtiquetas;
     }
 
-    public String getNomEtiquetas() {
-        return NomEtiquetas;
-    }
-
     public void setNomEtiquetas(String nomEtiquetas) {
-        NomEtiquetas = nomEtiquetas;
-    }
-
-    public String getColor() {
-        return Color;
+        this.nomEtiquetas = nomEtiquetas;
     }
 
     public void setColor(String color) {
-        Color = color;
-    }
-
-    public String getDescripcion() {
-        return Descripcion;
+        this.color = color;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
 }
