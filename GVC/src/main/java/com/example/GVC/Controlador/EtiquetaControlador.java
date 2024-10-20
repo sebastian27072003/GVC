@@ -17,9 +17,11 @@ public class EtiquetaControlador {
     @Autowired
     private EtiquetasRepositorio etiquetaRepository;
 
-    @GetMapping("/nueva")
-    public String mostrarFormulario() {
-        return "formularioEtiqueta";
+    // Mostrar formulario para crear una nueva etiqueta
+    @GetMapping("/etiquetas/crear")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("etiqueta", new Etiquetas());
+        return "crear_etiqueta";
     }
 
     @PostMapping("/guardar")

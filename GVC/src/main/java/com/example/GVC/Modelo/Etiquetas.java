@@ -1,10 +1,17 @@
 package com.example.GVC.Modelo;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "etiquetas")
 public class Etiquetas {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
