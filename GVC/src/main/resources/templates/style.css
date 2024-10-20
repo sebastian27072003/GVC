@@ -1,0 +1,160 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+body {
+    background-color: #EBEBEB;
+    width: 100%;
+    height: 100vh;
+}
+
+.contenedorPrincipal {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.leftSide-contenedor {
+    width: 2.3cm;
+    height: 100%;
+    background: none;
+    position: absolute;
+    overflow: hidden;
+    transition: width 0.1s ease-in-out;
+}
+
+.leftSide {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    width: 10cm;
+    background: #007141;
+    height: 100vh;
+    position: absolute;
+    z-index: 1;
+    padding: 20px;
+}
+
+.contenidoLeft {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1cm;
+}
+
+.leftSide-contenedor:hover {
+    width: 10cm;
+}
+
+.Forma {
+    width: 100%;
+    height: 90%;
+    padding: 1cm;
+    background-color: white;
+    margin: 1cm 1cm 1cm 4cm;
+    border-radius: 20px;
+    box-shadow: 15px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    font-weight: normal;
+    font-size: 1.6cm;
+    margin-bottom: 1.5cm;
+}
+
+h3 {
+    font-size: 0.6cm;
+    margin-left: 20px;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+}
+
+.Forma .campo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.3;
+}
+
+.Forma .labelText {
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.Forma .textInput {
+    width: 8cm;
+    height: 1cm;
+    margin-bottom: 45px;
+    border: 2px solid #EBEBEB;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: none;
+}
+
+.Forma .numberInput {
+    margin-bottom: 45px;
+}
+
+.textInput:hover{
+    border: 2px solid #007141;
+}
+
+.botones {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 8cm;
+}
+.checkMenu {
+    padding: 10px;
+    background: white;
+    border: 2px solid #EBEBEB;
+    border-radius: 10px;
+}
+
+.Forma .boton {
+    border: none;
+    width: 3.5cm;
+    height: 1.5cm;
+    font-weight: normal;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.tabla {
+    top: 20px;
+}
+
+.subForma {
+    height: 70%;
+}
+
+.col-1 {
+    background: #007141;
+    color: white;
+}
+
+.col-2 {
+    background: red;
+    color: white;
+}
+
+.col-3 {
+    background: #F1A631;
+    color: white;
+}
