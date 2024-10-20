@@ -6,35 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/etiquetas")
 public class EtiquetaController {
 
     @Autowired
-    private EtiquetasRepositorio etiquetaRepository;
+    private EtiquetasRepositorio etiquetasRepositorio;
 
-    @GetMapping("/nueva")
-    public String mostrarFormulario() {
-        return "formularioEtiqueta";
+    // Mostrar formulario para crear una nueva etiqueta
+    @GetMapping("/etiquetas/crear")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("etiqueta", new Etiquetas());
+        return "crear_etiqueta";
     }
 
-    @PostMapping("/guardar")
-    public String guardarEtiqueta(
-            @RequestParam String nombre,
-            @RequestParam String color,
-            @RequestParam String descripcion,
-            Model model) {
-        Etiquetas etiqueta = new Etiquetas();
-        etiqueta.setNomEtiquetas(nombre);
-        etiqueta.setColor(color);
-        etiqueta.setDescripcion(descripcion);
-        etiquetaRepository.save(etiqueta);
-        model.addAttribute("mensaje", "Etiqueta guardada exitosamente");
-        return "formularioEtiqueta";
+    // Guardar la etiqueta en la base de datos
+    @PostMapping("/etiquetas/guardar")
+    public String guardarEtiqueta(@ModelAttribute("etiqueta") Etiquetas etiqueta) {
+        etiquetasRepositorio.save(etiqueta);
+        return "redirect:/etiquetas/crear?exito";
     }
-
 }

@@ -1,48 +1,25 @@
 package com.example.GVC.Modelo;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Etiquetas")
 public class Etiquetas {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEtiquetas;
+    @Column(name = "idEtiquetas")
+    private Long id;
 
-    private String NomEtiquetas;
-    private String Color;
-    private String Descripcion;
+    @Column(name = "NomEtiquetas", nullable = false)
+    private String nombre;
 
-
-    public Long getIdEtiquetas() {
-        return idEtiquetas;
-    }
-
-    public void setIdEtiquetas(Long idEtiquetas) {
-        this.idEtiquetas = idEtiquetas;
-    }
-
-    public String getNomEtiquetas() {
-        return NomEtiquetas;
-    }
-
-    public void setNomEtiquetas(String nomEtiquetas) {
-        NomEtiquetas = nomEtiquetas;
-    }
-
-    public String getColor() {
-        return Color;
-    }
-
-    public void setColor(String color) {
-        Color = color;
-    }
-
-    public String getDescripcion() {
-        return Descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
-    }
+    @Column(name = "Color", nullable = false)
+    private String color;
 }
