@@ -19,8 +19,9 @@ public class EtiquetaController {
     @GetMapping("/etiquetas/crear")
     public String mostrarFormulario(Model model) {
         model.addAttribute("etiqueta", new Etiquetas());
-        return "crear_etiqueta";
+        return "crear_etiqueta";  // El nombre aquí debe coincidir con el nombre del archivo
     }
+
 
     // Guardar la etiqueta en la base de datos
     @PostMapping("/etiquetas/guardar")

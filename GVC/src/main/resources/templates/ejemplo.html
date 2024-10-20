@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta de Profesores</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link href="/templates/style.css" rel="stylesheet"/>
+    <style>
+        .subForma {
+            height: 70%;
+            display: flex;
+            width: 100%;
+            justify-content: space-evenly;
+        }
+    </style>
+</head>
+
+<body>
+<div class="contenedorPrincipal">
+    <div class="leftSide-contenedor">
+        <div class="leftSide">
+            <a href="altaProfesor.html">
+                <div class="contenidoLeft">
+                    <i class='bx bxs-contact' style="font-size: 3em; color: white;"></i>
+                    <h3>Alta de Profesores</h3>
+                </div>
+            </a>
+
+            <a href="consultaProfesores.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-street-view' style="font-size: 3em; color: white;"></i>
+                    <h3>Consultar Profesores</h3>
+                </div>
+            </a>
+
+            <a href="altaUnidadesDeAprendizaje.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-folder-plus' style="font-size: 3em; color: white;"></i>
+                    <h3>Alta de Unidad de Aprendizaje</h3>
+                </div>
+            </a>
+
+            <a href="consultaUnidadesDeAprendizaje.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-collection' style="font-size: 3em; color: white;"></i>
+                    <h3>Consultar Unidades de Aprendizaje</h3>
+                </div>
+            </a>
+
+            <a href="login.html">
+                <div class="contenidoLeft">
+                    <i class='bx bxs-exit' style="font-size: 3em; color: white;"></i>
+                    <h3>Cerrar sesión</h3>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <form class="Forma">
+        <h2>Alta de Profesores</h2>
+
+        <div class="subForma">
+            <div>
+                <div class="campo">
+                    <label for="nombreProfesor" class="labelText">Nombre del profesor</label>
+                    <input type="text" id="nombreProfesor" class="textInput" autocomplete="off" />
+                </div>
+
+                <div class="campo">
+                    <label for="apellidoProfesor" class="labelText">Apellido del profesor</label>
+                    <input type="text" id="apellidoProfesor" class="textInput" autocomplete="off" />
+                </div>
+
+                <div class="campo">
+                    <label for="rfcProfesor" class="labelText">RFC del profesor</label>
+                    <input type="text" id="rfcProfesor" class="textInput" autocomplete="off" />
+                </div>
+            </div>
+
+            <div>
+                <div class="campo">
+                    <label for="usernameProfesor" class="labelText">Nombre de usuario del profesor</label>
+                    <input type="text" id="usernameProfesor" class="textInput" autocomplete="off" />
+                </div>
+
+                <div class="campo">
+                    <label for="passwordProfesor" class="labelText">Contraseña del profesor</label>
+                    <input type="password" id="passwordProfesor" class="textInput" autocomplete="off" />
+                </div>
+
+                <div class="campo">
+                    <label for="seleccion" class="labelText">Unidades de Aprendizaje</label>
+                    <select id="seleccion" multiple style="width: 8cm; height: 8cm;">
+                        <option value="1">Unidad 1</option>
+                        <option value="2">Unidad 2</option>
+                        <option value="3">Unidad 3</option>
+                        <!-- Agrega más opciones según sea necesario -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="botones">
+            <button type="submit" class="boton col-1">Aceptar</button>
+            <button type="button" class="boton col-2" onclick="window.location.reload();">Cancelar</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
