@@ -3,10 +3,11 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Etiquetas", schema = "public")
+@Table(name = "etiquetas")
 public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "idEtiquetas")
     private Long idEtiquetas;
 
