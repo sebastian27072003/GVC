@@ -1,25 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <title>Registrar Etiqueta</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Nueva Etiqueta</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<h1>Registrar Nueva Etiqueta</h1>
+<div class="contenedorPrincipal">
+    <div class="leftSide-contenedor">
+        <div class="leftSide">
+            <a href="altaProfesor.html">
+                <div class="contenidoLeft">
+                    <i class='bx bxs-contact'></i>
+                    <h3>Inicio</h3>
+                </div>
+            </a>
+            <a href="consultaProfesores.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-street-view'></i>
+                    <h3>Crear Eventos</h3>
+                </div>
+            </a>
+            <a href="altaUnidadesDeAprendizaje.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-folder-plus'></i>
+                    <h3>Crear Etiquetas</h3>
+                </div>
+            </a>
+            <a href="consultaUnidadesDeAprendizaje.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-collection'></i>
+                    <h3>Consultar Eventos</h3>
+                </div>
+            </a>
+            <a href="login.html">
+                <div class="contenidoLeft">
+                    <i class='bx bxs-exit'></i>
+                    <h3>Consultar Estadísticas</h3>
+                </div>
+            </a>
+            <a href="consultaUnidadesDeAprendizaje.html">
+                <div class="contenidoLeft">
+                    <i class='bx bx-collection'></i>
+                    <h3>Salir</h3>
+                </div>
+            </a>
+        </div>
+    </div>
 
-<form th:action="@{/etiquetas/guardar}" th:object="${etiqueta}" method="post">
-    <label for="nombre">Nombre de la Etiqueta:</label>
-    <input type="text" id="nombre" th:field="*{nombre}" required>
-    <br>
+    <form class="Forma" th:action="@{/etiquetas/guardar}" th:object="${etiqueta}" method="post">
+        <h2>Registrar Nueva Etiqueta</h2>
+        <div class="subForma">
+            <div class="campo">
+                <label for="nombre">Nombre de la Etiqueta:</label>
+                <input type="text" id="nombre" class="textInput" th:field="*{nombre}" required>
+            </div>
+            <div class="campo">
+                <label for="color">Color:</label>
+                <input type="text" id="color" class="textInput" th:field="*{color}" required>
+            </div>
+        </div>
 
-    <label for="color">Color:</label>
-    <input type="text" id="color" th:field="*{color}" required>
-    <br>
+        <div class="botones">
+            <button type="submit" class="boton col-1">Guardar</button>
+            <button type="button" class="boton col-2" onclick="window.location.reload();">Cancelar</button>
+        </div>
 
-    <button type="submit">Guardar</button>
-</form>
-
-<div th:if="${param.exito}">
-    <p>¡Etiqueta registrada con éxito!</p>
+        <div th:if="${param.exito}">
+            <p>¡Etiqueta registrada con éxito!</p>
+        </div>
+    </form>
 </div>
 </body>
 </html>
