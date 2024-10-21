@@ -8,6 +8,8 @@ import java.util.List;
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_eventos")
@@ -141,5 +143,13 @@ public class Eventos {
 
     public void setEventosEtiquetas(List<EventosEtiquetas> eventosEtiquetas) {
         this.eventosEtiquetas = eventosEtiquetas;
+    }
+
+    public List<Etiquetas> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(List<Etiquetas> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }
