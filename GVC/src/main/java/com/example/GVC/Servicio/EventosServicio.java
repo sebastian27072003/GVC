@@ -15,12 +15,18 @@ public class EventosServicio {
         this.eventosRepositorio = eventosRepository;
     }
 
+    // Método para buscar todos los eventos
     public List<Eventos> buscarTodosLosEventos() {
         return eventosRepositorio.findAll();
     }
 
+    // Método para buscar eventos por nombre
     public List<Eventos> buscarEventosPorNombre(String nombreEvento) {
         return eventosRepositorio.findByNomEventoContaining(nombreEvento);
     }
 
+    // Método para guardar un evento
+    public void guardarEvento(Eventos evento) {
+        eventosRepositorio.save(evento);
+    }
 }

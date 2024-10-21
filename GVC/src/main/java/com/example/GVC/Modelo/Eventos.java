@@ -3,42 +3,57 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_eventos")
+    @Column(name = "idEventos")
     private Long idEventos;
 
-    @Column(name = "nom_evento")
+    @Column(name = "NomEvento")
     private String nomEvento;
 
-    @Column(name = "facultad")
+    @Column(name = "Facultad")
     private String facultad;
 
-    @Column(name = "hora_inicio")
+
+
+    @Column(name = "HoraInicio")
     private LocalTime horaInicio;
 
-    @Column(name = "hora_final")
+    @Column(name = "HoraFinal")
     private LocalTime horaFinal;
 
-    @Column(name = "fecha")
+    @Column(name = "Fecha")
     private LocalDate fecha;
 
-    @Column(name = "lugar")
+    @Column(name = "Lugar")
     private String lugar;
 
-    @Column(name = "descripcion")
+    @Column(name = "Descripcion")
     private String descripcion;
 
-    @Column(name = "imagen")
+    @Column(name = "Imagen")
     private String imagen;
 
-    @Column(name = "encargado")
+    @Column(name = "Encargado")
     private String encargado;
 
+    // Aquí está la relación muchos a muchos con Etiquetas
+    @ManyToMany
+    @JoinTable(
+            name = "EventosEtiquetas", // Tabla intermedia para la relación muchos a muchos
+            joinColumns = @JoinColumn(name = "idEvento"), // Llave foránea de la tabla "Eventos"
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta") // Llave foránea de la tabla "Etiquetas"
+    )
+    private List<Etiquetas> etiquetas; // Lista de etiquetas para este evento
+
+    // Getters y Setters
 
     public Long getIdEventos() {
         return idEventos;
@@ -118,5 +133,13 @@ public class Eventos {
 
     public void setEncargado(String encargado) {
         this.encargado = encargado;
+    }
+
+    public List<Etiquetas> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(List<Etiquetas> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }
