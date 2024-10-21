@@ -3,25 +3,58 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idEventos")
     private Long idEventos;
 
-    private String NomEvento;
-    private String Facultad;
-    private LocalTime HoraInicio;
-    private LocalTime HoraFinal;
-    private LocalDate Fecha;
-    private String Lugar;
-    private String Descripcion;
-    private String Imagen;
-    private String Encargado;
+    @Column(name = "NomEvento")
+    private String nomEvento;
 
-    // Getters and Setters
+    @Column(name = "Facultad")
+    private String facultad;
+
+
+
+    @Column(name = "HoraInicio")
+    private LocalTime horaInicio;
+
+    @Column(name = "HoraFinal")
+    private LocalTime horaFinal;
+
+    @Column(name = "Fecha")
+    private LocalDate fecha;
+
+    @Column(name = "Lugar")
+    private String lugar;
+
+    @Column(name = "Descripcion")
+    private String descripcion;
+
+    @Column(name = "Imagen")
+    private String imagen;
+
+    @Column(name = "Encargado")
+    private String encargado;
+
+    // Aquí está la relación muchos a muchos con Etiquetas
+    @ManyToMany
+    @JoinTable(
+            name = "EventosEtiquetas", // Tabla intermedia para la relación muchos a muchos
+            joinColumns = @JoinColumn(name = "idEvento"), // Llave foránea de la tabla "Eventos"
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta") // Llave foránea de la tabla "Etiquetas"
+    )
+    private List<Etiquetas> etiquetas; // Lista de etiquetas para este evento
+
+    // Getters y Setters
+
     public Long getIdEventos() {
         return idEventos;
     }
@@ -31,74 +64,82 @@ public class Eventos {
     }
 
     public String getNomEvento() {
-        return NomEvento;
+        return nomEvento;
     }
 
     public void setNomEvento(String nomEvento) {
-        NomEvento = nomEvento;
+        this.nomEvento = nomEvento;
     }
 
     public String getFacultad() {
-        return Facultad;
+        return facultad;
     }
 
     public void setFacultad(String facultad) {
-        Facultad = facultad;
+        this.facultad = facultad;
     }
 
     public LocalTime getHoraInicio() {
-        return HoraInicio;
+        return horaInicio;
     }
 
     public void setHoraInicio(LocalTime horaInicio) {
-        HoraInicio = horaInicio;
+        this.horaInicio = horaInicio;
     }
 
     public LocalTime getHoraFinal() {
-        return HoraFinal;
+        return horaFinal;
     }
 
     public void setHoraFinal(LocalTime horaFinal) {
-        HoraFinal = horaFinal;
+        this.horaFinal = horaFinal;
     }
 
     public LocalDate getFecha() {
-        return Fecha;
+        return fecha;
     }
 
     public void setFecha(LocalDate fecha) {
-        Fecha = fecha;
+        this.fecha = fecha;
     }
 
     public String getLugar() {
-        return Lugar;
+        return lugar;
     }
 
     public void setLugar(String lugar) {
-        Lugar = lugar;
+        this.lugar = lugar;
     }
 
     public String getDescripcion() {
-        return Descripcion;
+        return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        this.descripcion = descripcion;
     }
 
     public String getImagen() {
-        return Imagen;
+        return imagen;
     }
 
     public void setImagen(String imagen) {
-        Imagen = imagen;
+        this.imagen = imagen;
     }
 
     public String getEncargado() {
-        return Encargado;
+        return encargado;
     }
 
     public void setEncargado(String encargado) {
-        Encargado = encargado;
+        this.encargado = encargado;
+    }
+
+    public List<Etiquetas> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(List<Etiquetas> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }
