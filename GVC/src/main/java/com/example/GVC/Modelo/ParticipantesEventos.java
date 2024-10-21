@@ -7,11 +7,13 @@ import jakarta.persistence.*;
 public class ParticipantesEventos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idParticipante")
     private Long idParticipante;
 
+    @Column(name = "IdEvento")
     private Long IdEvento;
 
-    // Getters and Setters
+
     public Long getIdParticipante() {
         return idParticipante;
     }

@@ -3,7 +3,6 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
-
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
@@ -38,6 +37,10 @@ public class Eventos {
 
     @Column(name = "encargado")
     private String encargado;
+
+    @Column(name = "campus")
+    private String campus;
+
 
 
     public Long getIdEventos() {
@@ -118,5 +121,13 @@ public class Eventos {
 
     public void setEncargado(String encargado) {
         this.encargado = encargado;
+    }
+
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
     }
 }

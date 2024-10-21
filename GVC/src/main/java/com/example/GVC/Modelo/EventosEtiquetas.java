@@ -7,8 +7,10 @@ import jakarta.persistence.*;
 public class EventosEtiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idEvento")
     private Long idEvento;
 
+    @Column(name = "idEtiqueta")
     private Long idEtiqueta;
 
     public Long getIdEvento() {

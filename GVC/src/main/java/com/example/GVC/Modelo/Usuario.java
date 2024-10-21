@@ -7,11 +7,19 @@ import jakarta.persistence.*;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "Nombre")
     private String Nombre;
+
+    @Column(name = "Email")
     private String Email;
+
+    @Column(name = "Rol")
     private String Rol;
+
+    @Column(name = "Matricula")
     private Long Matricula;
 
     // Getters and Setters
