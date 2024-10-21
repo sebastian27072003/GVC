@@ -1,0 +1,85 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : Sep 15, 2024, 3:56:03 AM
+    Author     : STARDUST
+*/
+
+*{
+    text-align: center;
+}
+.center{
+    float: none;
+    margin: 0 auto;
+
+}
+html{
+    background-color: #007141;
+}
+.panel-form{
+
+
+    padding: 10px;
+    width: 100% ;
+    background: #D9D9D9;
+    border: 2px solid #000000;
+    border-radius: 30px;
+}
+
+.form-control{
+    background: #D9D9D9;
+
+}
+div.login{
+
+
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    width: 45%;
+    padding: 25px;
+    padding-bottom: 450px;
+    margin: auto;
+    background: #EBEBEB;
+    border-radius: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+.logo{
+    width: 150px;
+}
+.panel-body{
+    padding: 10px;
+}
+.form-group{
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+.form-control:focus{
+    border-color:#F1A632;
+}
+.bx bx-home-alt{
+    text-align: left;
+}
+.btn btn-success{
+    padding-top: 35px;
+}
+.btn-success {
+    background-color: #F1A631;
+    text-shadow: none;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.custom-btn-padding {
+    padding: 10px 20px;
+}
