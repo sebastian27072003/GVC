@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface EventosRepositorio extends JpaRepository<Eventos, Long> {
     List<Eventos> findByNomEventoContaining(String nombreEvento);
+
+    List<Eventos> findByCampus(String campus);
+
+    List<Eventos> findByCampusAndFacultad(String campus, String facultad);
+
+
 }

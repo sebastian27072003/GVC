@@ -16,15 +16,34 @@ public class EventosControlador {
         this.eventosServicio = eventosService;
     }
 
+
     @GetMapping("/eventos")
-    public String listarEventos(@RequestParam(value = "nombre", required = false) String nombreEvento, Model model) {
+    public String listarEventos(
+            @RequestParam(value = "campus", required = false) String campus,
+            @RequestParam(value = "facultad", required = false) String facultad,
+            Model model) {
         List<Eventos> eventos;
-        if (nombreEvento != null && !nombreEvento.isEmpty()) {
-            eventos = eventosServicio.buscarEventosPorNombre(nombreEvento);
+
+
+        if (campus != null && !campus.isEmpty()) {
+            if (facultad != null && !facultad.isEmpty()) {
+
+                eventos = eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad);
+            } else {
+
+                eventos = eventosServicio.buscarEventosPorCampus(campus);
+            }
         } else {
+
             eventos = eventosServicio.buscarTodosLosEventos();
         }
+
         model.addAttribute("eventos", eventos);
+        model.addAttribute("campus", campus);
+        model.addAttribute("facultad", facultad);
+
         return "consultaEventos";
     }
 }
+
+
