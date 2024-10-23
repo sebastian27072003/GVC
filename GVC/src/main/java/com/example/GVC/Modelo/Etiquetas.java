@@ -8,24 +8,16 @@ import java.util.List;
 public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idEtiquetas")
     private Long idEtiquetas;
 
-    @Column(name = "NomEtiquetas")
     private String nomEtiquetas;
-
-    @Column(name = "Color")
     private String color;
-
-    @Column(name = "Descripcion")
     private String descripcion;
 
-    // Relación inversa con la clase "Eventos"
     @ManyToMany(mappedBy = "etiquetas")
     private List<Eventos> eventos;
 
     // Getters y Setters
-
     public Long getIdEtiquetas() {
         return idEtiquetas;
     }

@@ -39,7 +39,7 @@ public class EventosControlador {
         return "consultaEventos";
     }
 
-    // Método para guardar eventos
+
     @PostMapping("/eventos/guardar")
     public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
         // Guardar el evento en la base de datos sin etiquetas ni imagen

@@ -10,6 +10,7 @@ public class Participantes {
     private Long idParticipante;
 
     private Long Matricula;
+
     private String Nombre;
 
     public Long getIdParticipante() {
