@@ -1,16 +1,16 @@
 package com.example.GVC.Modelo;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "etiquetas")
+@Table(name = "Etiquetas")
 public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "idEtiquetas")
     private Long idEtiquetas;
 
