@@ -18,32 +18,34 @@ public class EventosControlador {
 
 
     @GetMapping("/eventos")
-    public String listarEventos(
+    public String eventos(Model model) {
+        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos(); // O el método que necesites
+        model.addAttribute("eventos", eventos);
+        return "consultaEventos";
+    }
+
+    @GetMapping("/filtrar-eventos")
+    public String filtrarEventos(
             @RequestParam(value = "campus", required = false) String campus,
             @RequestParam(value = "facultad", required = false) String facultad,
             Model model) {
-        List<Eventos> eventos;
 
+        List<Eventos> eventos;
 
         if (campus != null && !campus.isEmpty()) {
             if (facultad != null && !facultad.isEmpty()) {
-
                 eventos = eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad);
             } else {
-
                 eventos = eventosServicio.buscarEventosPorCampus(campus);
             }
         } else {
-
             eventos = eventosServicio.buscarTodosLosEventos();
         }
 
         model.addAttribute("eventos", eventos);
-        model.addAttribute("campus", campus);
-        model.addAttribute("facultad", facultad);
-
-        return "consultaEventos";
+        return "fragments/tablaEventos :: tabla-eventos";
     }
 }
+
 
 
