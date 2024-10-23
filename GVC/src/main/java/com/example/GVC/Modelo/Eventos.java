@@ -9,49 +9,42 @@ import java.util.List;
 @Table(name = "Eventos")
 public class Eventos {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idEventos")
     private Long idEventos;
 
-    @Column(name = "NomEvento")
+    @Column(name = "nom_evento")
     private String nomEvento;
 
-    @Column(name = "Facultad")
+    @Column(name = "facultad")
     private String facultad;
 
-
-
-    @Column(name = "HoraInicio")
+    @Column(name = "hora_inicio")
     private LocalTime horaInicio;
 
-    @Column(name = "HoraFinal")
+    @Column(name = "hora_final")
     private LocalTime horaFinal;
 
-    @Column(name = "Fecha")
+    @Column(name = "fecha")
     private LocalDate fecha;
 
-    @Column(name = "Lugar")
+    @Column(name = "lugar")
     private String lugar;
 
-    @Column(name = "Descripcion")
+    @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "Imagen")
-    private String imagen;
+    @Column(name = "campus")
+    private String campus;
 
-    @Column(name = "Encargado")
-    private String encargado;
-
-    // Aquí está la relación muchos a muchos con Etiquetas
     @ManyToMany
     @JoinTable(
-            name = "EventosEtiquetas", // Tabla intermedia para la relación muchos a muchos
-            joinColumns = @JoinColumn(name = "idEvento"), // Llave foránea de la tabla "Eventos"
-            inverseJoinColumns = @JoinColumn(name = "idEtiqueta") // Llave foránea de la tabla "Etiquetas"
+            name = "EventosEtiquetas",
+            joinColumns = @JoinColumn(name = "idEvento"),
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta")
     )
-    private List<Etiquetas> etiquetas; // Lista de etiquetas para este evento
+    private List<Etiquetas> etiquetas;
 
     // Getters y Setters
 
@@ -119,20 +112,12 @@ public class Eventos {
         this.descripcion = descripcion;
     }
 
-    public String getImagen() {
-        return imagen;
+    public String getCampus() {
+        return campus;
     }
 
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
-
-    public String getEncargado() {
-        return encargado;
-    }
-
-    public void setEncargado(String encargado) {
-        this.encargado = encargado;
+    public void setCampus(String campus) {
+        this.campus = campus;
     }
 
     public List<Etiquetas> getEtiquetas() {
