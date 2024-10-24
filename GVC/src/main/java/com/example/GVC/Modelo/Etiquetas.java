@@ -7,10 +7,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Etiquetas")
+@Table(name = "etiquetas")
 public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "idEtiquetas")
     private Long idEtiquetas;
 
@@ -23,11 +24,6 @@ public class Etiquetas {
     @Column(name = "Descripcion")
     private String descripcion;
 
-    // Relación inversa con la clase "Eventos"
-    @ManyToMany(mappedBy = "etiquetas")
-    private List<Eventos> eventos;
-
-    // Getters y Setters
 
     public Long getIdEtiquetas() {
         return idEtiquetas;

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "ParticipantesEventos")
 public class ParticipantesEventos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,19 +27,19 @@ public class ParticipantesEventos {
         this.id = id;
     }
 
-    public Participantes getParticipante() {
-        return participante;
+    public Long getIdParticipante() {
+        return idParticipante;
     }
 
-    public void setParticipante(Participantes participante) {
-        this.participante = participante;
+    public void setIdParticipante(Long idParticipante) {
+        this.idParticipante = idParticipante;
     }
 
-    public Eventos getEvento() {
-        return evento;
+    public Long getIdEvento() {
+        return IdEvento;
     }
 
-    public void setEvento(Eventos evento) {
-        this.evento = evento;
+    public void setIdEvento(Long idEvento) {
+        IdEvento = idEvento;
     }
 }

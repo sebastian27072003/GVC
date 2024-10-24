@@ -18,11 +18,11 @@ public class EventosEtiquetas {
     @JoinColumn(name = "idEtiqueta", nullable = false)
     private Etiquetas etiqueta;
 
-    public EventosEtiquetas() {
-    }
+    @Column(name = "idEtiqueta")
+    private Long idEtiqueta;
 
-    public Long getId() {
-        return id;
+    public Long getIdEvento() {
+        return idEvento;
     }
 
     public void setId(Long id) {

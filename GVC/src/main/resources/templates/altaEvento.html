@@ -5,70 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alta de Evento</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        .header {
-            background-color: #f4dcdc;
-            padding: 10px 0;
-            border-bottom: 2px solid #dee2e6;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header img {
-            height: 70px;
-            margin-left: 20px;
-        }
-        .header-title {
-            color: #007B33;
-            text-align: center;
-        }
-        .header-title h1, .header-title h3 {
-            margin: 0;
-        }
-        .header .admin {
-            margin-right: 20px;
-        }
-        .form-container {
-            margin: 30px auto;
-            max-width: 900px;
-            padding: 20px;
-        }
-        .form-title {
-            text-align: left;
-            font-weight: bold;
-            font-size: 24px;
-        }
-        .form-label {
-            font-weight: bold;
-        }
-        .btn-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .btn-aceptar {
-            background-color: #28a745;
-            border-color: #28a745;
-            width: 150px;
-            height: 50px;
-        }
-        .btn-cancelar {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            width: 150px;
-            height: 50px;
-        }
-        .header-titulo2 {
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-        }
-    </style>
-</head>
+<style>
+    body {
+    }
+    .header {
+        background-color: #f4dcdc;
+        display: flex;
+        align-items: center;
+    }
+    .header img {
+    }
+        color: #007B33;
+    }
+        margin: 0;
+    }
+        margin-right: 20px;
+    }
+        padding: 20px;
+    }
+    }
+    }
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .btn-aceptar {
+        background-color: #28a745;
+        border-color: #28a745;
+        width: 150px;
+        height: 50px;
+    }
+    .btn-cancelar {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        width: 150px;
+        height: 50px;
+    }
+    }
+</style>
 <body>
 
 <div class="container-fluid">
@@ -85,6 +60,34 @@
             <span>Administrador: Usuario_1</span>
         </div>
     </header>
+
+<!-- Contenedor del SideBar y Formulario -->
+<div class="contenedorPrincipal">
+    <!-- SideBar -->
+    <div class="leftSide-contenedor">
+        <div class="leftSide">
+            <a href="altaEvento.html">
+                <i class='bx bxs-plus-circle'></i>
+                <span>Crear Evento</span>
+            </a>
+            <a href="consultaEventos.html">
+                <i class='bx bx-calendar'></i>
+                <span>Consultar Eventos</span>
+            </a>
+            <a href="crearEtiquetas.html">
+                <i class='bx bx-tag'></i>
+                <span>Crear Etiquetas</span>
+            </a>
+            <a href="consultarEstadisticas.html">
+                <i class='bx bx-bar-chart'></i>
+                <span>Consultar Estadísticas</span>
+            </a>
+            <a href="logout.html">
+                <i class='bx bx-exit'></i>
+                <span>Salir</span>
+            </a>
+        </div>
+    </div>
 
     <!-- Formulario de Alta de Evento -->
     <div class="form-container">

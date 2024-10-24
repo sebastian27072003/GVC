@@ -1,39 +1,31 @@
 package com.example.GVC.Controlador;
 
-import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
-import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Servicio.EventosServicio;
 import com.example.GVC.Servicio.EtiquetaServicio;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class EventosControlador {
+
     private final EventosServicio eventosServicio;
     private final EtiquetaServicio etiquetaServicio;
 
     public EventosControlador(EventosServicio eventosService) {
         this.eventosServicio = eventosService;
-        this.etiquetaServicio = etiquetaServicio;
     }
 
 
     @GetMapping("/eventos")
     public String eventos(Model model) {
-        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
-        List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas();
+        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos(); // O el método que necesites
         model.addAttribute("eventos", eventos);
-        model.addAttribute("etiquetas", etiquetas);
         return "consultaEventos";
     }
 

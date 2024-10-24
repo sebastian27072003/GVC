@@ -8,8 +8,6 @@ import java.util.List;
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_eventos")
@@ -45,8 +43,6 @@ public class Eventos {
     @Column(name = "campus")
     private String campus;
 
-    @OneToMany(mappedBy = "evento" , cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<EventosEtiquetas> eventosEtiquetas;
 
 
     public Long getIdEventos() {
@@ -135,21 +131,5 @@ public class Eventos {
 
     public void setCampus(String campus) {
         this.campus = campus;
-    }
-
-    public List<EventosEtiquetas> getEventosEtiquetas() {
-        return eventosEtiquetas;
-    }
-
-    public void setEventosEtiquetas(List<EventosEtiquetas> eventosEtiquetas) {
-        this.eventosEtiquetas = eventosEtiquetas;
-    }
-
-    public List<Etiquetas> getEtiquetas() {
-        return etiquetas;
-    }
-
-    public void setEtiquetas(List<Etiquetas> etiquetas) {
-        this.etiquetas = etiquetas;
     }
 }

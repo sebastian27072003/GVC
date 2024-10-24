@@ -14,6 +14,7 @@ public class EventosServicio {
     private final EventosRepositorio eventosRepositorio;
     private final EtiquetasRepositorio etiquetasRepositorio;
 
+    public EventosServicio(EventosRepositorio eventosRepository) {
 
     public EventosServicio(EventosRepositorio eventosRepository, EtiquetasRepositorio etiquetasRepository) {
         this.eventosRepositorio = eventosRepository;
@@ -27,7 +28,6 @@ public class EventosServicio {
         return eventosRepositorio.findAll();
     }
 
-    // Método para buscar eventos por nombre
     public List<Eventos> buscarEventosPorNombre(String nombreEvento) {
         return eventosRepositorio.findByNomEventoContaining(nombreEvento);
     }
