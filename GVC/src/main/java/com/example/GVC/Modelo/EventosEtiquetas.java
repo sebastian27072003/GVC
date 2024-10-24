@@ -5,11 +5,16 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "EventosEtiquetas")
 public class EventosEtiquetas {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idEvento")  // Columna en la base de datos
     private Long idEvento;
 
+    @Column(name = "idEtiqueta")  // Columna en la base de datos
     private Long idEtiqueta;
+
+    // Getters y Setters
 
     public Long getIdEvento() {
         return idEvento;

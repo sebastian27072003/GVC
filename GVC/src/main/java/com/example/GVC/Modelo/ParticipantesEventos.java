@@ -5,13 +5,17 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "ParticipantesEventos")
 public class ParticipantesEventos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idParticipante")  // Define la columna idParticipante en la tabla
     private Long idParticipante;
 
-    private Long IdEvento;
+    @Column(name = "idEvento")  // Define la columna idEvento en la tabla
+    private Long idEvento;
 
-    // Getters and Setters
+    // Getters y Setters
+
     public Long getIdParticipante() {
         return idParticipante;
     }
@@ -21,10 +25,10 @@ public class ParticipantesEventos {
     }
 
     public Long getIdEvento() {
-        return IdEvento;
+        return idEvento;
     }
 
     public void setIdEvento(Long idEvento) {
-        IdEvento = idEvento;
+        this.idEvento = idEvento;
     }
 }

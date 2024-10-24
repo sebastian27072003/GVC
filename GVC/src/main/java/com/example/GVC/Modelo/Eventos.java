@@ -9,49 +9,49 @@ import java.util.List;
 @Table(name = "Eventos")
 public class Eventos {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idEventos")
+    @Column(name = "idEventos")  // Nombre de la columna en la base de datos
     private Long idEventos;
 
-    @Column(name = "NomEvento")
+    @Column(name = "nom_evento")  // Nombre de la columna en la base de datos
     private String nomEvento;
 
-    @Column(name = "Facultad")
+    @Column(name = "facultad")  // Nombre de la columna en la base de datos
     private String facultad;
 
-
-
-    @Column(name = "HoraInicio")
+    @Column(name = "hora_inicio")  // Nombre de la columna en la base de datos
     private LocalTime horaInicio;
 
-    @Column(name = "HoraFinal")
+    @Column(name = "hora_final")  // Nombre de la columna en la base de datos
     private LocalTime horaFinal;
 
-    @Column(name = "Fecha")
+    @Column(name = "fecha")  // Nombre de la columna en la base de datos
     private LocalDate fecha;
 
-    @Column(name = "Lugar")
+    @Column(name = "lugar")  // Nombre de la columna en la base de datos
     private String lugar;
 
-    @Column(name = "Descripcion")
+    @Column(name = "descripcion")  // Nombre de la columna en la base de datos
     private String descripcion;
 
-    @Column(name = "Imagen")
+    @Column(name = "imagen")  // Nombre de la columna en la base de datos
     private String imagen;
 
-    @Column(name = "Encargado")
+    @Column(name = "encargado")  // Nombre de la columna en la base de datos
     private String encargado;
 
-    // Aquí está la relación muchos a muchos con Etiquetas
+    @Column(name = "campus")  // Nombre de la columna en la base de datos
+    private String campus;
+
+    // Relación muchos a muchos con Etiquetas
     @ManyToMany
     @JoinTable(
-            name = "EventosEtiquetas", // Tabla intermedia para la relación muchos a muchos
-            joinColumns = @JoinColumn(name = "idEvento"), // Llave foránea de la tabla "Eventos"
-            inverseJoinColumns = @JoinColumn(name = "idEtiqueta") // Llave foránea de la tabla "Etiquetas"
+            name = "EventosEtiquetas",  // Tabla intermedia para la relación muchos a muchos
+            joinColumns = @JoinColumn(name = "idEvento"),  // Llave foránea de la tabla "Eventos"
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta")  // Llave foránea de la tabla "Etiquetas"
     )
-    private List<Etiquetas> etiquetas; // Lista de etiquetas para este evento
+    private List<Etiquetas> etiquetas;
 
     // Getters y Setters
 
@@ -133,6 +133,14 @@ public class Eventos {
 
     public void setEncargado(String encargado) {
         this.encargado = encargado;
+    }
+
+    public String getCampus() {
+        return campus;
+    }
+
+    public void setCampus(String campus) {
+        this.campus = campus;
     }
 
     public List<Etiquetas> getEtiquetas() {

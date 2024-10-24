@@ -5,13 +5,19 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Participantes")
 public class Participantes {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idParticipante")  // Define la columna idParticipante en la tabla
     private Long idParticipante;
 
-    private Long Matricula;
+    @Column(name = "Matricula")  // Define la columna Matricula en la tabla
+    private Long matricula;
 
-    private String Nombre;
+    @Column(name = "Nombre")  // Define la columna Nombre en la tabla
+    private String nombre;
+
+    // Getters y Setters
 
     public Long getIdParticipante() {
         return idParticipante;
@@ -22,18 +28,18 @@ public class Participantes {
     }
 
     public Long getMatricula() {
-        return Matricula;
+        return matricula;
     }
 
     public void setMatricula(Long matricula) {
-        Matricula = matricula;
+        this.matricula = matricula;
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 }
