@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta de Evento</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="/templates/style.css">
+</head>
+<style>
+    body {
+        background-color: #EBEBEB;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+        background-color: #f4dcdc;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .header img {
+        width: 80px;
+        height: 120px;
+        margin-right: 20px;
+    }
+
+    .header-titulo {
+        display: flex;
+        flex-direction: column;
+        color: #007B33;
+    }
+
+    .header-titulo h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #007B33;
+    }
+
+    .header-titulo h3 {
+        margin: 0;
+        color: black;
+        font-size: 1.1rem;
+    }
+
+    .admin-info {
+        font-size: 0.9rem;
+        margin-right: 20px;
+    }
+
+    /* Contenedor del SideBar y Formulario */
+    .contenedorPrincipal {
+        display: flex;
+        width: 100%;
+    }
+
+    /* SideBar */
+    .leftSide-contenedor {
+        width: 10cm;
+        background: #007141;
+        transition: width 0.1s ease-in-out;
+    }
+
+    .leftSide {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        padding: 20px;
+        background-color: #007141;
+    }
+
+    .leftSide a {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1cm;
+        text-decoration: none;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .leftSide i {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+
+    .Forma {
+        width: 100%;
+        padding: 1cm;
+        background-color: white;
+        margin: 1cm;
+        border-radius: 20px;
+        box-shadow: 15px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .btn-aceptar {
+        background-color: #28a745;
+        border-color: #28a745;
+        width: 150px;
+        height: 50px;
+    }
+
+    .btn-cancelar {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        width: 150px;
+        height: 50px;
+    }
+
+    .form-title {
+        text-align: left;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+</style>
+<body>
+<!-- Header -->
+<header class="header">
+    <div style="display: flex; align-items: center;">
+        <img src="/Logo.webp" alt="Logo UABC">
+        <div class="header-titulo">
+            <h1>Universidad Autónoma de Baja California</h1>
+            <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
+        </div>
+    </div>
+    <div class="admin-info">
+        Administrador: Usuario_1
+    </div>
+</header>
+
+<!-- Contenedor del SideBar y Formulario -->
+<div class="contenedorPrincipal">
+    <!-- SideBar -->
+    <div class="leftSide-contenedor">
+        <div class="leftSide">
+            <a href="altaEvento.html">
+                <i class='bx bxs-plus-circle'></i>
+                <span>Crear Evento</span>
+            </a>
+            <a href="consultaEventos.html">
+                <i class='bx bx-calendar'></i>
+                <span>Consultar Eventos</span>
+            </a>
+            <a href="crearEtiquetas.html">
+                <i class='bx bx-tag'></i>
+                <span>Crear Etiquetas</span>
+            </a>
+            <a href="consultarEstadisticas.html">
+                <i class='bx bx-bar-chart'></i>
+                <span>Consultar Estadísticas</span>
+            </a>
+            <a href="logout.html">
+                <i class='bx bx-exit'></i>
+                <span>Salir</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario de Alta de Evento -->
+    <form class="Forma" action="/eventos/guardar" method="POST" enctype="multipart/form-data">
+        <h2 class="form-title">Alta de Evento</h2>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="nombreEvento" class="form-label">Nombre del evento</label>
+                <input type="text" class="form-control" id="nombreEvento" name="nomEvento" placeholder="Nombre" required>
+            </div>
+            <div class="col-md-6">
+                <label for="campus" class="form-label">Campus</label>
+                <select class="form-control" id="campus" name="campus" onchange="cargarFacultades()" required>
+                    <option value="">Seleccione el campus</option>
+                    <option value="Mexicali">Campus Mexicali</option>
+                    <option value="Tijuana">Campus Tijuana</option>
+                    <option value="Ensenada">Campus Ensenada</option>
+                    <option value="VallePalmas">Unidad Valle de las Palmas</option>
+                    <option value="Tecate">Campus Tecate</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="facultad" class="form-label">Facultad</label>
+                <select class="form-control" id="facultad" name="facultad" required>
+                    <option value="">Seleccione la facultad</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="horaInicio" class="form-label">Hora de Inicio</label>
+                <input type="time" class="form-control" id="horaInicio" name="horaInicio" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="horaFinal" class="form-label">Hora de Fin</label>
+                <input type="time" class="form-control" id="horaFinal" name="horaFinal" required>
+            </div>
+            <div class="col-md-6">
+                <label for="fechaEvento" class="form-label">Fecha del evento</label>
+                <input type="date" class="form-control" id="fechaEvento" name="fecha" placeholder="DD/MM/AA" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="lugar" class="form-label">Lugar</label>
+                <input type="text" class="form-control" id="lugar" name="lugar" placeholder="Seleccione lugar del evento" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="etiquetas" class="form-label">Etiquetas</label>
+                <select class="form-control" id="etiquetas" name="etiquetas" multiple required>
+                    <option value="">Seleccione la(s) etiqueta(s)</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="descripcion" class="form-label">Descripción del evento</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Texto..." required></textarea>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button type="submit" class="btn btn-success btn-aceptar">Aceptar</button>
+            <button type="reset" class="btn btn-danger btn-cancelar">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Script para manejar facultades dinámicamente -->
+<script>
+    function cargarFacultades() {
+        const facultadSelect = document.getElementById("facultad");
+        const campusSelect = document.getElementById("campus").value;
+
+        // Limpiar las facultades anteriores
+        facultadSelect.innerHTML = '<option value="">Seleccione la facultad</option>';
+
+        const facultades = {
+            "Mexicali": [
+                "Facultad de Ciencias Humanas",
+                "Facultad de Ingeniería",
+                "Facultad de Derecho",
+                "Facultad de Ciencias Administrativas",
+                "Facultad de Medicina",
+                "Facultad de Odontología",
+                "Facultad de Deportes",
+                "Facultad de Idiomas"
+            ],
+            "Tijuana": [
+                "Facultad de Contaduría y Administración",
+                "Facultad de Derecho",
+                "Facultad de Economía y Relaciones Internacionales",
+                "Facultad de Medicina y Psicología",
+                "Facultad de Odontología",
+                "Facultad de Ciencias Químicas e Ingeniería",
+                "Facultad de Artes",
+                "Facultad de Deportes",
+                "Facultad de Idiomas",
+                "Escuela de Ciencias de la Salud",
+                "Facultad de Turismo y Mercadotecnia"
+            ],
+            "Ensenada": [
+                "Facultad de Ciencias",
+                "Facultad de Ciencias Marinas",
+                "Facultad de Ingeniería, Arquitectura y Diseño",
+                "Facultad de Ciencias Administrativas y Sociales",
+                "Facultad de Idiomas",
+                "Escuela de Enología y Gastronomía",
+                "Instituto de Investigaciones Oceanológicas"
+            ],
+            "VallePalmas": [
+                "Facultad de Ciencias de la Salud",
+                "Facultad de Ingeniería y Negocios",
+                "Facultad de Ciencias de la Ingeniería y Tecnología"
+            ],
+            "Tecate": [
+                "Facultad de Ingeniería y Negocios"
+            ]
+        };
+
+        // Cargar facultades correspondientes al campus seleccionado
+        if (facultades[campusSelect]) {
+            facultades[campusSelect].forEach(facultad => {
+                const option = document.createElement("option");
+                option.value = facultad;
+                option.text = facultad;
+                facultadSelect.appendChild(option);
+            });
+        }
+    }
+</script>
+</body>
+</html>

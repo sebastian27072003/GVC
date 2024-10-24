@@ -5,24 +5,26 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Usuario")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id")  // Define la columna id en la tabla
     private Long id;
 
-    @Column(name = "Nombre")
-    private String Nombre;
+    @Column(name = "Nombre")  // Define la columna Nombre en la tabla
+    private String nombre;
 
-    @Column(name = "Email")
-    private String Email;
+    @Column(name = "Email")  // Define la columna Email en la tabla
+    private String email;
 
-    @Column(name = "Rol")
-    private String Rol;
+    @Column(name = "Rol")  // Define la columna Rol en la tabla
+    private String rol;
 
-    @Column(name = "Matricula")
-    private Long Matricula;
+    @Column(name = "Matricula")  // Define la columna Matricula en la tabla
+    private Long matricula;
 
-    // Getters and Setters
+    // Getters y Setters
+
     public Long getId() {
         return id;
     }
@@ -32,34 +34,34 @@ public class Usuario {
     }
 
     public String getNombre() {
-        return Nombre;
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        this.nombre = nombre;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getRol() {
-        return Rol;
+        return rol;
     }
 
     public void setRol(String rol) {
-        Rol = rol;
+        this.rol = rol;
     }
 
     public Long getMatricula() {
-        return Matricula;
+        return matricula;
     }
 
     public void setMatricula(Long matricula) {
-        Matricula = matricula;
+        this.matricula = matricula;
     }
 }

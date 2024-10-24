@@ -3,45 +3,57 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_eventos")
+    @Column(name = "idEventos")  // Nombre de la columna en la base de datos
     private Long idEventos;
 
-    @Column(name = "nom_evento")
+    @Column(name = "nom_evento")  // Nombre de la columna en la base de datos
     private String nomEvento;
 
-    @Column(name = "facultad")
+    @Column(name = "facultad")  // Nombre de la columna en la base de datos
     private String facultad;
 
-    @Column(name = "hora_inicio")
+    @Column(name = "hora_inicio")  // Nombre de la columna en la base de datos
     private LocalTime horaInicio;
 
-    @Column(name = "hora_final")
+    @Column(name = "hora_final")  // Nombre de la columna en la base de datos
     private LocalTime horaFinal;
 
-    @Column(name = "fecha")
+    @Column(name = "fecha")  // Nombre de la columna en la base de datos
     private LocalDate fecha;
 
-    @Column(name = "lugar")
+    @Column(name = "lugar")  // Nombre de la columna en la base de datos
     private String lugar;
 
-    @Column(name = "descripcion")
+    @Column(name = "descripcion")  // Nombre de la columna en la base de datos
     private String descripcion;
 
-    @Column(name = "imagen")
+    @Column(name = "imagen")  // Nombre de la columna en la base de datos
     private String imagen;
 
-    @Column(name = "encargado")
+    @Column(name = "encargado")  // Nombre de la columna en la base de datos
     private String encargado;
 
-    @Column(name = "campus")
+    @Column(name = "campus")  // Nombre de la columna en la base de datos
     private String campus;
 
+    // Relación muchos a muchos con Etiquetas
+    @ManyToMany
+    @JoinTable(
+            name = "EventosEtiquetas",  // Tabla intermedia para la relación muchos a muchos
+            joinColumns = @JoinColumn(name = "idEvento"),  // Llave foránea de la tabla "Eventos"
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta")  // Llave foránea de la tabla "Etiquetas"
+    )
+    private List<Etiquetas> etiquetas;
 
+    // Getters y Setters
 
     public Long getIdEventos() {
         return idEventos;
@@ -129,5 +141,13 @@ public class Eventos {
 
     public void setCampus(String campus) {
         this.campus = campus;
+    }
+
+    public List<Etiquetas> getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(List<Etiquetas> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }
