@@ -1,5 +1,6 @@
 package com.example.GVC.Controlador;
 
+import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class EventosControlador {
@@ -19,8 +21,10 @@ public class EventosControlador {
 
     @GetMapping("/eventos")
     public String eventos(Model model) {
-        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos(); // O el método que necesites
+        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
+        List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas();
         model.addAttribute("eventos", eventos);
+        model.addAttribute("etiquetas", etiquetas);
         return "consultaEventos";
     }
 
@@ -28,6 +32,7 @@ public class EventosControlador {
     public String filtrarEventos(
             @RequestParam(value = "campus", required = false) String campus,
             @RequestParam(value = "facultad", required = false) String facultad,
+            @RequestParam(value = "etiqueta", required = false) Long etiquetaId,
             Model model) {
 
         List<Eventos> eventos;
@@ -40,6 +45,15 @@ public class EventosControlador {
             }
         } else {
             eventos = eventosServicio.buscarTodosLosEventos();
+        }
+
+        if (etiquetaId != null) {
+            eventos = eventos.stream()
+                    .filter(evento -> evento.getEventosEtiquetas() != null &&
+                            evento.getEventosEtiquetas().stream()
+                                    .anyMatch(eventosEtiquetas ->
+                                            eventosEtiquetas.getEtiqueta().getIdEtiquetas().equals(etiquetaId)))
+                    .collect(Collectors.toList());
         }
 
         model.addAttribute("eventos", eventos);

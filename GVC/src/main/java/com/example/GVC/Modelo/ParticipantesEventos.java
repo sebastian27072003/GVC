@@ -7,26 +7,38 @@ import jakarta.persistence.*;
 public class ParticipantesEventos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idParticipante")
-    private Long idParticipante;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "IdEvento")
-    private Long IdEvento;
+    @ManyToOne
+    @JoinColumn(name = "idParticipante", nullable = false)
+    private Participantes participante;
 
+    @ManyToOne
+    @JoinColumn(name = "idEvento", nullable = false)
+    private Eventos evento;
 
-    public Long getIdParticipante() {
-        return idParticipante;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdParticipante(Long idParticipante) {
-        this.idParticipante = idParticipante;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getIdEvento() {
-        return IdEvento;
+    public Participantes getParticipante() {
+        return participante;
     }
 
-    public void setIdEvento(Long idEvento) {
-        IdEvento = idEvento;
+    public void setParticipante(Participantes participante) {
+        this.participante = participante;
+    }
+
+    public Eventos getEvento() {
+        return evento;
+    }
+
+    public void setEvento(Eventos evento) {
+        this.evento = evento;
     }
 }

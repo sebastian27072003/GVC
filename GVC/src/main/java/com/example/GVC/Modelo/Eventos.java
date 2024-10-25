@@ -3,6 +3,8 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Table(name = "Eventos")
 public class Eventos {
@@ -40,6 +42,9 @@ public class Eventos {
 
     @Column(name = "campus")
     private String campus;
+
+    @OneToMany(mappedBy = "evento")
+    private List<EventosEtiquetas> eventosEtiquetas;
 
 
 
@@ -129,5 +134,13 @@ public class Eventos {
 
     public void setCampus(String campus) {
         this.campus = campus;
+    }
+
+    public List<EventosEtiquetas> getEventosEtiquetas() {
+        return eventosEtiquetas;
+    }
+
+    public void setEventosEtiquetas(List<EventosEtiquetas> eventosEtiquetas) {
+        this.eventosEtiquetas = eventosEtiquetas;
     }
 }

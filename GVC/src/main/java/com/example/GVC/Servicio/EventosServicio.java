@@ -1,7 +1,10 @@
 package com.example.GVC.Servicio;
 
+import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Repositorio.EventosRepositorio;
+import com.example.GVC.Repositorio.EtiquetasRepositorio;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,11 +13,14 @@ import java.util.List;
 public class EventosServicio {
 
     private final EventosRepositorio eventosRepositorio;
+    private final EtiquetasRepositorio etiquetasRepositorio;
 
-    public EventosServicio(EventosRepositorio eventosRepository) {
 
+    public EventosServicio(EventosRepositorio eventosRepository, EtiquetasRepositorio etiquetasRepository) {
         this.eventosRepositorio = eventosRepository;
+        this.etiquetasRepositorio = etiquetasRepository;
     }
+
 
     public List<Eventos> buscarTodosLosEventos() {
 
@@ -32,5 +38,10 @@ public class EventosServicio {
     public List<Eventos> buscarEventosPorCampusYFacultad(String campus, String facultad) {
         return eventosRepositorio.findByCampusAndFacultad(campus, facultad);
     }
+
+    public List<Etiquetas> buscarTodasLasEtiquetas() {
+        return etiquetasRepositorio.findAll();
+    }
+
 
 }

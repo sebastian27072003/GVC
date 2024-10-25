@@ -8,16 +8,16 @@ public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @Column(name = "idEtiquetas")
+    @Column(name = "id_etiquetas")
     private Long idEtiquetas;
 
-    @Column(name = "NomEtiquetas")
+    @Column(name = "nom_etiquetas")
     private String nomEtiquetas;
 
-    @Column(name = "Color")
+    @Column(name = "color")
     private String color;
 
-    @Column(name = "Descripcion")
+    @Column(name = "descripcion")
     private String descripcion;
 
 

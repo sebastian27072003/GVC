@@ -7,25 +7,64 @@ import jakarta.persistence.*;
 public class EventosEtiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idEvento")
-    private Long idEvento;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "idEtiqueta")
-    private Long idEtiqueta;
+    @ManyToOne
+    @JoinColumn(name = "idEvento", nullable = false)
+    private Eventos evento;
 
-    public Long getIdEvento() {
-        return idEvento;
+    @ManyToOne
+    @JoinColumn(name = "idEtiqueta", nullable = false)
+    private Etiquetas etiqueta;
+
+    // Constructor sin argumentos
+    public EventosEtiquetas() {
     }
 
-    public void setIdEvento(Long idEvento) {
-        this.idEvento = idEvento;
+    public Long getId() {
+        return id;
     }
 
-    public Long getIdEtiqueta() {
-        return idEtiqueta;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setIdEtiqueta(Long idEtiqueta) {
-        this.idEtiqueta = idEtiqueta;
+    public Eventos getEvento() {
+        return evento;
+    }
+
+    public void setEvento(Eventos evento) {
+        this.evento = evento;
+    }
+
+    public Etiquetas getEtiqueta() {
+        return etiqueta;
+    }
+
+    public void setEtiqueta(Etiquetas etiqueta) {
+        this.etiqueta = etiqueta;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventosEtiquetas)) return false;
+        EventosEtiquetas that = (EventosEtiquetas) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "EventosEtiquetas{" +
+                "id=" + id +
+                ", evento=" + evento +
+                ", etiqueta=" + etiqueta +
+                '}';
     }
 }

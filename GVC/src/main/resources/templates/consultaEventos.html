@@ -85,7 +85,7 @@
   <form class="row gy-3 align-items-center" method="GET" action="/eventos">
     <div class="col-md-3">
       <label for="campus" class="form-label">Campus</label>
-      <select class="form-select" id="campus" name="campus" onchange="cargarFacultades(); filtrarEventos();" required>
+      <select class="form-select" id="campus" name="campus" onchange="cargarFacultades(); filtrarEventos(); toggleInput();" required>
         <option value="">Seleccione el campus</option>
         <option value="Mexicali">Mexicali</option>
         <option value="Tijuana">Tijuana</option>
@@ -97,15 +97,18 @@
 
     <div class="col-md-3">
       <label for="facultad" class="form-label">Facultad</label>
-      <select class="form-select" id="facultad" name="facultad" onchange="filtrarEventos();" required>
+      <select class="form-select" id="facultad" name="facultad" onchange="filtrarEventos(); toggleInput();" required>
         <option value="">Seleccione la facultad</option>
       </select>
     </div>
 
     <div class="col-md-3">
       <label for="etiqueta" class="form-label">Etiquetas</label>
-      <select id="etiqueta" name="etiqueta" class="form-select">
+      <select id="etiqueta" name="etiqueta" class="form-select" onchange="filtrarEventos(); toggleInput();">
         <option value="">Selecciona la etiqueta</option>
+        <tr th:each="etiqueta : ${etiquetas}">
+          <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
+        </tr>
       </select>
     </div>
 
@@ -210,8 +213,9 @@
   function filtrarEventos() {
     const campus = document.getElementById("campus").value;
     const facultad = document.getElementById("facultad").value;
+    const etiqueta = document.getElementById("etiqueta").value;
 
-    fetch(`/filtrar-eventos?campus=${campus}&facultad=${facultad}`)
+    fetch(`/filtrar-eventos?campus=${campus}&facultad=${facultad}&etiqueta=${etiqueta}`)
       .then(response => response.text())
       .then(data => {
 
@@ -219,6 +223,23 @@
       })
       .catch(error => console.error('Error:', error));
   }
+
+  function toggleInput() {
+    const campusSelect = document.getElementById('campus');
+    const facultadSelect = document.getElementById('facultad');
+    const etiquetaSelect = document.getElementById('etiqueta');
+    const searchInput = document.querySelector('.input-group input[type="text"]');
+    const searchButton = document.querySelector('.input-group button[type="button"]');
+
+
+    if (campusSelect.value !== '' || facultadSelect.value !== '' || etiquetaSelect.value !== '') {
+        searchInput.disabled = true;
+        searchButton.disabled = true;
+    } else {
+        searchInput.disabled = false;
+        searchButton.disabled = false;
+    }
+}
 
 
   window.onload = function() {
@@ -228,6 +249,8 @@
     if (campusSelect.value) {
         cargarFacultades();
     }
+
+     toggleInput();
 
 };
 </script>
