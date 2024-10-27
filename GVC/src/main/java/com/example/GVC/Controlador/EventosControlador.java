@@ -27,6 +27,8 @@ public class EventosControlador {
         this.etiquetaServicio = etiquetaServicio;
     }
 
+
+
     // Método GET para listar y filtrar eventos (nombre, campus, facultad)
     @GetMapping("/eventos")
     public String listarEventos(
@@ -56,6 +58,8 @@ public class EventosControlador {
         return "consultaEventos"; // Muestra la página de consulta de eventos
     }
 
+
+
     // Método POST para guardar un evento
     @PostMapping("/eventos/guardar")
     public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
@@ -74,6 +78,8 @@ public class EventosControlador {
         model.addAttribute("evento", new Eventos());
         return "altaEvento"; // Retorna la página de alta de eventos
     }
+
+
 
     // Método GET para filtrar eventos por campus y facultad sin recargar toda la página (uso de fragmentos)
     @GetMapping("/filtrar-eventos")

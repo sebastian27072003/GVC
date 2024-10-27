@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión</title>
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="login.css" rel="stylesheet">
+</head>
+<style>
+  /*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+  /*
+      Created on : Sep 15, 2024, 3:56:03 AM
+      Author     : STARDUST
+  */
+
+  *{
+    text-align: center;
+  }
+  .center{
+    float: none;
+    margin: 0 auto;
+
+  }
+  html{
+    background-color: #007141;
+  }
+  .panel-form{
+
+
+    padding: 10px;
+    width: 100% ;
+    background: #D9D9D9;
+    border: 2px solid #000000;
+    border-radius: 30px;
+  }
+
+  .form-control{
+    background: #D9D9D9;
+
+  }
+  div.login{
+
+
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    width: 45%;
+    padding: 25px;
+    padding-bottom: 450px;
+    margin: auto;
+    background: #EBEBEB;
+    border-radius: 60px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  }
+  .logo{
+    width: 150px;
+  }
+  .panel-body{
+    padding: 10px;
+  }
+  .form-group{
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+  .form-control:focus{
+    border-color:#F1A632;
+  }
+  .bx bx-home-alt{
+    text-align: left;
+  }
+  .btn btn-success{
+    padding-top: 35px;
+  }
+  .btn-success {
+    background-color: #F1A631;
+    text-shadow: none;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    margin-top: 30px;
+    width: 100%;
+  }
+
+  .custom-btn-padding {
+    padding: 10px 20px;
+  }
+</style>
+<body>
+<div class="row">
+  <div class="login">
+    <img src="/static/resources/uabcl.png" alt="Logo UABCL" class="logo">
+    <h1>Iniciar Sesión</h1>
+
+    <div class="panel-header"></div>
+    <div class="panel-body">
+
+      <form action="/login" method="POST"> <!-- Enviar al endpoint de login con método POST -->
+        <div class="panel-form">
+          <div class="form-group">
+            <i class='bx bx-home-alt-2' style="font-size: 3em; color: black;"></i>
+            <input type="text" class="form-control" name="username"
+                   placeholder="Correo Electrónico:" autocomplete="off" required>
+          </div>
+
+          <hr style="border: none; height: 2px; background-color: #585757; width: 100%;">
+
+          <div class="form-group">
+            <i class='bx bx-lock-alt' style="font-size: 3em; color: black;"></i>
+            <input type="password" class="form-control" name="password"
+                   placeholder="Contraseña:" required>
+          </div>
+        </div>
+
+        <form action="/login" method="POST">
+
+          <button class="btn btn-success" type="submit">Iniciar sesión</button>
+        </form>
+
+
+        <button class="btn custom-btn-padding">
+          <a href="/oauth2/authorization/google">Inicia sesión con Google</a>
+        </button>
+
+      </form>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</div>
+</body>
+
+</html>

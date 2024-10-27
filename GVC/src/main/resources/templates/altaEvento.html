@@ -136,12 +136,17 @@
             <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
         </div>
     </div>
-    <div class="admin-info">
-        Administrador: Usuario_1
+    <div style="margin-left: auto">
+        Administrador:
+        <span th:text="${${nombre} != null ? ${nombre} : 'Invitado'}"></span>
     </div>
+    <p th:if="${#authentication != null}">
+        Usuario: <span th:text="${#authentication.principal.attributes['name']}"></span>
+    </p>
+    <p th:text="${#authentication}"></p>
 </header>
 
-<!-- Contenedor del SideBar y Formulario -->
+    <!-- Contenedor del SideBar y Formulario -->
 <div class="contenedorPrincipal">
     <!-- SideBar -->
     <div class="leftSide-contenedor">
@@ -299,5 +304,22 @@
         }
     }
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/eventos/etiquetas')
+            .then(response => response.json())
+            .then(data => {
+                const selectEtiquetas = document.getElementById('etiquetas');
+                data.forEach(etiqueta => {
+                    const option = document.createElement('option');
+                    option.value = etiqueta.id;
+                    option.text = etiqueta.nombre;
+                    selectEtiquetas.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar las etiquetas:', error));
+    });
+</script>
+
 </body>
 </html>
