@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -21,7 +25,7 @@ public class EventosControlador {
         this.eventosServicio = eventosService;
     }
 
-
+    // Método GET para listar y filtrar eventos (nombre, campus, facultad)
     @GetMapping("/eventos")
     public String eventos(Model model) {
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos(); // O el método que necesites
@@ -46,6 +50,7 @@ public class EventosControlador {
                 eventos = eventosServicio.buscarEventosPorCampus(campus);
             }
         } else {
+            // Mostrar todos los eventos si no hay filtros
             eventos = eventosServicio.buscarTodosLosEventos();
         }
 
@@ -68,21 +73,32 @@ public class EventosControlador {
         return "fragments/tablaEventos :: tabla-eventos";
     }
 
-
+    // Método POST para guardar un evento
     @PostMapping("/eventos/guardar")
     public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
+        System.out.println("Nombre del evento: " + evento.getNomEvento());
+
         // Guardar el evento en la base de datos sin etiquetas ni imagen
         eventosServicio.guardarEvento(evento);
 
         return "redirect:/eventos"; // Redirige a la página de consulta de eventos
     }
+
+    // Método GET para mostrar el formulario de alta de evento
     @GetMapping("/eventos/alta")
     public String mostrarFormularioAltaEvento(Model model) {
         model.addAttribute("evento", new Eventos()); // Añadimos un nuevo objeto evento
         return "altaEvento"; // Nombre del archivo HTML (altaEvento.html)
     }
 
+    // Método GET para filtrar eventos por campus y facultad sin recargar toda la página (uso de fragmentos)
+    @GetMapping("/filtrar-eventos")
+    public String filtrarEventos(
+            @RequestParam(value = "campus", required = false) String campus,
+            @RequestParam(value = "facultad", required = false) String facultad,
+            Model model) {
 
+        List<Eventos> eventos;
 
 
 }
@@ -92,3 +108,4 @@ public class EventosControlador {
         eventosServicio.eliminarEvento(id);
         return "redirect:/eventos";
     }
+}

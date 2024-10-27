@@ -5,44 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alta de Evento</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="/templates/style.css">
+</head>
 <style>
     body {
+        background-color: #EBEBEB;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
     }
+
+    /* Header */
     .header {
         background-color: #f4dcdc;
+        padding: 15px;
         display: flex;
+        justify-content: space-between;
         align-items: center;
+        border-bottom: 2px solid #dee2e6;
     }
+
     .header img {
-    }
-        color: #007B33;
-    }
-        margin: 0;
-    }
+        width: 80px;
+        height: 120px;
         margin-right: 20px;
     }
+
+    .header-titulo {
+        display: flex;
+        flex-direction: column;
+        color: #007B33;
+    }
+
+    .header-titulo h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #007B33;
+    }
+
+    .header-titulo h3 {
+        margin: 0;
+        color: black;
+        font-size: 1.1rem;
+    }
+
+    .admin-info {
+        font-size: 0.9rem;
+        margin-right: 20px;
+    }
+
+    /* Contenedor del SideBar y Formulario */
+    .contenedorPrincipal {
+        display: flex;
+        width: 100%;
+    }
+
+    /* SideBar */
+    .leftSide-contenedor {
+        width: 10cm;
+        background: #007141;
+        transition: width 0.1s ease-in-out;
+    }
+
+    .leftSide {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
         padding: 20px;
+        background-color: #007141;
     }
+
+    .leftSide a {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1cm;
+        text-decoration: none;
+        color: white;
+        font-size: 0.9rem;
     }
+
+    .leftSide i {
+        font-size: 1.5rem;
+        margin-right: 10px;
     }
+
+    .Forma {
+        width: 100%;
+        padding: 1cm;
+        background-color: white;
+        margin: 1cm;
+        border-radius: 20px;
+        box-shadow: 15px 15px rgba(0, 0, 0, 0.2);
+    }
+
     .btn-group {
         display: flex;
         justify-content: space-between;
         margin-top: 20px;
     }
+
     .btn-aceptar {
         background-color: #28a745;
         border-color: #28a745;
         width: 150px;
         height: 50px;
     }
+
     .btn-cancelar {
         background-color: #dc3545;
         border-color: #dc3545;
         width: 150px;
         height: 50px;
     }
+
+    .form-title {
+        text-align: left;
+        font-weight: bold;
+        font-size: 1.5rem;
     }
+
 </style>
 <body>
 
@@ -231,5 +313,22 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/eventos/etiquetas')
+            .then(response => response.json())
+            .then(data => {
+                const selectEtiquetas = document.getElementById('etiquetas');
+                data.forEach(etiqueta => {
+                    const option = document.createElement('option');
+                    option.value = etiqueta.id;
+                    option.text = etiqueta.nombre;
+                    selectEtiquetas.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar las etiquetas:', error));
+    });
+</script>
+
 </body>
 </html>

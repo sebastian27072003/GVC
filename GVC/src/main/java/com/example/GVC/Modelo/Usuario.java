@@ -6,10 +6,14 @@ import jakarta.persistence.*;
 @Table(name = "Usuario")
 public class Usuario {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")  // Define la columna id en la tabla
     private Long id;
+
+    @Column(name = "username")  // Define la columna Password en la tabla
+    private String username;  // Agrega el campo para la contraseña
 
     @Column(name = "Nombre")  // Define la columna Nombre en la tabla
     private String nombre;
@@ -23,7 +27,20 @@ public class Usuario {
     @Column(name = "Matricula")  // Define la columna Matricula en la tabla
     private Long matricula;
 
+    @Column(name = "Password")  // Define la columna Password en la tabla
+    private String password;  // Agrega el campo para la contraseña
+
+
     // Getters y Setters
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public Long getId() {
         return id;
@@ -63,5 +80,13 @@ public class Usuario {
 
     public void setMatricula(Long matricula) {
         this.matricula = matricula;
+    }
+
+    public String getPassword() {  // Método getter para la contraseña
+        return password;
+    }
+
+    public void setPassword(String password) {  // Método setter para la contraseña
+        this.password = password;
     }
 }
