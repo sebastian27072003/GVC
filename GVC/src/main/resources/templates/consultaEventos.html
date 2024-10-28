@@ -113,13 +113,9 @@
     </div>
 
     <div class="col-md-3 d-flex align-items-center">
-      <button type="button" class="btn btn-success me-2 " style="margin-top: 2rem "><i class="bi bi-eye"></i></button>
-      <button type="button" class="btn btn-warning me-2" style="margin-top: 2rem "><i class="bi bi-pencil"></i></button>
-      <button type="button" class="btn btn-danger me-2" style="margin-top: 2rem "><i class="bi bi-trash"></i></button>
-
       <div class="input-group w-auto">
-        <input type="text" class="form-control" placeholder="Buscar..." style="margin-top: 2rem "/>
-        <button type="button" class="btn btn-outline-success" style="margin-top: 2rem ">
+        <input type="text" class="form-control" placeholder="Buscar..." id="nombreEvento" style="margin-top: 2rem "/>
+        <button type="button" class="btn btn-outline-success" onclick="filtrarEventos()" style="margin-top: 2rem ">
           <i class="bi bi-search"></i>
         </button>
       </div>
@@ -134,6 +130,7 @@
       <th>Dirección/Lugar</th>
       <th>Descripción</th>
       <th>Fecha</th>
+      <th>Acciones</th>
     </tr>
     </thead>
     <tbody id="tabla-eventos">
@@ -143,6 +140,12 @@
       <td th:text="${evento.lugar}"></td>
       <td th:text="${evento.descripcion}"></td>
       <td th:text="${evento.fecha}"></td>
+      <td>
+        <button type="button" class="btn btn-success me-2"><i class="bi bi-eye"></i></button>
+        <button type="button" class="btn btn-warning me-2"><i class="bi bi-pencil"></i></button>
+        <button type="button" class="btn btn-danger me-2" th:attr="onclick='confirmarEliminacion(' + ${evento.idEventos} + ');'"><i class="bi bi-trash"></i></button>
+
+      </td>
     </tr>
     </tbody>
   </table>
@@ -215,7 +218,9 @@
     const facultad = document.getElementById("facultad").value;
     const etiqueta = document.getElementById("etiqueta").value;
 
-    fetch(`/filtrar-eventos?campus=${campus}&facultad=${facultad}&etiqueta=${etiqueta}`)
+    const nombreEvento = document.getElementById("nombreEvento").value;
+
+    fetch(`/filtrar-eventos?campus=${campus}&facultad=${facultad}&etiqueta=${etiqueta}&nombreEvento=${nombreEvento}`)
       .then(response => response.text())
       .then(data => {
 
@@ -224,6 +229,7 @@
       .catch(error => console.error('Error:', error));
   }
 
+  /*
   function toggleInput() {
     const campusSelect = document.getElementById('campus');
     const facultadSelect = document.getElementById('facultad');
@@ -239,8 +245,13 @@
         searchInput.disabled = false;
         searchButton.disabled = false;
     }
-}
+}*/
 
+
+    function confirmarEliminacion(eventoId) {
+    console.log("ID del evento:", eventoId);
+         window.location.href = '/eventos/eliminar/' + eventoId;
+    }
 
   window.onload = function() {
     const campusSelect = document.getElementById("campus");

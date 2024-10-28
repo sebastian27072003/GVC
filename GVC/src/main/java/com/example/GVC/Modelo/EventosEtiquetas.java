@@ -18,7 +18,6 @@ public class EventosEtiquetas {
     @JoinColumn(name = "idEtiqueta", nullable = false)
     private Etiquetas etiqueta;
 
-    // Constructor sin argumentos
     public EventosEtiquetas() {
     }
 

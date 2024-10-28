@@ -6,6 +6,7 @@ import com.example.GVC.Servicio.EventosServicio;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class EventosControlador {
             @RequestParam(value = "campus", required = false) String campus,
             @RequestParam(value = "facultad", required = false) String facultad,
             @RequestParam(value = "etiqueta", required = false) Long etiquetaId,
+            @RequestParam(value = "nombreEvento", required = false) String nombreEvento,
             Model model) {
 
         List<Eventos> eventos;
@@ -56,9 +58,22 @@ public class EventosControlador {
                     .collect(Collectors.toList());
         }
 
+        if (nombreEvento != null && !nombreEvento.isEmpty()) {
+            eventos = eventos.stream()
+                    .filter(evento -> evento.getNomEvento().toLowerCase().contains(nombreEvento.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
         model.addAttribute("eventos", eventos);
         return "fragments/tablaEventos :: tabla-eventos";
     }
+
+    @GetMapping("/eventos/eliminar/{id}")
+    public String eliminarEvento(@PathVariable Long id) {
+        eventosServicio.eliminarEvento(id);
+        return "redirect:/eventos";
+    }
+
 }
 
 

@@ -43,5 +43,8 @@ public class EventosServicio {
         return etiquetasRepositorio.findAll();
     }
 
+    public void eliminarEvento(Long id) {
+        eventosRepositorio.deleteById(id);
+    }
 
 }

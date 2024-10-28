@@ -43,9 +43,8 @@ public class Eventos {
     @Column(name = "campus")
     private String campus;
 
-    @OneToMany(mappedBy = "evento")
+    @OneToMany(mappedBy = "evento" , cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<EventosEtiquetas> eventosEtiquetas;
-
 
 
     public Long getIdEventos() {
