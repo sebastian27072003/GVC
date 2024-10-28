@@ -77,16 +77,22 @@
 <body>
 
 <header>
-  <img src="/Logo.png" height="150" width="100"/>
+  <img src="/static/Logo2.jpg" height="150" width="100"/>
   <div class="header-titulo">
     <h1>Universidad Autónoma de Baja California</h1>
     <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
   </div>
-  <div style="margin-left: auto">Administrador: Usuario_1</div>
+
+
 </header>
 
+
 <main>
+
+  <p th:text="${#authentication}"></p>
   <h2>Consulta de Eventos</h2>
+  <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+  <p>Correo: <span th:text="${email}">Correo</span></p>
   <form class="row gy-3 align-items-center" method="GET" action="/eventos">
     <div class="col-md-3">
       <label for="campus" class="form-label">Campus</label>
@@ -139,7 +145,6 @@
       <th>Dirección/Lugar</th>
       <th>Descripción</th>
       <th>Fecha</th>
-      <th>Acciones</th>
     </tr>
     </thead>
     <tbody id="tabla-eventos">

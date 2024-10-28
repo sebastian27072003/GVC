@@ -21,6 +21,10 @@ public class UsuarioServicio {
         this.usuarioRepositorio = usuarioRepositorio;
         this.passwordEncoder = passwordEncoder; // Asignación
     }
+    public String obtenerEmailPorUsername(String username) {
+        Optional<Usuario> usuarioOptional = usuarioRepositorio.findByUsername(username);
+        return usuarioOptional.map(Usuario::getEmail).orElse("No disponible");
+    }
 
     public boolean validateUser(String username, String password) {
         Optional<Usuario> usuarioOptional = usuarioRepositorio.findByUsername(username);
