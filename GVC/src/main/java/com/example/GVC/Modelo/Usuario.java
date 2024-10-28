@@ -3,7 +3,7 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario {
 
 
@@ -27,7 +27,7 @@ public class Usuario {
     @Column(name = "Matricula")  // Define la columna Matricula en la tabla
     private Long matricula;
 
-    @Column(name = "Password")  // Define la columna Password en la tabla
+    @Column(name = "password")  // Define la columna Password en la tabla
     private String password;  // Agrega el campo para la contraseña
 
 

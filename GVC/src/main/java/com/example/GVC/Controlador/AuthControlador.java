@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class AuthController {
+public class AuthControlador {
 
     private final UsuarioServicio userService; // Asegúrate de que tengas un servicio de usuario inyectado
 
-    public AuthController(UsuarioServicio userService) {
+    public AuthControlador(UsuarioServicio userService) {
         this.userService = userService;
     }
 

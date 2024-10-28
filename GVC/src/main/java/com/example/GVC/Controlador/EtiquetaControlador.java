@@ -19,13 +19,25 @@ public class EtiquetaControlador {
     @Autowired
     private EtiquetaServicio etiquetaServicio;
 
-    // Mostrar formulario para crear una nueva etiqueta
-    @GetMapping("/etiquetas/crear")
-    public String mostrarFormulario(Model model) {
-        model.addAttribute("etiqueta", new Etiquetas());
-        return "crear_etiqueta";
+    // Método para mostrar el formulario para crear una nueva etiqueta
+    @GetMapping("/nueva")
+    public String mostrarFormulario(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+
+        String nombre = "Invitado"; // Valor por defecto
+        String email = "No disponible"; // Valor por defecto
+
+        if (oidcUser != null) {
+            nombre = (String) oidcUser.getAttribute("name");
+            email = (String) oidcUser.getAttribute("email");
+        }
+        // Puedes reemplazar estos valores con los datos del usuario actual
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+
+        return "formularioEtiqueta"; // Nombre de la vista del formulario
     }
 
+    // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
     public String guardarEtiqueta(
             @RequestParam String nombre,
@@ -38,8 +50,12 @@ public class EtiquetaControlador {
         etiqueta.setDescripcion(descripcion);
 
         etiquetaServicio.guardarEtiqueta(etiqueta);
+
+        // Agregar los atributos al modelo para la vista
         model.addAttribute("mensaje", "Etiqueta guardada exitosamente");
-        return "formularioEtiqueta";
+        model.addAttribute("nombre", nombre); // Agregar el nombre del usuario
+        model.addAttribute("email", "usuario@example.com"); // Cambia esto por el correo del usuario real
+
+        return "formularioEtiqueta"; // Retorna a la misma vista
     }
 }
-

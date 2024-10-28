@@ -14,17 +14,17 @@ public class UsuarioControlador {
         // Validar si oidcUser no es nulo
         if (oidcUser == null) {
             model.addAttribute("nombre", "Invitado");
-            model.addAttribute("email", "No disponible");
+            model.addAttribute("Email", "No disponible");
             return "home";
         }
 
         // Extraer nombre y correo de los atributos del usuario
         String nombre = (String) oidcUser.getAttribute("name");
-        String email = (String) oidcUser.getAttribute("email");
+        String email = (String) oidcUser.getAttribute("Email");
 
         // Agregar datos al modelo
         model.addAttribute("nombre", nombre);
-        model.addAttribute("email", email);
+        model.addAttribute("Email", email);
 
         return "home";
     }

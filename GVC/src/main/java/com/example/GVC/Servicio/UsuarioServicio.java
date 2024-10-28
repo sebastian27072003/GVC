@@ -38,7 +38,7 @@ public class UsuarioServicio {
     }
 
     public Usuario obtenerORegistrarUsuario(OAuth2User oAuth2User) {
-        String email = oAuth2User.getAttribute("email");
+        String email = oAuth2User.getAttribute("Email");
 
         // Verificar si el usuario ya existe en la base de datos
         Optional<Usuario> usuarioExistente = usuarioRepositorio.findByEmail(email);
@@ -48,11 +48,11 @@ public class UsuarioServicio {
         } else {
             // Crear un nuevo usuario si no existe
             Usuario nuevoUsuario = new Usuario();
-            nuevoUsuario.setNombre(oAuth2User.getAttribute("name")); // Suponiendo que el nombre viene de OIDC
+            nuevoUsuario.setNombre(oAuth2User.getAttribute("name"));
             nuevoUsuario.setEmail(email);
-            nuevoUsuario.setRol("USER");  // Asignar rol por defecto
-            nuevoUsuario.setMatricula(0L);  // Puedes asignar un valor adecuado
-            nuevoUsuario.setPassword(passwordEncoder.encode("defaultPassword"));  // Establecer contraseña codificada
+            nuevoUsuario.setRol("USER");
+            nuevoUsuario.setMatricula(0L);
+            nuevoUsuario.setPassword(passwordEncoder.encode("defaultPassword"));
 
             return usuarioRepositorio.save(nuevoUsuario);  // Guardar el usuario en la BD
         }
