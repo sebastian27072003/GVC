@@ -20,7 +20,7 @@ public class AuthController {
         // Validar credenciales utilizando el método correcto
         if (userService.validateUser(username, password)) {
             // Redirigir a la página de alta de eventos
-            return "redirect:/altaEvento";
+            return "redirect:/eventos";
         } else {
             model.addAttribute("error", "Credenciales incorrectas");
             return "login"; // Retornar a la página de login

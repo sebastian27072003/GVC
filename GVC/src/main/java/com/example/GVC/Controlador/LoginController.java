@@ -13,7 +13,7 @@ public class LoginController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/eventos/alta";  //
+        return "redirect:/eventos";  //
     }
 
 

@@ -2,105 +2,79 @@ package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
-import com.example.GVC.Servicio.EtiquetaServicio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @Controller
 public class EventosControlador {
 
-    private final EventosServicio eventosServicio;
-    private final EtiquetaServicio etiquetaServicio;
+    @Autowired
+    private EventosServicio eventosServicio;
 
-    // Constructor para inyectar los servicios
-    public EventosControlador(EventosServicio eventosServicio, EtiquetaServicio etiquetaServicio) {
-        this.eventosServicio = eventosServicio;
-        this.etiquetaServicio = etiquetaServicio;
-    }
-
-
-
-    // Método GET para listar y filtrar eventos (nombre, campus, facultad)
+    // Método GET para mostrar la página de eventos y el formulario de consulta
     @GetMapping("/eventos")
-    public String listarEventos(
-            @RequestParam(value = "nombre", required = false) String nombreEvento,
-            @RequestParam(value = "campus", required = false) String campus,
-            @RequestParam(value = "facultad", required = false) String facultad,
-            Model model) {
+    public String eventosPage(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+        String nombre = "Invitado"; // Valor por defecto
+        String email = "No disponible"; // Valor por defecto
 
-        List<Eventos> eventos;
-
-        if (nombreEvento != null && !nombreEvento.isEmpty()) {
-            // Filtrar por nombre del evento
-            eventos = eventosServicio.buscarEventosPorNombre(nombreEvento);
-        } else if (campus != null && !campus.isEmpty()) {
-            // Filtrar por campus y facultad
-            if (facultad != null && !facultad.isEmpty()) {
-                eventos = eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad);
-            } else {
-                eventos = eventosServicio.buscarEventosPorCampus(campus);
-            }
-        } else {
-            // Mostrar todos los eventos si no hay filtros
-            eventos = eventosServicio.buscarTodosLosEventos();
+        if (oidcUser != null) {
+            nombre = (String) oidcUser.getAttribute("name");
+            email = (String) oidcUser.getAttribute("email");
         }
 
-        model.addAttribute("eventos", eventos);
-        return "consultaEventos"; // Muestra la página de consulta de eventos
-    }
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+        model.addAttribute("eventos", eventosServicio.buscarTodosLosEventos()); // Lista de eventos
 
-
-
-    // Método POST para guardar un evento
-    @PostMapping("/eventos/guardar")
-    public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
-        System.out.println("Nombre del evento: " + evento.getNomEvento());
-
-        // Guardar el evento en la base de datos sin etiquetas ni imagen
-        eventosServicio.guardarEvento(evento);
-
-        // Redirigir después de guardar a la lista de eventos
-        return "redirect:/eventos";
+        return "consultaEventos"; // Retorna la página de consulta de eventos
     }
 
     // Método GET para mostrar el formulario de alta de evento
     @GetMapping("/eventos/alta")
-    public String mostrarFormularioAltaEvento(Model model) {
-        model.addAttribute("evento", new Eventos());
+    public String mostrarFormularioAltaEvento(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+        String nombre = "Invitado"; // Valor por defecto
+        String email = "No disponible"; // Valor por defecto
+
+        if (oidcUser != null) {
+            nombre = (String) oidcUser.getAttribute("name");
+            email = (String) oidcUser.getAttribute("email");
+        }
+
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+        model.addAttribute("evento", new Eventos()); // Crea un nuevo objeto de Evento para el formulario
+
         return "altaEvento"; // Retorna la página de alta de eventos
     }
 
+    // Método POST para guardar el evento
+    @PostMapping("/eventos/guardar")
+    public String guardarEvento(Eventos evento) {
+        eventosServicio.guardarEvento(evento); // Guarda el evento en la base de datos
+        return "redirect:/eventos"; // Redirige a la página de consulta de eventos
+    }
 
-
-    // Método GET para filtrar eventos por campus y facultad sin recargar toda la página (uso de fragmentos)
+    // Método GET para filtrar eventos
     @GetMapping("/filtrar-eventos")
-    public String filtrarEventos(
-            @RequestParam(value = "campus", required = false) String campus,
-            @RequestParam(value = "facultad", required = false) String facultad,
-            Model model) {
+    public String filtrarEventos(@RequestParam String campus, @RequestParam(required = false) String facultad, Model model) {
+        List<Eventos> eventosFiltrados;
 
-        List<Eventos> eventos;
-
-        if (campus != null && !campus.isEmpty()) {
-            if (facultad != null && !facultad.isEmpty()) {
-                eventos = eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad);
-            } else {
-                eventos = eventosServicio.buscarEventosPorCampus(campus);
-            }
+        // Filtra los eventos basados en campus y facultad
+        if (facultad != null && !facultad.isEmpty()) {
+            eventosFiltrados = eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad);
         } else {
-            eventos = eventosServicio.buscarTodosLosEventos();
+            eventosFiltrados = eventosServicio.buscarEventosPorCampus(campus);
         }
 
-        model.addAttribute("eventos", eventos);
-        return "fragments/tablaEventos :: tabla-eventos"; // Fragmento para actualizar solo la tabla
+        model.addAttribute("eventos", eventosFiltrados); // Agrega la lista de eventos filtrados al modelo
+        return "fragments/eventosTabla :: tabla-eventos"; // Asegúrate de que esta ruta sea correcta
     }
 }

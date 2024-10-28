@@ -235,6 +235,8 @@
 
     <form class="Forma" action="/etiquetas/guardar" method="POST">
         <h2>Crear Etiquetas</h2>
+        <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+        <p>Correo: <span th:text="${email}">Correo</span></p>
         <div class="subForma">
             <div class="campo">
                 <label for="NomEtiquetas">Nombre Etiqueta</label>

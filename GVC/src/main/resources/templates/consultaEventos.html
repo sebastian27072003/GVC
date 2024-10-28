@@ -77,12 +77,8 @@
     <h1>Universidad Autónoma de Baja California</h1>
     <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
   </div>
-  <p th:if="${#authentication != null}">
-    Usuario: <span th:text="${#authentication.name}"></span>
-  </p>
-  <p th:if="${#authentication == null}">
-    Usuario no autenticado
-  </p>
+
+
 
 
 
@@ -93,6 +89,8 @@
 
   <p th:text="${#authentication}"></p>
   <h2>Consulta de Eventos</h2>
+  <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+  <p>Correo: <span th:text="${email}">Correo</span></p>
   <form class="row gy-3 align-items-center" method="GET" action="/eventos">
     <div class="col-md-3">
       <label for="campus" class="form-label">Campus</label>
@@ -211,12 +209,12 @@
       facultades[campusSelect].forEach(facultad => {
         const option = document.createElement("option");
         option.value = facultad;
-        option.text = facultad;
+        option.textContent = facultad;
         facultadSelect.appendChild(option);
       });
     }
-
   }
+
 
   function filtrarEventos() {
     const campus = document.getElementById("campus").value;
@@ -224,11 +222,10 @@
 
     fetch(`/filtrar-eventos?campus=${campus}&facultad=${facultad}`)
             .then(response => response.text())
-            .then(data => {
-
-              document.getElementById("tabla-eventos").innerHTML = data;
+            .then(html => {
+              document.getElementById("tabla-eventos").innerHTML = html;
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error("Error al filtrar los eventos:", error));
   }
 
 
