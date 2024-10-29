@@ -55,11 +55,6 @@
     .encabezado-tabla th {
       background-color: #E5E1E1;
     }
-    select {
-      width : 120px;
-      margin-left: 15px;
-    }
-
     i {
       font-size: 14px;
       color : #f0f3f4;
@@ -77,26 +72,20 @@
 <body>
 
 <header>
-  <img src="/static/Logo2.jpg" height="150" width="100"/>
+  <img src="/Logo.png" height="150" width="100"/>
   <div class="header-titulo">
     <h1>Universidad Autónoma de Baja California</h1>
     <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
   </div>
-
-
+  <div style="margin-left: auto">Administrador: Usuario_1</div>
 </header>
 
-
 <main>
-
-
   <h2>Consulta de Eventos</h2>
-  <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
-  <p>Correo: <span th:text="${email}">Correo</span></p>
   <form class="row gy-3 align-items-center" method="GET" action="/eventos">
     <div class="col-md-3">
       <label for="campus" class="form-label">Campus</label>
-      <select class="form-select" id="campus" name="campus" onchange="cargarFacultades(); filtrarEventos();" required>
+      <select class="form-select" id="campus" name="campus" onchange="cargarFacultades(); filtrarEventos(); toggleInput();" required>
         <option value="">Seleccione el campus</option>
         <option value="Mexicali">Mexicali</option>
         <option value="Tijuana">Tijuana</option>
@@ -108,14 +97,14 @@
 
     <div class="col-md-3">
       <label for="facultad" class="form-label">Facultad</label>
-      <select class="form-select" id="facultad" name="facultad" onchange="filtrarEventos();" required>
+      <select class="form-select" id="facultad" name="facultad" onchange="filtrarEventos(); toggleInput();" required>
         <option value="">Seleccione la facultad</option>
       </select>
     </div>
 
     <div class="col-md-3">
       <label for="etiqueta" class="form-label">Etiquetas</label>
-      <select id="etiqueta" name="etiqueta" class="form-select">
+      <select id="etiqueta" name="etiqueta" class="form-select" onchange="filtrarEventos(); toggleInput();">
         <option value="">Selecciona la etiqueta</option>
         <tr th:each="etiqueta : ${etiquetas}">
           <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
@@ -124,13 +113,9 @@
     </div>
 
     <div class="col-md-3 d-flex align-items-center">
-      <button type="button" class="btn btn-success me-2 " style="margin-top: 2rem "><i class="bi bi-eye"></i></button>
-      <button type="button" class="btn btn-warning me-2" style="margin-top: 2rem "><i class="bi bi-pencil"></i></button>
-      <button type="button" class="btn btn-danger me-2" style="margin-top: 2rem "><i class="bi bi-trash"></i></button>
-
       <div class="input-group w-auto">
-        <input type="text" class="form-control" placeholder="Buscar..." style="margin-top: 2rem "/>
-        <button type="button" class="btn btn-outline-success" style="margin-top: 2rem ">
+        <input type="text" class="form-control" placeholder="Buscar..." id="nombreEvento" style="margin-top: 2rem "/>
+        <button type="button" class="btn btn-outline-success" onclick="filtrarEventos()" style="margin-top: 2rem ">
           <i class="bi bi-search"></i>
         </button>
       </div>
@@ -145,6 +130,7 @@
       <th>Dirección/Lugar</th>
       <th>Descripción</th>
       <th>Fecha</th>
+      <th>Acciones</th>
     </tr>
     </thead>
     <tbody id="tabla-eventos">
@@ -235,37 +221,44 @@
     const nombreEvento = document.getElementById("nombreEvento").value;
 
     fetch(`/filtrar-eventos?campus=${campus}&facultad=${facultad}&etiqueta=${etiqueta}&nombreEvento=${nombreEvento}`)
-      .then(response => response.text())
-      .then(data => {
+            .then(response => response.text())
+            .then(data => {
 
-        document.getElementById("tabla-eventos").innerHTML = data;
-      })
-      .catch(error => console.error('Error:', error));
+              document.getElementById("tabla-eventos").innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
   }
+
 
   /*
   function toggleInput() {
     const campusSelect = document.getElementById('campus');
     const facultadSelect = document.getElementById('facultad');
     const etiquetaSelect = document.getElementById('etiqueta');
-    const searchInput = document.querySelector('.input-group input[type="text"]');
-    const searchButton = document.querySelector('.input-group button[type="button"]');
+    const buscarInput = document.querySelector('.input-group input[type="text"]');
+    const buscarButton = document.querySelector('.input-group button[type="button"]');
 
 
     if (campusSelect.value !== '' || facultadSelect.value !== '' || etiquetaSelect.value !== '') {
-        searchInput.disabled = true;
-        searchButton.disabled = true;
+        buscarInput.disabled = true;
+        buscarButton.disabled = true;
     } else {
-        searchInput.disabled = false;
-        searchButton.disabled = false;
+        buscarInput.disabled = false;
+        buscarButton.disabled = false;
     }
 }*/
 
 
-    function confirmarEliminacion(eventoId) {
-    console.log("ID del evento:", eventoId);
-         window.location.href = '/eventos/eliminar/' + eventoId;
+  function confirmarEliminacion(eventoId) {
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este evento?");
+
+    if (confirmacion) {
+      console.log("ID del evento:", eventoId);
+      window.location.href = '/eventos/eliminar/' + eventoId;
+    } else {
+      console.log("Eliminación cancelada");
     }
+  }
 
   window.onload = function() {
     const campusSelect = document.getElementById("campus");
@@ -274,6 +267,8 @@
     if (campusSelect.value) {
       cargarFacultades();
     }
+
+    toggleInput();
 
   };
 </script>

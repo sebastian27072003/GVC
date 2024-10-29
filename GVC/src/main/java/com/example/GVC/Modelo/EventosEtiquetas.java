@@ -3,26 +3,24 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "eventos_etiquetas")
+@Table(name = "EventosEtiquetas")
 public class EventosEtiquetas {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_evento_etiqueta")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_evento", nullable = false)  // Relación con la entidad Evento
+    @JoinColumn(name = "idEvento", nullable = false)
     private Eventos evento;
 
     @ManyToOne
-    @JoinColumn(name = "id_etiqueta", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "idEtiqueta", nullable = false)
     private Etiquetas etiqueta;
 
-    @Column(name = "id_etiqueta")  // Columna duplicada corregida
-    private Long idEtiqueta;
+    public EventosEtiquetas() {
+    }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -47,11 +45,25 @@ public class EventosEtiquetas {
         this.etiqueta = etiqueta;
     }
 
-    public Long getIdEtiqueta() {
-        return idEtiqueta;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventosEtiquetas)) return false;
+        EventosEtiquetas that = (EventosEtiquetas) o;
+        return id != null && id.equals(that.id);
     }
 
-    public void setIdEtiqueta(Long idEtiqueta) {
-        this.idEtiqueta = idEtiqueta;
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "EventosEtiquetas{" +
+                "id=" + id +
+                ", evento=" + evento +
+                ", etiqueta=" + etiqueta +
+                '}';
     }
 }
