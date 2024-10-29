@@ -6,24 +6,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "eventos")
+@Table(name = "Eventos")
 public class Eventos {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_eventos")
     private Long idEventos;
 
-    @Column(name = "nom_evento", nullable = false)
+    @Column(name = "nom_evento")
     private String nomEvento;
-
-    @ManyToMany
-    @JoinTable(
-            name = "eventos_etiquetas",
-            joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
-    )
-    private List<Etiquetas> etiquetas;
 
     @Column(name = "facultad")
     private String facultad;
@@ -52,7 +43,9 @@ public class Eventos {
     @Column(name = "campus")
     private String campus;
 
-    // Getters y setters para todas las propiedades
+    @OneToMany(mappedBy = "evento" , cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<EventosEtiquetas> eventosEtiquetas;
+
 
     public Long getIdEventos() {
         return idEventos;
@@ -68,14 +61,6 @@ public class Eventos {
 
     public void setNomEvento(String nomEvento) {
         this.nomEvento = nomEvento;
-    }
-
-    public List<Etiquetas> getEtiquetas() {
-        return etiquetas;
-    }
-
-    public void setEtiquetas(List<Etiquetas> etiquetas) {
-        this.etiquetas = etiquetas;
     }
 
     public String getFacultad() {
@@ -148,5 +133,13 @@ public class Eventos {
 
     public void setCampus(String campus) {
         this.campus = campus;
+    }
+
+    public List<EventosEtiquetas> getEventosEtiquetas() {
+        return eventosEtiquetas;
+    }
+
+    public void setEventosEtiquetas(List<EventosEtiquetas> eventosEtiquetas) {
+        this.eventosEtiquetas = eventosEtiquetas;
     }
 }
