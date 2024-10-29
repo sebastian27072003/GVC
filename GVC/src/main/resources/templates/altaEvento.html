@@ -146,6 +146,10 @@
     <!-- Contenedor del SideBar y Formulario -->
 <div class="contenedorPrincipal">
     <!-- SideBar -->
+    <div style="margin-left: auto">
+        <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+        <p>Correo: <span th:text="${email}">Correo</span></p>
+    </div>
     <div class="leftSide-contenedor">
         <div class="leftSide">
             <a href="altaEvento.html">

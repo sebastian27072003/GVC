@@ -77,7 +77,11 @@
     <h1>Universidad Autónoma de Baja California</h1>
     <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
   </div>
-  <div style="margin-left: auto">Administrador: Usuario_1</div>
+  <div style="margin-left: auto">
+    <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+    <p>Correo: <span th:text="${email}">Correo</span></p>
+  </div>
+
 </header>
 
 <main>
