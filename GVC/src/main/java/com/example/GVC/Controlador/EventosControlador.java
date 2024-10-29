@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-
 @Controller
 public class EventosControlador {
 
@@ -22,6 +21,24 @@ public class EventosControlador {
 
     public EventosControlador(EventosServicio eventosServicio) {
         this.eventosServicio = eventosServicio;
+    }
+
+    // Método para mostrar el formulario para crear una nueva etiqueta
+    @GetMapping("/usuario-eventos")
+    public String mostrarUsuario(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+
+        String nombre = "Invitado"; // Valor por defecto
+        String email = "No disponible"; // Valor por defecto
+
+        if (oidcUser != null) {
+            nombre = (String) oidcUser.getAttribute("name");
+            email = (String) oidcUser.getAttribute("email");
+        }
+        // Puedes reemplazar estos valores con los datos del usuario actual
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+
+        return "consultarEventos"; // Nombre de la vista del formulario
     }
 
     @GetMapping("/eventos")

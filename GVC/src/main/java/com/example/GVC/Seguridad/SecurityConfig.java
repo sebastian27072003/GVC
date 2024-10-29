@@ -36,7 +36,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()  // Desactiva la protección CSRF
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/public/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -44,11 +46,12 @@ public class SecurityConfig {
                                 .oidcUserService(oidcUserService())
                         )
                         .defaultSuccessUrl("/eventos", true)
-
                 );
 
         return http.build();
     }
+
+
 
     @Bean
     public OidcUserService oidcUserService() {
