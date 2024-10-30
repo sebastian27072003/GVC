@@ -1,0 +1,10 @@
+GET http://localhost/eventos/alta
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.2.3
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 0
+
+<> 2024-10-28T133429.404.html
+
+###
+

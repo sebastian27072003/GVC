@@ -1,4 +1,5 @@
-package com.example.GVC.Servicio;
+
+        package com.example.GVC.Servicio;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
@@ -42,7 +43,9 @@ public class EventosServicio {
     public List<Etiquetas> buscarTodasLasEtiquetas() {
         return etiquetasRepositorio.findAll();
     }
-
+    public void guardarEvento(Eventos evento) {
+        eventosRepositorio.save(evento);
+    }
     public void eliminarEvento(Long id) {
         eventosRepositorio.deleteById(id);
     }

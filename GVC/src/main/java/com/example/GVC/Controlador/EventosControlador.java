@@ -3,32 +3,51 @@ package com.example.GVC.Controlador;
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 public class EventosControlador {
+
     private final EventosServicio eventosServicio;
 
-    public EventosControlador(EventosServicio eventosService) {
-        this.eventosServicio = eventosService;
+    public EventosControlador(EventosServicio eventosServicio) {
+        this.eventosServicio = eventosServicio;
+    }
+
+    // Formulario de alta de eventos con datos del usuario autenticado
+    @GetMapping("/eventos/alta")
+    public String mostrarFormularioAltaEvento(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+        model.addAttribute("evento", new Eventos());
+
+        return "altaEvento"; // Vista del formulario de alta de evento
+    }
+
+    // Consulta de eventos mostrando nombre y email del usuario autenticado
+    @GetMapping("/usuario-eventos")
+    public String mostrarUsuario(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+
+        return "consultarEventos"; // Vista para consultar eventos
     }
 
 
-    @GetMapping("/eventos")
-    public String eventos(Model model) {
-        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
-        List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas();
-        model.addAttribute("eventos", eventos);
-        model.addAttribute("etiquetas", etiquetas);
-        return "consultaEventos";
-    }
-
+    // Filtrado de eventos basado en varios criterios
     @GetMapping("/filtrar-eventos")
     public String filtrarEventos(
             @RequestParam(value = "campus", required = false) String campus,
@@ -37,24 +56,19 @@ public class EventosControlador {
             @RequestParam(value = "nombreEvento", required = false) String nombreEvento,
             Model model) {
 
-        List<Eventos> eventos;
+        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
 
         if (campus != null && !campus.isEmpty()) {
-            if (facultad != null && !facultad.isEmpty()) {
-                eventos = eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad);
-            } else {
-                eventos = eventosServicio.buscarEventosPorCampus(campus);
-            }
-        } else {
-            eventos = eventosServicio.buscarTodosLosEventos();
+            eventos = facultad != null && !facultad.isEmpty()
+                    ? eventosServicio.buscarEventosPorCampusYFacultad(campus, facultad)
+                    : eventosServicio.buscarEventosPorCampus(campus);
         }
 
         if (etiquetaId != null) {
             eventos = eventos.stream()
                     .filter(evento -> evento.getEventosEtiquetas() != null &&
                             evento.getEventosEtiquetas().stream()
-                                    .anyMatch(eventosEtiquetas ->
-                                            eventosEtiquetas.getEtiqueta().getIdEtiquetas().equals(etiquetaId)))
+                                    .anyMatch(etiqueta -> etiqueta.getEtiqueta().getIdEtiquetas().equals(etiquetaId)))
                     .collect(Collectors.toList());
         }
 
@@ -65,16 +79,40 @@ public class EventosControlador {
         }
 
         model.addAttribute("eventos", eventos);
-        return "fragments/tablaEventos :: tabla-eventos";
+        return "fragments/tablaEventos :: tabla-eventos"; // Fragmento de la tabla con los resultados filtrados
     }
 
+    // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id) {
         eventosServicio.eliminarEvento(id);
-        return "redirect:/eventos";
+        return "redirect:/eventos"; // Redirige a la lista de eventos tras eliminar
+    }
+
+    @PostMapping("/eventos/guardar")
+    public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
+        System.out.println("Nombre del evento: " + evento.getNomEvento());
+        eventosServicio.guardarEvento(evento);
+        return "redirect:/eventos";  // Redirige a la página de consulta de eventos después de guardar
+    }
+
+    @GetMapping("/eventos")
+    public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+        // Datos del usuario autenticado
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        // Obtener todos los eventos y etiquetas
+        List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
+        List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas();
+
+        // Agregar datos al modelo para la vista
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+        model.addAttribute("eventos", eventos);
+        model.addAttribute("etiquetas", etiquetas);
+
+        return "consultaEventos"; // Asegúrate de que esta es la vista correcta
     }
 
 }
-
-
-

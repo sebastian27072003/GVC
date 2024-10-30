@@ -3,35 +3,29 @@ package com.example.GVC.Modelo;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ParticipantesEventos")
+@Table(name = "participantes_eventos")
 public class ParticipantesEventos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "id_participante_evento")  // Columna de la clave primaria
+    private Long idParticipanteEvento;
 
     @ManyToOne
-    @JoinColumn(name = "idParticipante", nullable = false)
-    private Participantes participante;
-
-    @ManyToOne
-    @JoinColumn(name = "idEvento", nullable = false)
+    @JoinColumn(name = "id_evento", nullable = false)  // Relación con Eventos
     private Eventos evento;
 
-    public Long getId() {
-        return id;
+    @Column(name = "nombre_participante", nullable = false)  // Columna de nombre del participante
+    private String nombreParticipante;
+
+    // Getters y Setters
+
+    public Long getIdParticipanteEvento() {
+        return idParticipanteEvento;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Participantes getParticipante() {
-        return participante;
-    }
-
-    public void setParticipante(Participantes participante) {
-        this.participante = participante;
+    public void setIdParticipanteEvento(Long idParticipanteEvento) {
+        this.idParticipanteEvento = idParticipanteEvento;
     }
 
     public Eventos getEvento() {
@@ -40,5 +34,13 @@ public class ParticipantesEventos {
 
     public void setEvento(Eventos evento) {
         this.evento = evento;
+    }
+
+    public String getNombreParticipante() {
+        return nombreParticipante;
+    }
+
+    public void setNombreParticipante(String nombreParticipante) {
+        this.nombreParticipante = nombreParticipante;
     }
 }

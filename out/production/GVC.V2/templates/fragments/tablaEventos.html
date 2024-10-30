@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="tabla-eventos">
+    <tr th:each="evento : ${eventos}">
+        <td th:text="${evento.nomEvento}"></td>
+        <td th:text="${evento.idEventos}"></td>
+        <td th:text="${evento.lugar}"></td>
+        <td th:text="${evento.descripcion}"></td>
+        <td th:text="${evento.fecha}"></td>
+    </tr>
+</div>
+</body>
+</html>
