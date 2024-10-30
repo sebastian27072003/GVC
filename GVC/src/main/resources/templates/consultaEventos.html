@@ -87,7 +87,7 @@
 
 <main>
   <h2>Consulta de Eventos</h2>
-  <form class="row gy-3 align-items-center" method="GET" action="/eventos">
+  <form class="row gy-3 align-items-center" method="GET" action="/eventos/consultar">
     <div class="col-md-3">
       <label for="campus" class="form-label">Campus</label>
       <select class="form-select" id="campus" name="campus" onchange="cargarFacultades(); filtrarEventos(); toggleInput();" required>
@@ -111,9 +111,7 @@
       <label for="etiqueta" class="form-label">Etiquetas</label>
       <select id="etiqueta" name="etiqueta" class="form-select" onchange="filtrarEventos(); toggleInput();" >
         <option value="">Selecciona la etiqueta</option>
-        <tr th:each="etiqueta : ${etiquetas}">
-          <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
-        </tr>
+          <option th:each="etiqueta : ${etiquetas}" th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
       </select>
     </div>
 
@@ -251,9 +249,8 @@
         buscarInput.disabled = false;
         buscarButton.disabled = false;
     }
-}*/
-
-
+}
+*/
 
     function confirmarEliminacion(eventoId) {
     const confirmacion = confirm("¿Estás seguro de que deseas eliminar este evento?");
@@ -264,7 +261,7 @@
     } else {
         console.log("Eliminación cancelada");
     }
-{
+}
 
 
 

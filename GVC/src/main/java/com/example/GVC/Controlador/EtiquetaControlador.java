@@ -7,10 +7,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/etiquetas")
@@ -57,5 +56,24 @@ public class EtiquetaControlador {
         model.addAttribute("email", "usuario@example.com"); // Cambia esto por el correo del usuario real
 
         return "formularioEtiqueta"; // Retorna a la misma vista
+    }
+
+    @GetMapping("/consulta")
+    public String mostrarEtiquetas(@AuthenticationPrincipal OidcUser oidcUser, Model model){
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        List<Etiquetas> etiquetas = etiquetaServicio.buscarTodasLasEtiquetas();
+
+        model.addAttribute("etiquetas", etiquetas);
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", email);
+        return "consultaEtiquetas";
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminarEtiqueta(@PathVariable Long id) {
+        etiquetaServicio.eliminarEtiqueta(id);
+        return "redirect:/etiquetas/consulta"; // Redirige a la lista de eventos tras eliminar
     }
 }

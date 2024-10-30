@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+  <link rel="icon" href="/Logo2.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <title> Etiquetas</title>
+    <style>
+      body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+    header {
+
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background-color: white;
+    }
+      header h1 {
+      margin: 0;
+      color: green;
+    }
+    header img {
+      margin-right: 10px;
+    }
+    .header-titulo {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+      main {
+      margin: 20px;
+    }
+      table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    </style>
+</head>
+<body>
+
+<header>
+  <img src="/Logo.png" height="150" width="100"/>
+  <div class="header-titulo">
+    <h1>Universidad Autónoma de Baja California</h1>
+    <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
+  </div>
+  <div style="margin-left: auto">
+    <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+    <p>Correo: <span th:text="${email}">Correo</span></p>
+  </div>
+</header>
+<main>
+  <h2>Consulta Etiquetas</h2>
+    <table class="table table-striped table-hover mt-4">
+      <thead class="table-light">
+      <tr>
+        <th style="text-align: center;">Nombre de etiqueta</th>
+        <th style="text-align: center;">Color</th>
+        <th style="text-align: center;">Descripciones</th>
+        <th style="text-align: center;">Acciones</th>
+      </tr>
+      </thead>
+      <tbody id="tabla-etiquetas">
+      <tr th:each="etiqueta : ${etiquetas}">
+        <td th:text="${etiqueta.nomEtiquetas}"></td>
+        <td>
+          <span th:style="'background-color:' + ${etiqueta.color} + '; display:inline-block; width:20px; height:20px; margin-right:10px; border: 1px solid #000;'"></span>
+
+          <span th:text="${etiqueta.color}"></span>
+        </td>
+        <td th:text="${etiqueta.descripcion}"></td>
+        <td>
+          <button type="button" class="btn btn-warning me-2"><i class="bi bi-pencil"></i></button>
+          <button type="button" class="btn btn-danger me-2 " th:attr="onclick='confirmarEliminacion(' + ${etiqueta.idEtiquetas} + ');'"><i class="bi bi-trash"></i></button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+</main>
+
+<script>
+
+  function confirmarEliminacion(idEtiquetas) {
+  const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta Etiqueta?");
+
+  if (confirmacion) {
+        console.log("ID de la etiqueta:", idEtiquetas);
+        window.location.href = '/etiquetas/eliminar/' + idEtiquetas;
+    } else {
+        console.log("Eliminación cancelada");
+    }
+
+  }
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -20,4 +20,12 @@ public class EtiquetaServicio {
     public Etiquetas guardarEtiqueta(Etiquetas etiqueta) {
         return etiquetaRepository.save(etiqueta);
     }
+    public List<Etiquetas> buscarTodasLasEtiquetas() {
+        return etiquetaRepository.findAll();
+    }
+
+    public void eliminarEtiqueta(Long id) {
+        etiquetaRepository.deleteById(id);
+    }
+
 }

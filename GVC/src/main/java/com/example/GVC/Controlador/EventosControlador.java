@@ -96,7 +96,7 @@ public class EventosControlador {
         return "redirect:/eventos";  // Redirige a la página de consulta de eventos después de guardar
     }
 
-    @GetMapping("/eventos")
+    @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
         // Datos del usuario autenticado
         String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
