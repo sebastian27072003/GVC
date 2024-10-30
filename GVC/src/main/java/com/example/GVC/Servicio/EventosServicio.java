@@ -43,7 +43,9 @@ public class EventosServicio {
     public List<Etiquetas> buscarTodasLasEtiquetas() {
         return etiquetasRepositorio.findAll();
     }
-
+    public void guardarEvento(Eventos evento) {
+        eventosRepositorio.save(evento);
+    }
     public void eliminarEvento(Long id) {
         eventosRepositorio.deleteById(id);
     }

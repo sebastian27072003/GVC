@@ -7,9 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,6 +87,13 @@ public class EventosControlador {
     public String eliminarEvento(@PathVariable Long id) {
         eventosServicio.eliminarEvento(id);
         return "redirect:/eventos"; // Redirige a la lista de eventos tras eliminar
+    }
+
+    @PostMapping("/eventos/guardar")
+    public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
+        System.out.println("Nombre del evento: " + evento.getNomEvento());
+        eventosServicio.guardarEvento(evento);
+        return "redirect:/eventos";  // Redirige a la página de consulta de eventos después de guardar
     }
 
     @GetMapping("/eventos")
