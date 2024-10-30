@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class Etiquetas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "id_etiquetas")
     private Long idEtiquetas;
 

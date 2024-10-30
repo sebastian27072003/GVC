@@ -17,7 +17,7 @@
         display: flex;
         align-items: center;
         padding: 20px;
-        background-color: #f4dcdc;
+        background-color: white;
     }
     header h1 {
         margin: 0;
@@ -104,7 +104,7 @@
 
     <div class="col-md-3">
       <label for="etiqueta" class="form-label">Etiquetas</label>
-      <select id="etiqueta" name="etiqueta" class="form-select" onchange="filtrarEventos(); toggleInput();">
+      <select id="etiqueta" name="etiqueta" class="form-select" onchange="filtrarEventos(); toggleInput();" >
         <option value="">Selecciona la etiqueta</option>
         <tr th:each="etiqueta : ${etiquetas}">
           <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
@@ -229,28 +229,35 @@
       .catch(error => console.error('Error:', error));
   }
 
+
   /*
   function toggleInput() {
     const campusSelect = document.getElementById('campus');
     const facultadSelect = document.getElementById('facultad');
     const etiquetaSelect = document.getElementById('etiqueta');
-    const searchInput = document.querySelector('.input-group input[type="text"]');
-    const searchButton = document.querySelector('.input-group button[type="button"]');
+    const buscarInput = document.querySelector('.input-group input[type="text"]');
+    const buscarButton = document.querySelector('.input-group button[type="button"]');
 
 
     if (campusSelect.value !== '' || facultadSelect.value !== '' || etiquetaSelect.value !== '') {
-        searchInput.disabled = true;
-        searchButton.disabled = true;
+        buscarInput.disabled = true;
+        buscarButton.disabled = true;
     } else {
-        searchInput.disabled = false;
-        searchButton.disabled = false;
+        buscarInput.disabled = false;
+        buscarButton.disabled = false;
     }
 }*/
 
 
     function confirmarEliminacion(eventoId) {
-    console.log("ID del evento:", eventoId);
-         window.location.href = '/eventos/eliminar/' + eventoId;
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este evento?");
+
+    if (confirmacion) {
+        console.log("ID del evento:", eventoId);
+        window.location.href = '/eventos/eliminar/' + eventoId;
+    } else {
+        console.log("Eliminación cancelada");
+    }
     }
 
   window.onload = function() {
