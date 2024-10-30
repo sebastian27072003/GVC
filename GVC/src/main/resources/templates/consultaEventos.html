@@ -6,85 +6,304 @@
   <link rel="icon" href="/Logo2.jpg" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
   <title>Eventos</title>
   <style>
+    /* General */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+    }
+
+    /* Estilo General */
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #f5f5f5;
+        background-color: #EBEBEB;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+
+            margin: 0;
+            padding: 0;
+
     }
-    header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background-color: #f4dcdc;
+
+
+
+    .header h1 {
+        margin: 0;
+        font-size: 1.5em;
     }
-    header h1 {
-      margin: 0;
-      color: green;
+
+    /* Header fijo */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background-color: #ffffff;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 2px solid #dee2e6;
     }
-    header img {
-      margin-right: 10px;
+
+    /* Barra lateral */
+    .leftSide-contenedor {
+        width: 2.3cm; /* Ancho inicial */
+        background: #007141;
+        transition: width 0.3s ease-in-out;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1001;
+        overflow: hidden;
     }
-    .header-titulo {
-      display: flex;
-      flex-direction: column;
-      margin: 0;
+
+    /* Expansión del menú al hacer hover */
+    .leftSide-contenedor:hover {
+        width: 10cm;
     }
-    main {
-      margin: 20px;
+
+    .leftSide {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        height: 100%;
+        background-color: #007141;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
+
+    .contenidoLeft {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1cm;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
+
+    .contenidoLeft i {
+        font-size: 3em;
+        color: white;
     }
-    th {
-      background-color: #f4f4f4;
+
+    h3 {
+        font-size: 0.6cm;
+        margin-left: 20px;
+        color: white;
     }
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
+
+    a {
+        text-decoration: none;
+        color: white;
     }
-    .encabezado-tabla th {
-      background-color: #E5E1E1;
+
+    a:hover {
+        background: #f1a631;
     }
-    i {
-      font-size: 14px;
-      color : #f0f3f4;
-    }
-    .contenedor-buscar {
-      margin-left: auto;
-    }
+
+    /* Contenedor Principal */
     .contenedorPrincipal {
-      display: flex;
-      width: 100%;
-      height: 100vh;
+        margin-left: 2.3cm; /* Ajuste inicial para el menú colapsado */
+        margin-top: 70px;
+        width: calc(100% - 2.3cm);
+        height: calc(100vh - 70px);
+        transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
     }
+
+    /* Ajuste del contenedor al expandir el menú */
+    .leftSide-contenedor:hover ~ .contenedorPrincipal {
+        margin-left: 10cm;
+        width: calc(100% - 10cm);
+    }
+
+    /* Formulario Principal */
+    .Forma {
+        flex: 1;
+        padding: 1cm;
+        background-color: white;
+        margin: 1cm;
+        border-radius: 20px;
+        box-shadow: 15px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+    }
+
+    h2 {
+        font-size: 1.6cm;
+        margin-bottom: 1.5cm;
+    }
+
+    .campo {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    .textInput {
+        width: 8cm;
+        height: 1cm;
+        margin-bottom: 45px;
+        border: 2px solid #EBEBEB;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .textInput::placeholder {
+        color: gray;
+        opacity: 1;
+    }
+
+    .textInput:hover,
+    .textInput:focus {
+        border-color: #007141;
+    }
+
+    .botones {
+        display: flex;
+        justify-content: space-between;
+        width: 8cm;
+    }
+
+    .boton {
+        width: 3.5cm;
+        height: 1.5cm;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .col-1 {
+        background: #007141;
+        color: white;
+    }
+
+    .col-2 {
+        background: red;
+        color: white;
+    }
+
+    /* Footer */
+    footer {
+        background-color: #003A1F;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+    }
+
+    /* Estilos para la sección de usuario */
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-info i {
+        font-size: 40px;
+        color: #007141; /* Verde para el ícono */
+    }
+
+    .user-details h1, .user-details p {
+        margin: 0;
+        font-size: 14px;
+        color: #333;
+    }
+    /* Asegúrate de que el contenido principal tenga un margen inferior */
+    .contenedorPrincipal {
+      margin-bottom: 60px; /* Deja espacio para el footer */
+    }
+
+    /* Estilo para el footer */
+    footer {
+      background-color: #003A1F; /* Color de fondo */
+      color: white; /* Color del texto */
+      text-align: center; /* Centrar el texto */
+      padding: 10px; /* Espaciado interno */
+      width: 100%; /* Ancho completo */
+      position: relative; /* No superpone contenido */
+      z-index: 1; /* Mantiene el footer por debajo de otros elementos */
+    }
+
   </style>
-</head>
 <body>
+<div class="top">
 
-<header>
-  <img src="/Logo.png" height="150" width="100"/>
-  <div class="header-titulo">
-    <h1>Universidad Autónoma de Baja California</h1>
-    <h3>SISTEMA INTEGRAL DE EVENTOS</h3>
-  </div>
-  <div style="margin-left: auto">
-    <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
-    <p>Correo: <span th:text="${email}">Correo</span></p>
-  </div>
+</div>
+<!-- Header -->
 
+<header class="header">
+
+
+    <div style="display: flex; align-items: center;">
+        <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
+        <div>
+            <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
+            <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
+
+        </div>
+
+    </div>
+    <div class="user-info">
+        <i class='bx bxs-user-circle'></i>
+        <div class="user-details">
+            <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+            <p>Correo: <span th:text="${email}">Correo</span></p>
+        </div>
+    </div>
 </header>
 
-<main>
+
+<!-- Contenedor Principal -->
+<div class="contenedorPrincipal">
+  <!-- Menú lateral -->
+  <div class="leftSide-contenedor">
+    <div class="leftSide">
+
+      <a href="altaProfesor.html">
+        <div class="contenidoLeft">
+          <i class='bx bxs-contact'></i>
+          <h3>Inicio</h3>
+        </div>
+      </a>
+      <a href="consultaProfesores.html">
+        <div class="contenidoLeft">
+          <i class='bx bx-street-view'></i>
+          <h3>Crear Eventos</h3>
+        </div>
+      </a>
+      <a href="altaUnidadesDeAprendizaje.html">
+        <div class="contenidoLeft">
+          <i class='bx bx-folder-plus'></i>
+          <h3>Crear Etiquetas</h3>
+        </div>
+      </a>
+      <a href="consultaUnidadesDeAprendizaje.html">
+        <div class="contenidoLeft">
+          <i class='bx bx-collection'></i>
+          <h3>Consultar Eventos</h3>
+        </div>
+      </a>
+      <a href="login.html">
+        <div class="contenidoLeft">
+          <i class='bx bxs-exit'></i>
+          <h3>Consultar Estadisticas</h3>
+        </div>
+      </a>
+      <a href="consultaUnidadesDeAprendizaje.html">
+        <div class="contenidoLeft">
+          <i class='bx bx-collection'></i>
+          <h3>Salir</h3>
+        </div>
+      </a>
+    </div>
+  </div>
+
+<div class="Forma">
   <h2>Consulta de Eventos</h2>
   <form class="row gy-3 align-items-center" method="GET" action="/eventos">
     <div class="col-md-3">
@@ -153,6 +372,8 @@
     </tr>
     </tbody>
   </table>
+</div>
+</div>
 </main>
 
 <script>
@@ -277,7 +498,13 @@
   };
 </script>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+<!-- Footer -->
+<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
+  <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
+</footer>
 </html>
