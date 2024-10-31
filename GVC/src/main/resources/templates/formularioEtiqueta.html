@@ -3,56 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alta de Profesores</title>
+    <title>Alta de Etiquetas</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
     <link href="/static/style.css" rel="stylesheet"/>
 
 
 </head>
+
 <style>
-    body {
-        background-color: #EBEBEB;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Estructura principal */
-    .contenedorPrincipal {
-        display: flex;
-        width: 100%;
-        height: 100vh;
-    }
-
-    /* Barra lateral */
-    .leftSide-contenedor {
-        width: 10cm; /* Ancho fijo del menú */
-        background: #007141;
-        transition: width 0.1s ease-in-out;
-    }
-
-    /* Menú con padding */
-    .leftSide {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        padding: 20px; /* Espacio interno */
-        background-color: #007141;
-    }
-
-    /* Asegura separación con el contenido */
-    .Forma {
-        flex: 1; /* El formulario toma el espacio restante */
-        padding: 1cm;
-        background-color: white;
-        margin: 1cm;
-        border-radius: 20px;
-        box-shadow: 15px 15px rgba(0, 0, 0, 0.2);
-        display: flex;
-        flex-direction: column;
-    }
+    /* General */
     * {
         margin: 0;
         padding: 0;
@@ -60,45 +19,71 @@
         font-family: sans-serif;
     }
 
+    /* Estilo General */
     body {
         background-color: #EBEBEB;
         width: 100%;
         height: 100vh;
         display: flex;
+        flex-direction: column;
+
+        margin: 0;
+        padding: 0;
+
     }
 
-    .contenedorPrincipal {
-        display: flex;
+
+
+    .header h1 {
+        margin: 0;
+        font-size: 1.5em;
+    }
+
+    /* Header fijo */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 100vh;
+        height: 70px;
+        background-color: #ffffff;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 2px solid #dee2e6;
     }
 
+    /* Barra lateral */
     .leftSide-contenedor {
-        width: 2.3cm;
-        background: none;
+        width: 2.3cm; /* Ancho inicial */
+        background: #007141;
+        transition: width 0.3s ease-in-out;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1001;
         overflow: hidden;
-        transition: width 0.1s ease-in-out;
+    }
+
+    /* Expansión del menú al hacer hover */
+    .leftSide-contenedor:hover {
+        width: 10cm;
     }
 
     .leftSide {
         display: flex;
         flex-direction: column;
-        width: 10cm;
-        background: #007141;
-        height: 100vh;
-        padding: 20px; /* Espacio interno del menú */
-        margin-right: 20px; /* Separación entre menú y contenido */
-        transition: width 0.1s;
-    }
-
-    .leftSide-contenedor:hover {
-        width: 10cm;
+        padding: 20px;
+        height: 100%;
+        background-color: #007141;
     }
 
     .contenidoLeft {
         display: flex;
         align-items: center;
-        width: 100%;
         margin-bottom: 1cm;
     }
 
@@ -115,10 +100,31 @@
 
     a {
         text-decoration: none;
+        color: white;
     }
 
+    a:hover {
+        background: #f1a631;
+    }
+
+    /* Contenedor Principal */
+    .contenedorPrincipal {
+        margin-left: 2.3cm; /* Ajuste inicial para el menú colapsado */
+        margin-top: 70px;
+        width: calc(100% - 2.3cm);
+        height: calc(100vh - 70px);
+        transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    }
+
+    /* Ajuste del contenedor al expandir el menú */
+    .leftSide-contenedor:hover ~ .contenedorPrincipal {
+        margin-left: 10cm;
+        width: calc(100% - 10cm);
+    }
+
+    /* Formulario Principal */
     .Forma {
-        width: 100%;
+        flex: 1;
         padding: 1cm;
         background-color: white;
         margin: 1cm;
@@ -153,13 +159,7 @@
         opacity: 1;
     }
 
-
-    .textInput:focus::placeholder {
-        color: lightgray;
-    }
-    .textInput:hover {
-        border-color: #007141;
-    }
+    .textInput:hover,
     .textInput:focus {
         border-color: #007141;
     }
@@ -186,9 +186,83 @@
         background: red;
         color: white;
     }
+
+    /* Footer */
+    footer {
+        background-color: #003A1F;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+    }
+
+    /* Estilos para la sección de usuario */
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-info i {
+        font-size: 40px;
+        color: #007141; /* Verde para el ícono */
+    }
+
+    .user-details h1, .user-details p {
+        margin: 0;
+        font-size: 14px;
+        color: #333;
+    }
+    /* Asegúrate de que el contenido principal tenga un margen inferior */
+    .contenedorPrincipal {
+        margin-bottom: 60px; /* Deja espacio para el footer */
+    }
+
+    /* Estilo para el footer */
+    footer {
+        background-color: #003A1F; /* Color de fondo */
+        color: white; /* Color del texto */
+        text-align: center; /* Centrar el texto */
+        padding: 10px; /* Espaciado interno */
+        width: 100%; /* Ancho completo */
+        position: relative; /* No superpone contenido */
+        z-index: 1; /* Mantiene el footer por debajo de otros elementos */
+    }
+
 </style>
 <body>
+<div class="top">
+
+</div>
+<!-- Header -->
+
+<header class="header">
+
+
+    <div style="display: flex; align-items: center;">
+        <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
+        <div>
+            <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
+            <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
+
+        </div>
+
+    </div>
+    <div class="user-info">
+        <i class='bx bxs-user-circle'></i>
+        <div class="user-details">
+            <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+            <p>Correo: <span th:text="${email}">Correo</span></p>
+        </div>
+    </div>
+</header>
+
+
+<!-- Contenedor Principal -->
 <div class="contenedorPrincipal">
+    <!-- Menú lateral -->
     <div class="leftSide-contenedor">
         <div class="leftSide">
 
@@ -235,8 +309,7 @@
 
     <form class="Forma" action="/etiquetas/guardar" method="POST">
         <h2>Crear Etiquetas</h2>
-        <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
-        <p>Correo: <span th:text="${email}">Correo</span></p>
+
         <div class="subForma">
             <div class="campo">
                 <label for="NomEtiquetas">Nombre Etiqueta</label>
@@ -258,6 +331,13 @@
     </form>
 
 </div>
+<img src="/Imagenes/google.png" alt="Google Logo" style="width: 20px; margin-right: 5px;"> <!-- Cambia 'ruta/al/logo/google.png' por la ruta correcta de tu logo -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
+    <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
+</footer>
 
 </body>
 </html>
