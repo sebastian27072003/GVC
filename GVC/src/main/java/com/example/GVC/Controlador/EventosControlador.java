@@ -86,7 +86,7 @@ public class EventosControlador {
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id) {
         eventosServicio.eliminarEvento(id);
-        return "redirect:/eventos"; // Redirige a la lista de eventos tras eliminar
+        return "redirect:/eventos/consultar"; // Redirige a la lista de eventos tras eliminar
     }
 
     @PostMapping("/eventos/guardar")
