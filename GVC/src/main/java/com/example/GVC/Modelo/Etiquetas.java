@@ -27,6 +27,9 @@ public class Etiquetas {
     @Column(name = "descripcion")
     private String descripcion;
 
+    @OneToMany(mappedBy = "etiqueta", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<EventosEtiquetas> eventosEtiquetas;
+
 
     public Long getIdEtiquetas() {
         return idEtiquetas;
