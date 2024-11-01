@@ -43,6 +43,12 @@ public class Eventos {
     @Column(name = "campus")
     private String campus;
 
+    @Column(name = "estado")
+    private String estado;
+
+    @Column(name = "capacidad")
+    private Long capacidad;
+
     @OneToMany(mappedBy = "evento" , cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<EventosEtiquetas> eventosEtiquetas;
 
@@ -53,6 +59,23 @@ public class Eventos {
 
     public void setIdEventos(Long idEventos) {
         this.idEventos = idEventos;
+    }
+
+
+    public Long getcapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Long capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public String getestado() {
+        return estado;
+    }
+
+    public void setestado(String estado) {
+        this.estado = estado;
     }
 
     public String getNomEvento() {
