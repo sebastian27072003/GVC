@@ -49,9 +49,16 @@ public class Eventos {
     @Column(name = "capacidad")
     private Long capacidad;
 
-    @OneToMany(mappedBy = "evento" , cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<EventosEtiquetas> eventosEtiquetas;
+    // Relación muchos-a-muchos con Etiquetas
+    @ManyToMany
+    @JoinTable(
+            name = "evento_etiqueta",
+            joinColumns = @JoinColumn(name = "evento_id"),
+            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
+    )
+    private List<Etiquetas> etiquetas;
 
+    // Getters y Setters
 
     public Long getIdEventos() {
         return idEventos;
@@ -61,8 +68,7 @@ public class Eventos {
         this.idEventos = idEventos;
     }
 
-
-    public Long getcapacidad() {
+    public Long getCapacidad() {
         return capacidad;
     }
 
@@ -70,11 +76,11 @@ public class Eventos {
         this.capacidad = capacidad;
     }
 
-    public String getestado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setestado(String estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
@@ -158,11 +164,11 @@ public class Eventos {
         this.campus = campus;
     }
 
-    public List<EventosEtiquetas> getEventosEtiquetas() {
-        return eventosEtiquetas;
+    public List<Etiquetas> getEtiquetas() {
+        return etiquetas;
     }
 
-    public void setEventosEtiquetas(List<EventosEtiquetas> eventosEtiquetas) {
-        this.eventosEtiquetas = eventosEtiquetas;
+    public void setEtiquetas(List<Etiquetas> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }

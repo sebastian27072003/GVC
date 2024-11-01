@@ -4,6 +4,7 @@ import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,9 +31,12 @@ public class EventosControlador {
         String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
 
+        List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas(); // Obtener todas las etiquetas disponibles
+
         model.addAttribute("nombre", nombre);
         model.addAttribute("email", email);
         model.addAttribute("evento", new Eventos());
+        model.addAttribute("etiquetas", etiquetas); // Agregar etiquetas al modelo
 
         return "altaEvento"; // Vista del formulario de alta de evento
     }
@@ -67,9 +72,9 @@ public class EventosControlador {
 
         if (etiquetaId != null) {
             eventos = eventos.stream()
-                    .filter(evento -> evento.getEventosEtiquetas() != null &&
-                            evento.getEventosEtiquetas().stream()
-                                    .anyMatch(etiqueta -> etiqueta.getEtiqueta().getIdEtiquetas().equals(etiquetaId)))
+                    .filter(evento -> evento.getEtiquetas() != null &&
+                            evento.getEtiquetas().stream()
+                                    .anyMatch(etiqueta -> etiqueta.getIdEtiquetas().equals(etiquetaId)))
                     .collect(Collectors.toList());
         }
 
@@ -91,10 +96,11 @@ public class EventosControlador {
     }
 
     @PostMapping("/eventos/guardar")
-    public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
-        System.out.println("Nombre del evento: " + evento.getNomEvento());
+    public String guardarEvento(@ModelAttribute("evento") Eventos evento, @RequestParam List<Long> etiquetasSeleccionadas) {
+        List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas); // Obtener etiquetas por IDs
+        evento.setEtiquetas(etiquetas); // Asignar etiquetas al evento
         eventosServicio.guardarEvento(evento);
-        return "redirect:/eventos";  // Redirige a la página de consulta de eventos después de guardar
+        return "redirect:/eventos/consultar";  // Redirige a la página de consulta de eventos después de guardar
     }
 
     @GetMapping("/eventos/consultar")
@@ -116,21 +122,53 @@ public class EventosControlador {
         return "consultaEventos"; // Asegúrate de que esta es la vista correcta
     }
 
-    // Mostrar el formulario de edición del evento
+    // Obtener los datos del evento como JSON para la edición
     @GetMapping("/eventos/editar/{id}")
-    public String mostrarFormularioEditarEvento(@PathVariable Long id, Model model) {
-        Eventos evento = eventosServicio.buscarEventoPorId(id);
-        if (evento == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
+    @ResponseBody
+    public ResponseEntity<Eventos> obtenerEventoPorId(@PathVariable Long id) {
+        try {
+            Eventos evento = eventosServicio.buscarEventoPorId(id);
+            if (evento == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.ok(evento);
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        model.addAttribute("evento", evento);
-        return "editarEventoModal"; // Vista del modal de edición de evento
     }
 
     // Guardar cambios en el evento editado
     @PostMapping("/eventos/editar/{id}")
-    public String actualizarEvento(@PathVariable Long id, @ModelAttribute("evento") Eventos eventoActualizado) {
-        eventosServicio.actualizarEvento(id, eventoActualizado);
-        return "redirect:/eventos/consultar"; // Redirigir después de guardar
+    public String actualizarEvento(@PathVariable Long id, @ModelAttribute("evento") Eventos eventoActualizado, @RequestParam(required = false) List<Long> etiquetasSeleccionadas) {
+        try {
+            Eventos eventoExistente = eventosServicio.buscarEventoPorId(id);
+            if (eventoExistente == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
+            }
+
+            // Actualizar los datos del evento existente
+            eventoExistente.setNomEvento(eventoActualizado.getNomEvento());
+            eventoExistente.setCampus(eventoActualizado.getCampus());
+            eventoExistente.setFacultad(eventoActualizado.getFacultad());
+            eventoExistente.setFecha(eventoActualizado.getFecha());
+            eventoExistente.setLugar(eventoActualizado.getLugar());
+            eventoExistente.setDescripcion(eventoActualizado.getDescripcion());
+            eventoExistente.setEstado(eventoActualizado.getEstado());
+
+            // Asignar etiquetas si se proporcionan
+            if (etiquetasSeleccionadas != null) {
+                List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas);
+                eventoExistente.setEtiquetas(etiquetas);
+            }
+
+            // Guardar el evento actualizado
+            eventosServicio.actualizarEvento(id, eventoExistente);
+
+            return "redirect:/eventos/consultar"; // Redirigir después de guardar
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir error en la consola
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el evento");
+        }
     }
 }

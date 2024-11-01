@@ -71,11 +71,17 @@ public class EventosServicio {
             eventoExistente.setImagen(eventoActualizado.getImagen());
             eventoExistente.setEncargado(eventoActualizado.getEncargado());
             eventoExistente.setCampus(eventoActualizado.getCampus());
-            eventoExistente.setestado(eventoActualizado.getestado());
-            eventoExistente.setCapacidad(eventoActualizado.getcapacidad());
+            eventoExistente.setEstado(eventoActualizado.getEstado());
+            eventoExistente.setCapacidad(eventoActualizado.getCapacidad());
+            eventoExistente.setEtiquetas(eventoActualizado.getEtiquetas()); // Actualizar etiquetas
 
             // Guardar el evento actualizado
             eventosRepositorio.save(eventoExistente);
         }
+    }
+
+    // Método para buscar etiquetas por una lista de IDs
+    public List<Etiquetas> buscarEtiquetasPorIds(List<Long> ids) {
+        return etiquetasRepositorio.findAllById(ids);
     }
 }

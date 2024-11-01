@@ -282,7 +282,6 @@
         </div>
     </div>
 
-    <!-- Formulario de Alta de Evento -->
     <div class="contenedorPrincipal">
         <div class="form-container">
             <div class="Forma">
@@ -336,7 +335,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="etiquetas" class="form-label">Etiquetas</label>
-                            <select class="form-control" id="etiquetas" name="etiquetas" multiple required>
+                            <select class="form-control" id="etiquetas" name="etiquetasSeleccionadas" multiple required>
                                 <option value="">Seleccione la(s) etiqueta(s)</option>
                                 <!-- Recorrer las etiquetas para mostrarlas en la lista -->
                                 <th:block th:each="etiqueta : ${etiquetas}">
@@ -386,7 +385,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Cargar etiquetas
+        // Cargar etiquetas desde el servidor (opcional)
         fetch('/eventos/etiquetas')
             .then(response => response.json())
             .then(data => {
