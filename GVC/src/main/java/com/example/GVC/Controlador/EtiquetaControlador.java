@@ -3,11 +3,13 @@ package com.example.GVC.Controlador;
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Servicio.EtiquetaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,28 +23,18 @@ public class EtiquetaControlador {
     // Método para mostrar el formulario para crear una nueva etiqueta
     @GetMapping("/nueva")
     public String mostrarFormulario(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
 
-        String nombre = "Invitado"; // Valor por defecto
-        String email = "No disponible"; // Valor por defecto
-
-        if (oidcUser != null) {
-            nombre = (String) oidcUser.getAttribute("name");
-            email = (String) oidcUser.getAttribute("email");
-        }
-        // Puedes reemplazar estos valores con los datos del usuario actual
         model.addAttribute("nombre", nombre);
         model.addAttribute("email", email);
 
-        return "formularioEtiqueta"; // Nombre de la vista del formulario
+        return "formularioEtiqueta";
     }
 
     // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
-    public String guardarEtiqueta(
-            @RequestParam String nombre,
-            @RequestParam String color,
-            @RequestParam String descripcion,
-            Model model) {
+    public String guardarEtiqueta(@RequestParam String nombre, @RequestParam String color, @RequestParam String descripcion, Model model) {
         Etiquetas etiqueta = new Etiquetas();
         etiqueta.setNomEtiquetas(nombre);
         etiqueta.setColor(color);
@@ -50,16 +42,15 @@ public class EtiquetaControlador {
 
         etiquetaServicio.guardarEtiqueta(etiqueta);
 
-        // Agregar los atributos al modelo para la vista
         model.addAttribute("mensaje", "Etiqueta guardada exitosamente");
-        model.addAttribute("nombre", nombre); // Agregar el nombre del usuario
-        model.addAttribute("email", "usuario@example.com"); // Cambia esto por el correo del usuario real
+        model.addAttribute("nombre", nombre);
+        model.addAttribute("email", "usuario@example.com");
 
-        return "formularioEtiqueta"; // Retorna a la misma vista
+        return "formularioEtiqueta";
     }
 
     @GetMapping("/consulta")
-    public String mostrarEtiquetas(@AuthenticationPrincipal OidcUser oidcUser, Model model){
+    public String mostrarEtiquetas(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
         String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
 
@@ -74,6 +65,31 @@ public class EtiquetaControlador {
     @GetMapping("/eliminar/{id}")
     public String eliminarEtiqueta(@PathVariable Long id) {
         etiquetaServicio.eliminarEtiqueta(id);
-        return "redirect:/etiquetas/consulta"; // Redirige a la lista de eventos tras eliminar
+        return "redirect:/etiquetas/consulta";
     }
+
+    // Método para actualizar una etiqueta existente
+    @PostMapping("/editar/{id}")
+    public String editarEtiqueta(@PathVariable Long id,
+                                 @RequestParam String nombre,
+                                 @RequestParam String color,
+                                 @RequestParam String descripcion,
+                                 Model model) {
+        Etiquetas etiquetaExistente = etiquetaServicio.buscarPorId(id);
+        if (etiquetaExistente == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Etiqueta no encontrada");
+        }
+
+        etiquetaExistente.setNomEtiquetas(nombre);
+        etiquetaExistente.setColor(color);
+        etiquetaExistente.setDescripcion(descripcion);
+        etiquetaServicio.guardarEtiqueta(etiquetaExistente);
+
+        return "redirect:/etiquetas/consulta";
+    }
+
+
+
+
+
 }

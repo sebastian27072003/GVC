@@ -28,10 +28,7 @@
 
         margin: 0;
         padding: 0;
-
     }
-
-
 
     .header h1 {
         margin: 0;
@@ -214,41 +211,23 @@
         font-size: 14px;
         color: #333;
     }
+
     /* Asegúrate de que el contenido principal tenga un margen inferior */
     .contenedorPrincipal {
         margin-bottom: 60px; /* Deja espacio para el footer */
     }
-
-    /* Estilo para el footer */
-    footer {
-        background-color: #003A1F; /* Color de fondo */
-        color: white; /* Color del texto */
-        text-align: center; /* Centrar el texto */
-        padding: 10px; /* Espaciado interno */
-        width: 100%; /* Ancho completo */
-        position: relative; /* No superpone contenido */
-        z-index: 1; /* Mantiene el footer por debajo de otros elementos */
-    }
-
 </style>
 <body>
+<div class="top"></div>
 
-<div class="top">
-
-</div>
 <!-- Header -->
-
 <header class="header">
-
-
     <div style="display: flex; align-items: center;">
         <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
         <div>
             <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
             <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
-
         </div>
-
     </div>
     <div class="user-info">
         <i class='bx bxs-user-circle'></i>
@@ -259,13 +238,11 @@
     </div>
 </header>
 
-
 <!-- Contenedor Principal -->
 <div class="contenedorPrincipal">
     <!-- Menú lateral -->
     <div class="leftSide-contenedor">
         <div class="leftSide">
-
             <a href="altaProfesor.html">
                 <div class="contenidoLeft">
                     <i class='bx bxs-contact'></i>
@@ -306,90 +283,141 @@
     </div>
 
     <!-- Formulario de Alta de Evento -->
-
-    <div class="form-container">
-        <div class="Forma">
-        <h2 class="form-title">Alta de Evento</h2>
-        <form action="/eventos/guardar" method="POST" enctype="multipart/form-data">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="nombreEvento" class="form-label">Nombre del evento</label>
-                    <input type="text" class="form-control" id="nombreEvento" name="nomEvento" placeholder="Nombre" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="campus" class="form-label">Campus</label>
-                    <select class="form-control" id="campus" name="campus" onchange="cargarFacultades()" required>
-                        <option value="">Seleccione el campus</option>
-                        <option value="Mexicali">Campus Mexicali</option>
-                        <option value="Tijuana">Campus Tijuana</option>
-                        <option value="Ensenada">Campus Ensenada</option>
-                        <option value="VallePalmas">Unidad Valle de las Palmas</option>
-                        <option value="Tecate">Campus Tecate</option>
-                    </select>
-                </div>
+    <div class="contenedorPrincipal">
+        <div class="form-container">
+            <div class="Forma">
+                <h2 class="form-title">Alta de Evento</h2>
+                <form id="altaEventoForm" action="/eventos/guardar" method="POST" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="nombreEvento" class="form-label">Nombre del evento</label>
+                            <input type="text" class="form-control" id="nombreEvento" name="nomEvento" placeholder="Nombre" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="campus" class="form-label">Campus</label>
+                            <select class="form-control" id="campus" name="campus" onchange="cargarFacultades()" required>
+                                <option value="">Seleccione el campus</option>
+                                <option value="Mexicali">Campus Mexicali</option>
+                                <option value="Tijuana">Campus Tijuana</option>
+                                <option value="Ensenada">Campus Ensenada</option>
+                                <option value="VallePalmas">Unidad Valle de las Palmas</option>
+                                <option value="Tecate">Campus Tecate</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="facultad" class="form-label">Facultad</label>
+                            <select class="form-control" id="facultad" name="facultad" required>
+                                <option value="">Seleccione la facultad</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="horaInicio" class="form-label">Hora de Inicio</label>
+                            <input type="time" class="form-control" id="horaInicio" name="horaInicio" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="horaFinal" class="form-label">Hora de Fin</label>
+                            <input type="time" class="form-control" id="horaFinal" name="horaFinal" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fechaEvento" class="form-label">Fecha del evento</label>
+                            <input type="date" class="form-control" id="fechaEvento" name="fecha" placeholder="DD/MM/AA" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="lugar" class="form-label">Lugar</label>
+                            <input type="text" class="form-control" id="lugar" name="lugar" placeholder="Seleccione lugar del evento" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            <select class="form-control" id="etiquetas" name="etiquetas" multiple required>
+                                <option value="">Seleccione la(s) etiqueta(s)</option>
+                                <!-- Recorrer las etiquetas para mostrarlas en la lista -->
+                                <th:block th:each="etiqueta : ${etiquetas}">
+                                    <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="descripcion" class="form-label">Descripción del evento</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Texto..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="encargado" class="form-label">Encargado</label>
+                            <input type="text" class="form-control" id="encargado" name="encargado" placeholder="Nombre del encargado" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-control" id="estado" name="estado" required>
+                                <option value="">Seleccione el estado del evento</option>
+                                <option value="En Curso">En Curso</option>
+                                <option value="Proximo">Próximo</option>
+                                <option value="Finalizado">Finalizado</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="capacidad" class="form-label">Capacidad</label>
+                            <input type="number" class="form-control" id="capacidad" name="capacidad" placeholder="Capacidad de asistentes" required min="1">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-success btn-aceptar">Aceptar</button>
+                        <button type="reset" class="btn btn-danger btn-cancelar">Cancelar</button>
+                    </div>
+                </form>
             </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="facultad" class="form-label">Facultad</label>
-                    <select class="form-control" id="facultad" name="facultad" required>
-                        <option value="">Seleccione la facultad</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="horaInicio" class="form-label">Hora de Inicio</label>
-                    <input type="time" class="form-control" id="horaInicio" name="horaInicio" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="horaFinal" class="form-label">Hora de Fin</label>
-                    <input type="time" class="form-control" id="horaFinal" name="horaFinal" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="fechaEvento" class="form-label">Fecha del evento</label>
-                    <input type="date" class="form-control" id="fechaEvento" name="fecha" placeholder="DD/MM/AA" required>
-                </div>
-
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="lugar" class="form-label">Lugar</label>
-                    <input type="text" class="form-control" id="lugar" name="lugar" placeholder="Seleccione lugar del evento" required>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="etiquetas" class="form-label">Etiquetas</label>
-                    <select class="form-control" id="etiquetas" name="etiquetas" multiple required>
-                        <option value="">Seleccione la(s) etiqueta(s)</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="descripcion" class="form-label">Descripción del evento</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Texto..." required></textarea>
-                </div>
-            </div>
-            <!--            <div class="row mb-3">-->
-            <!--                <div class="col-md-6">-->
-            <!--                    <label for="imagen" class="form-label">Imagen</label>-->
-            <!--                    <input type="file" class="form-control" id="imagen" name="imagen" placeholder="Subir archivo (PNG, JPG, JPEG)">-->
-            <!--                </div>-->
-            <!--            </div>-->
-
-            <div class="btn-group">
-                <button type="submit" class="btn btn-success btn-aceptar">Aceptar</button>
-                <button type="reset" class="btn btn-danger btn-cancelar">Cancelar</button>
-            </div>
-        </form>
+        </div>
     </div>
-
-</div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cargar etiquetas
+        fetch('/eventos/etiquetas')
+            .then(response => response.json())
+            .then(data => {
+                const selectEtiquetas = document.getElementById('etiquetas');
+                data.forEach(etiqueta => {
+                    const option = document.createElement('option');
+                    option.value = etiqueta.id;
+                    option.text = etiqueta.nombre;
+                    selectEtiquetas.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar las etiquetas:', error));
+
+        // Validar fecha del evento
+        const fechaEvento = document.getElementById('fechaEvento');
+        const today = new Date().toISOString().split('T')[0];
+        fechaEvento.setAttribute('min', today);
+
+        // Validar el horario de inicio y fin
+        const horaInicio = document.getElementById('horaInicio');
+        const horaFinal = document.getElementById('horaFinal');
+        const altaEventoForm = document.getElementById('altaEventoForm');
+
+        altaEventoForm.addEventListener('submit', function (e) {
+            if (horaFinal.value <= horaInicio.value) {
+                e.preventDefault();
+                alert('La hora de fin debe ser posterior a la hora de inicio.');
+            }
+        });
+    });
+
     function cargarFacultades() {
         const facultadSelect = document.getElementById("facultad");
         const campusSelect = document.getElementById("campus").value;
@@ -452,30 +480,8 @@
     }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        fetch('/eventos/etiquetas')
-            .then(response => response.json())
-            .then(data => {
-                const selectEtiquetas = document.getElementById('etiquetas');
-                data.forEach(etiqueta => {
-                    const option = document.createElement('option');
-                    option.value = etiqueta.id;
-                    option.text = etiqueta.nombre;
-                    selectEtiquetas.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error al cargar las etiquetas:', error));
-    });
-</script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <footer th:fragment="footer" class="bg-dark text-white text-center p-1">
-        <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
-    </footer>
+<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
+    <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
+</footer>
 </body>
-<!-- Footer -->
-
 </html>

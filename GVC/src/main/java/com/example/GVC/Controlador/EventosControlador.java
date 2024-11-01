@@ -3,11 +3,13 @@ package com.example.GVC.Controlador;
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +47,6 @@ public class EventosControlador {
 
         return "consultarEventos"; // Vista para consultar eventos
     }
-
 
     // Filtrado de eventos basado en varios criterios
     @GetMapping("/filtrar-eventos")
@@ -115,4 +116,21 @@ public class EventosControlador {
         return "consultaEventos"; // Asegúrate de que esta es la vista correcta
     }
 
+    // Mostrar el formulario de edición del evento
+    @GetMapping("/eventos/editar/{id}")
+    public String mostrarFormularioEditarEvento(@PathVariable Long id, Model model) {
+        Eventos evento = eventosServicio.buscarEventoPorId(id);
+        if (evento == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
+        }
+        model.addAttribute("evento", evento);
+        return "editarEventoModal"; // Vista del modal de edición de evento
+    }
+
+    // Guardar cambios en el evento editado
+    @PostMapping("/eventos/editar/{id}")
+    public String actualizarEvento(@PathVariable Long id, @ModelAttribute("evento") Eventos eventoActualizado) {
+        eventosServicio.actualizarEvento(id, eventoActualizado);
+        return "redirect:/eventos/consultar"; // Redirigir después de guardar
+    }
 }
