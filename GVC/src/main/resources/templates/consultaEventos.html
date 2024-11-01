@@ -353,10 +353,14 @@
       <div class="modal-body">
         <form id="formEditarEvento">
           <input type="hidden" id="eventoIdEditar" name="eventoId">
+
+          <!-- Nombre del Evento -->
           <div class="mb-3">
             <label for="nombreEventoEditar" class="form-label">Nombre del Evento</label>
             <input type="text" class="form-control" id="nombreEventoEditar" name="nomEvento" required>
           </div>
+
+          <!-- Campus -->
           <div class="mb-3">
             <label for="campusEditar" class="form-label">Campus</label>
             <select class="form-control" id="campusEditar" name="campus" required>
@@ -368,24 +372,53 @@
               <option value="Tecate">Tecate</option>
             </select>
           </div>
+
+          <!-- Facultad -->
           <div class="mb-3">
             <label for="facultadEditar" class="form-label">Facultad</label>
             <select class="form-control" id="facultadEditar" name="facultad" required>
               <option value="">Seleccione la facultad</option>
             </select>
           </div>
+
+          <!-- Hora de Inicio -->
+          <div class="mb-3">
+            <label for="horaInicioEditar" class="form-label">Hora de Inicio</label>
+            <input type="time" class="form-control" id="horaInicioEditar" name="horaInicio" required>
+          </div>
+
+          <!-- Hora de Fin -->
+          <div class="mb-3">
+            <label for="horaFinEditar1" class="form-label">Hora de Fin</label>
+            <input type="time" class="form-control" id="horaFinEditar1" name="horaFin1" required>
+          </div>
+
+
+          <!-- Fecha del Evento -->
           <div class="mb-3">
             <label for="fechaEditar" class="form-label">Fecha del Evento</label>
             <input type="date" class="form-control" id="fechaEditar" name="fecha" required>
           </div>
+
+          <!-- Lugar -->
           <div class="mb-3">
             <label for="lugarEditar" class="form-label">Lugar</label>
             <input type="text" class="form-control" id="lugarEditar" name="lugar" required>
           </div>
+
+          <!-- Descripción -->
           <div class="mb-3">
             <label for="descripcionEditar" class="form-label">Descripción</label>
             <textarea class="form-control" id="descripcionEditar" name="descripcion" required></textarea>
           </div>
+
+          <!-- Encargado -->
+          <div class="mb-3">
+            <label for="encargadoEditar" class="form-label">Encargado</label>
+            <input type="text" class="form-control" id="encargadoEditar" name="encargado" required>
+          </div>
+
+          <!-- Estado -->
           <div class="mb-3">
             <label for="estadoEditar" class="form-label">Estado</label>
             <select class="form-control" id="estadoEditar" name="estado" required>
@@ -395,6 +428,14 @@
               <option value="Cancelado">Cancelado</option>
             </select>
           </div>
+
+          <!-- Capacidad -->
+          <div class="mb-3">
+            <label for="capacidadEditar" class="form-label">Capacidad</label>
+            <input type="number" class="form-control" id="capacidadEditar" name="capacidad" required>
+          </div>
+
+          <!-- Etiquetas -->
           <div class="mb-3">
             <label for="etiquetasEditar" class="form-label">Etiquetas</label>
             <select multiple class="form-control" id="etiquetasEditar" name="etiquetas">
@@ -410,7 +451,6 @@
     </div>
   </div>
 </div>
-
 <script>
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
@@ -505,26 +545,33 @@
               return response.json();
             })
             .then(evento => {
-              if (!evento || !evento.etiquetas) {
-                console.error("Datos del evento no encontrados o datos malformados:", evento);
-                alert('Error al cargar los datos del evento. Verifique que el servidor esté devolviendo la estructura correcta.');
+              if (!evento) {
+                console.error("Datos del evento no encontrados:", evento);
+                alert('Error al cargar los datos del evento.');
                 return;
               }
 
+              // Llenar los campos del modal con los datos del evento
               document.getElementById('eventoIdEditar').value = evento.idEventos;
               document.getElementById('nombreEventoEditar').value = evento.nomEvento;
               document.getElementById('campusEditar').value = evento.campus;
               cargarFacultadesEditar(evento.campus, evento.facultad);
+              document.getElementById('horaInicioEditar').value = evento.horaInicio;
+              document.getElementById('horaFinEditar1').value = evento.horaFin1;
               document.getElementById('fechaEditar').value = evento.fecha;
               document.getElementById('lugarEditar').value = evento.lugar;
               document.getElementById('descripcionEditar').value = evento.descripcion;
+              document.getElementById('encargadoEditar').value = evento.encargado;
               document.getElementById('estadoEditar').value = evento.estado;
+              document.getElementById('capacidadEditar').value = evento.capacidad;
 
+              // Asignar etiquetas seleccionadas
               const etiquetasSelect = document.getElementById('etiquetasEditar');
               Array.from(etiquetasSelect.options).forEach(option => {
                 option.selected = evento.etiquetas && evento.etiquetas.some(etiqueta => etiqueta.idEtiquetas == option.value);
               });
 
+              // Mostrar el modal
               const modal = new bootstrap.Modal(document.getElementById('editarEventoModal'));
               modal.show();
             })

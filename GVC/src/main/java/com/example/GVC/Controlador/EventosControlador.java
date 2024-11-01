@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -28,8 +27,8 @@ public class EventosControlador {
     // Formulario de alta de eventos con datos del usuario autenticado
     @GetMapping("/eventos/alta")
     public String mostrarFormularioAltaEvento(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
-        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
 
         List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas(); // Obtener todas las etiquetas disponibles
 
@@ -39,18 +38,6 @@ public class EventosControlador {
         model.addAttribute("etiquetas", etiquetas); // Agregar etiquetas al modelo
 
         return "altaEvento"; // Vista del formulario de alta de evento
-    }
-
-    // Consulta de eventos mostrando nombre y email del usuario autenticado
-    @GetMapping("/usuario-eventos")
-    public String mostrarUsuario(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
-        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
-
-        model.addAttribute("nombre", nombre);
-        model.addAttribute("email", email);
-
-        return "consultarEventos"; // Vista para consultar eventos
     }
 
     // Filtrado de eventos basado en varios criterios
@@ -106,8 +93,8 @@ public class EventosControlador {
     @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
         // Datos del usuario autenticado
-        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
 
         // Obtener todos los eventos y etiquetas
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
@@ -119,7 +106,7 @@ public class EventosControlador {
         model.addAttribute("eventos", eventos);
         model.addAttribute("etiquetas", etiquetas);
 
-        return "consultaEventos"; // Asegúrate de que esta es la vista correcta
+        return "consultaEventos"; // Vista para consultar eventos
     }
 
     // Obtener los datos del evento como JSON para la edición
@@ -155,6 +142,10 @@ public class EventosControlador {
             eventoExistente.setLugar(eventoActualizado.getLugar());
             eventoExistente.setDescripcion(eventoActualizado.getDescripcion());
             eventoExistente.setEstado(eventoActualizado.getEstado());
+            eventoExistente.setHoraInicio(eventoActualizado.getHoraInicio());
+            eventoExistente.setHoraFinal(eventoActualizado.getHoraFinal());
+            eventoExistente.setEncargado(eventoActualizado.getEncargado());
+            eventoExistente.setCapacidad(eventoActualizado.getCapacidad());
 
             // Asignar etiquetas si se proporcionan
             if (etiquetasSeleccionadas != null) {
