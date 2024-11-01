@@ -36,16 +36,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()  // Desactiva la protección CSRF
+                .csrf(csrf -> csrf.disable())  // Desactiva la protección CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/public/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .oidcUserService(oidcUserService())
                         )
-                        .defaultSuccessUrl("/eventos", true)
+                        .defaultSuccessUrl("/eventos/consultar", true)
                 );
 
         return http.build();
