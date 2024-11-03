@@ -118,6 +118,7 @@ public class EventosControlador {
             if (evento == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+            System.out.println("Evento a editar: " + evento);
             return ResponseEntity.ok(evento);
         } catch (Exception e) {
             e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
@@ -133,6 +134,7 @@ public class EventosControlador {
             if (eventoExistente == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
             }
+
 
             // Actualizar los datos del evento existente
             eventoExistente.setNomEvento(eventoActualizado.getNomEvento());

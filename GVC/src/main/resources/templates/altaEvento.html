@@ -105,11 +105,11 @@
 
     /* Contenedor Principal */
     .contenedorPrincipal {
-        margin-left: 2.3cm; /* Ajuste inicial para el menú colapsado */
-        margin-top: 70px;
-        width: calc(100% - 2.3cm);
-        height: calc(100vh - 70px);
-        transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+       margin-left: 2.3cm;
+      margin-top: 70px;
+      width: calc(100% - 2.3cm);
+      height: calc(100vh - 70px);
+      transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
     }
 
     /* Ajuste del contenedor al expandir el menú */
@@ -282,8 +282,6 @@
         </div>
     </div>
 
-    <div class="contenedorPrincipal">
-        <div class="form-container">
             <div class="Forma">
                 <h2 class="form-title">Alta de Evento</h2>
                 <form id="altaEventoForm" action="/eventos/guardar" method="POST" enctype="multipart/form-data">
@@ -377,8 +375,7 @@
                 </form>
             </div>
         </div>
-    </div>
-</div>
+
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

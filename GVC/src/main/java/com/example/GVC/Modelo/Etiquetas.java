@@ -1,10 +1,13 @@
 package com.example.GVC.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,8 +30,9 @@ public class Etiquetas {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @OneToMany(mappedBy = "etiqueta", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<EventosEtiquetas> eventosEtiquetas;
+    @ManyToMany(mappedBy = "etiquetas")
+    @JsonIgnoreProperties("eventos")
+    private List<Eventos> eventos;
 
 
     public Long getIdEtiquetas() {
@@ -62,5 +66,9 @@ public class Etiquetas {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public List<Eventos> getEventos() {
+        return eventos;
     }
 }

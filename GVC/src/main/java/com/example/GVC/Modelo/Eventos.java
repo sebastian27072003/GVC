@@ -1,5 +1,6 @@
 package com.example.GVC.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -51,10 +52,11 @@ public class Eventos {
 
     // Relación muchos-a-muchos con Etiquetas
     @ManyToMany
+    @JsonIgnoreProperties("eventos")
     @JoinTable(
-            name = "evento_etiqueta",
-            joinColumns = @JoinColumn(name = "evento_id"),
-            inverseJoinColumns = @JoinColumn(name = "etiqueta_id")
+            name = "EventosEtiquetas",
+            joinColumns = @JoinColumn(name = "idEvento"),
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta")
     )
     private List<Etiquetas> etiquetas;
 

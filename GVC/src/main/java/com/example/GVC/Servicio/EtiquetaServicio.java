@@ -1,7 +1,9 @@
 package com.example.GVC.Servicio;
 
 import com.example.GVC.Modelo.Etiquetas;
+import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Repositorio.EtiquetasRepositorio;
+import com.example.GVC.Repositorio.EventosRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ public class EtiquetaServicio {
 
     @Autowired
     private EtiquetasRepositorio etiquetaRepository;
+    @Autowired
+    private EventosRepositorio eventosRepositorio;
 
     // Método para guardar una etiqueta
     public Etiquetas guardarEtiqueta(Etiquetas etiqueta) {
@@ -26,7 +30,14 @@ public class EtiquetaServicio {
 
     // Método para eliminar una etiqueta por su ID
     public void eliminarEtiqueta(Long id) {
-        etiquetaRepository.deleteById(id);
+        Etiquetas etiqueta = etiquetaRepository.findById(id).orElse(null);
+        if (etiqueta != null) {
+            // Eliminar las relaciones en la tabla intermedia
+            for (Eventos evento : etiqueta.getEventos()) {
+                evento.getEtiquetas().remove(etiqueta); // Eliminar la etiqueta de la lista de eventos
+            }
+            etiquetaRepository.delete(etiqueta); // Finalmente, eliminar la etiqueta
+        }
     }
 
     // Método para buscar una etiqueta por su ID

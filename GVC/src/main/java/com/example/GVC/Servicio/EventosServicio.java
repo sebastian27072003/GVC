@@ -66,14 +66,16 @@ public class EventosServicio {
     // Método para actualizar un evento existente
     public void actualizarEvento(Long id, Eventos eventoActualizado) {
         Optional<Eventos> eventoExistenteOpt = eventosRepositorio.findById(id);
+
         if (eventoExistenteOpt.isPresent()) {
             Eventos eventoExistente = eventoExistenteOpt.get();
 
+            System.out.println("Hora final recibida: " + eventoActualizado.getHoraFinal());
             // Actualizar los campos con los valores del evento actualizado
             eventoExistente.setNomEvento(eventoActualizado.getNomEvento());
             eventoExistente.setFacultad(eventoActualizado.getFacultad());
             eventoExistente.setHoraInicio(eventoActualizado.getHoraInicio());
-            eventoExistente.setHoraFinal(eventoActualizado.getHoraFinal()); // Asegurarse de que sea "horaFin"
+            eventoExistente.setHoraFinal(eventoActualizado.getHoraFinal());
             eventoExistente.setFecha(eventoActualizado.getFecha());
             eventoExistente.setLugar(eventoActualizado.getLugar());
             eventoExistente.setDescripcion(eventoActualizado.getDescripcion());

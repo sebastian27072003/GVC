@@ -389,8 +389,8 @@
 
           <!-- Hora de Fin -->
           <div class="mb-3">
-            <label for="horaFinEditar1" class="form-label">Hora de Fin</label>
-            <input type="time" class="form-control" id="horaFinEditar1" name="horaFin1" required>
+            <label for="horaFinEditar" class="form-label">Hora de Fin</label>
+            <input type="time" class="form-control" id="horaFinEditar" name="horaFinal" required>
           </div>
 
 
@@ -423,7 +423,7 @@
             <label for="estadoEditar" class="form-label">Estado</label>
             <select class="form-control" id="estadoEditar" name="estado" required>
               <option value="En Curso">En Curso</option>
-              <option value="Próximo">Próximo</option>
+              <option value="Proximo">Próximo</option>
               <option value="Finalizado">Finalizado</option>
               <option value="Cancelado">Cancelado</option>
             </select>
@@ -557,7 +557,7 @@
               document.getElementById('campusEditar').value = evento.campus;
               cargarFacultadesEditar(evento.campus, evento.facultad);
               document.getElementById('horaInicioEditar').value = evento.horaInicio;
-              document.getElementById('horaFinEditar1').value = evento.horaFin1;
+              document.getElementById('horaFinEditar').value = evento.horaFinal;
               document.getElementById('fechaEditar').value = evento.fecha;
               document.getElementById('lugarEditar').value = evento.lugar;
               document.getElementById('descripcionEditar').value = evento.descripcion;
