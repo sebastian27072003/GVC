@@ -22,7 +22,7 @@ public class CarouselController {
   @GetMapping("/home")
   public String galeria(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
     List<String> imagenes = Arrays.asList(
-            "/Evento1.jpg",
+            "/gpiEvento1.jpg",
             "/ojo2.jpg",
             "/ojo3.jpg"
     );
