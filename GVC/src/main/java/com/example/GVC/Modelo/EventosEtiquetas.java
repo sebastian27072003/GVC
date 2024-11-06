@@ -48,8 +48,7 @@ public class EventosEtiquetas {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EventosEtiquetas)) return false;
-        EventosEtiquetas that = (EventosEtiquetas) o;
+        if (!(o instanceof EventosEtiquetas that)) return false;
         return id != null && id.equals(that.id);
     }
 

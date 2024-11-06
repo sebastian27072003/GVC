@@ -31,8 +31,8 @@ public class CarouselController {
     String email = "No disponible"; // Valor por defecto
 
     if (oidcUser != null) {
-      nombre = (String) oidcUser.getAttribute("name");
-      email = (String) oidcUser.getAttribute("email");
+      nombre = oidcUser.getAttribute("name");
+      email = oidcUser.getAttribute("email");
     }
     // Puedes reemplazar estos valores con los datos del usuario actual
     model.addAttribute("nombre", nombre);
@@ -43,3 +43,4 @@ public class CarouselController {
   }
 
   }
+
