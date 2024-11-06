@@ -21,7 +21,7 @@ public class Usuario {
     @Column(name = "Email")  // Define la columna Email en la tabla
     private String email;
 
-    @Column(name = "Rol")  // Define la columna Rol en la tabla
+    @Column(name = "rol")  // Define la columna Rol en la tabla
     private String rol;
 
     @Column(name = "Matricula")  // Define la columna Matricula en la tabla

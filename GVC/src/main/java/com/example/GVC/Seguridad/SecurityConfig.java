@@ -4,7 +4,10 @@ import com.example.GVC.Modelo.Usuario;
 import com.example.GVC.Servicio.UsuarioServicio;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -16,11 +19,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final UsuarioServicio usuarioServicio;
@@ -29,18 +35,27 @@ public class SecurityConfig {
         this.usuarioServicio = usuarioServicio;
     }
 
+
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())  // Desactiva la protección CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/public/**", "/error").permitAll()
+                        .requestMatchers("/etiquetas/consulta").hasAnyRole( "SUPERADMIN","ADMIN")
+                        .requestMatchers("/etiquetas/nueva").hasAnyRole( "SUPERADMIN")
+                        .requestMatchers("/eventos/alta").hasAnyRole( "SUPERADMIN","ADMIN")
+                        .requestMatchers("/login", "/public/**", "/error", "/logout").permitAll()
                         .anyRequest().authenticated()
+
+
                 )
+
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo
@@ -61,18 +76,20 @@ public class SecurityConfig {
         return new OidcUserService() {
             @Override
             public OidcUser loadUser(OidcUserRequest userRequest) {
-                // Cargamos el usuario de OIDC
+                // Cargamos el usuario de OIDC desde Google
                 OidcUser oidcUser = delegate.loadUser(userRequest);
 
-                // Guardamos o recuperamos el usuario desde la base de datos
+                // Obtenemos o registramos el usuario en la base de datos
                 Usuario usuario = usuarioServicio.obtenerORegistrarUsuario(oidcUser);
 
-                // Creamos un mapa de atributos combinados
-                Map<String, Object> atributos = new HashMap<>(oidcUser.getAttributes());
-                atributos.put("nombreUsuario", usuario.getNombre());
+                // Creamos una autoridad con el rol del usuario desde la base de datos
+                Collection<GrantedAuthority> authorities = new ArrayList<>(oidcUser.getAuthorities());
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.getRol()));
 
-                // Retornamos un nuevo DefaultOidcUser con los atributos combinados
-                return new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUser.getUserInfo(), "sub");
+                System.out.println("Roles asignados al usuario: " + authorities);
+
+                // Crear un nuevo usuario OIDC con las autoridades agregadas
+                return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), "sub");
             }
         };
     }

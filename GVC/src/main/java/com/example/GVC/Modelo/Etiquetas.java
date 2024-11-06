@@ -3,6 +3,7 @@ package com.example.GVC.Modelo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,8 +23,10 @@ public class Etiquetas {
     private Long idEtiquetas;
 
     @Column(name = "nom_etiquetas")
+    @Size(max = 20)
     private String nomEtiquetas;
 
+    @Size(max = 10)
     @Column(name = "color")
     private String color;
 

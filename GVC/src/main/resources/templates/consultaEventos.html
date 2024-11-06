@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -234,37 +234,37 @@
 <div class="contenedorPrincipal">
   <div class="leftSide-contenedor">
     <div class="leftSide">
-      <a href="altaProfesor.html">
+      <a href="">
         <div class="contenidoLeft">
           <i class='bx bxs-contact'></i>
           <h3>Inicio</h3>
         </div>
       </a>
-      <a href="consultaProfesores.html">
+      <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
         <div class="contenidoLeft">
           <i class='bx bx-street-view'></i>
           <h3>Crear Eventos</h3>
         </div>
       </a>
-      <a href="altaUnidadesDeAprendizaje.html">
+      <a href="/etiquetas/nueva" th:if="${rol.matches('SUPERADMIN')}">
         <div class="contenidoLeft">
           <i class='bx bx-folder-plus'></i>
           <h3>Crear Etiquetas</h3>
         </div>
       </a>
-      <a href="consultaUnidadesDeAprendizaje.html">
+      <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
         <div class="contenidoLeft">
           <i class='bx bx-collection'></i>
-          <h3>Consultar Eventos</h3>
+          <h3>Consultar Etiquetas</h3>
         </div>
       </a>
-      <a href="login.html">
+      <a href="">
         <div class="contenidoLeft">
           <i class='bx bxs-exit'></i>
           <h3>Consultar Estadísticas</h3>
         </div>
       </a>
-      <a href="consultaUnidadesDeAprendizaje.html">
+      <a href="/logout">
         <div class="contenidoLeft">
           <i class='bx bx-collection'></i>
           <h3>Salir</h3>
@@ -313,6 +313,9 @@
       </div>
     </form>
 
+
+    
+
     <table class="table table-striped table-hover mt-4">
       <thead class="table-light">
       <tr>
@@ -332,9 +335,9 @@
         <td th:text="${evento.descripcion}"></td>
         <td th:text="${evento.fecha}"></td>
         <td>
-          <button type="button" class="btn btn-success me-2"><i class="bi bi-eye"></i></button>
-          <button type="button" class="btn btn-warning me-2" th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'"><i class="bi bi-pencil"></i></button>
-          <button type="button" class="btn btn-danger me-2" th:attr="onclick='confirmarEliminacion(' + ${evento.idEventos} + ');'"><i class="bi bi-trash"></i></button>
+          <button type="button" class="btn btn-success me-2" th:if="${rol == 'USER' || rol == 'SUPERADMIN' || rol == 'ADMIN'}"><i class="bi bi-eye"></i></button>
+          <button type="button" class="btn btn-warning me-2"  th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}"  th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'"><i class="bi bi-pencil"></i></button>
+          <button type="button" class="btn btn-danger me-2"  th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}"  th:attr="onclick='confirmarEliminacion(' + ${evento.idEventos} + ');'"><i class="bi bi-trash"></i></button>
         </td>
       </tr>
       </tbody>
@@ -451,6 +454,7 @@
     </div>
   </div>
 </div>
+</body>
 <script>
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");

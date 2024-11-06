@@ -253,7 +253,7 @@
     <div class="user-info">
         <i class='bx bxs-user-circle'></i>
         <div class="user-details">
-            <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+            <h1>Bienvenido, <span th:text="${nombreusuario}">Nombre</span>!</h1>
             <p>Correo: <span th:text="${email}">Correo</span></p>
         </div>
     </div>
@@ -266,37 +266,37 @@
     <div class="leftSide-contenedor">
         <div class="leftSide">
 
-            <a href="altaProfesor.html">
+            <a href="">
                 <div class="contenidoLeft">
                     <i class='bx bxs-contact'></i>
                     <h3>Inicio</h3>
                 </div>
             </a>
-            <a href="consultaProfesores.html">
+            <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
+                <div class="contenidoLeft">
+                    <i class='bx bx-collection'></i>
+                    <h3>Consultar Etiquetas</h3>
+                </div>
+            </a>
+            <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-street-view'></i>
                     <h3>Crear Eventos</h3>
                 </div>
             </a>
-            <a href="altaUnidadesDeAprendizaje.html">
-                <div class="contenidoLeft">
-                    <i class='bx bx-folder-plus'></i>
-                    <h3>Crear Etiquetas</h3>
-                </div>
-            </a>
-            <a href="consultaUnidadesDeAprendizaje.html">
+            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
                     <h3>Consultar Eventos</h3>
                 </div>
             </a>
-            <a href="login.html">
+            <a href="">
                 <div class="contenidoLeft">
                     <i class='bx bxs-exit'></i>
                     <h3>Consultar Estadisticas</h3>
                 </div>
             </a>
-            <a href="consultaUnidadesDeAprendizaje.html">
+            <a href="/logout">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
                     <h3>Salir</h3>

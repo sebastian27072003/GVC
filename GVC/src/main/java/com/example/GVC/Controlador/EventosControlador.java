@@ -3,6 +3,7 @@ package com.example.GVC.Controlador;
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
+import com.example.GVC.Servicio.UsuarioServicio;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +21,11 @@ public class EventosControlador {
 
     private final EventosServicio eventosServicio;
 
-    public EventosControlador(EventosServicio eventosServicio) {
+    private final UsuarioServicio usuarioServicio;
+
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio) {
         this.eventosServicio = eventosServicio;
+        this.usuarioServicio = usuarioServicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
@@ -30,10 +34,17 @@ public class EventosControlador {
         String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
 
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
         List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas(); // Obtener todas las etiquetas disponibles
 
         model.addAttribute("nombre", nombre);
         model.addAttribute("email", email);
+        model.addAttribute("rol", rol);
         model.addAttribute("evento", new Eventos());
         model.addAttribute("etiquetas", etiquetas); // Agregar etiquetas al modelo
 
@@ -42,12 +53,22 @@ public class EventosControlador {
 
     // Filtrado de eventos basado en varios criterios
     @GetMapping("/filtrar-eventos")
-    public String filtrarEventos(
+    public String filtrarEventos(@AuthenticationPrincipal OidcUser oidcUser,
             @RequestParam(value = "campus", required = false) String campus,
             @RequestParam(value = "facultad", required = false) String facultad,
             @RequestParam(value = "etiqueta", required = false) Long etiquetaId,
             @RequestParam(value = "nombreEvento", required = false) String nombreEvento,
+
             Model model) {
+
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
 
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
 
@@ -72,6 +93,7 @@ public class EventosControlador {
         }
 
         model.addAttribute("eventos", eventos);
+        model.addAttribute("rol", rol);
         return "fragments/tablaEventos :: tabla-eventos"; // Fragmento de la tabla con los resultados filtrados
     }
 
@@ -96,6 +118,13 @@ public class EventosControlador {
         String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
 
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
+
         // Obtener todos los eventos y etiquetas
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
         List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas();
@@ -103,6 +132,7 @@ public class EventosControlador {
         // Agregar datos al modelo para la vista
         model.addAttribute("nombre", nombre);
         model.addAttribute("email", email);
+        model.addAttribute("rol", rol);
         model.addAttribute("eventos", eventos);
         model.addAttribute("etiquetas", etiquetas);
 

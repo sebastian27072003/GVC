@@ -2,6 +2,7 @@ package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Servicio.EtiquetaServicio;
+import com.example.GVC.Servicio.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,8 +18,14 @@ import java.util.List;
 @RequestMapping("/etiquetas")
 public class EtiquetaControlador {
 
+    private final UsuarioServicio usuarioServicio;
+
     @Autowired
     private EtiquetaServicio etiquetaServicio;
+
+    public EtiquetaControlador(UsuarioServicio usuarioServicio) {
+        this.usuarioServicio = usuarioServicio;
+    }
 
     // Método para mostrar el formulario para crear una nueva etiqueta
     @GetMapping("/nueva")
@@ -26,25 +33,43 @@ public class EtiquetaControlador {
         String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
 
-        model.addAttribute("nombre", nombre);
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
+        model.addAttribute("nombreusuario", nombre);
         model.addAttribute("email", email);
+        model.addAttribute("rol", rol);
 
         return "formularioEtiqueta";
     }
 
     // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
-    public String guardarEtiqueta(@RequestParam String nombre, @RequestParam String color, @RequestParam String descripcion, Model model) {
+    public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,@RequestParam String nombre, @RequestParam String color, @RequestParam String descripcion, Model model) {
         Etiquetas etiqueta = new Etiquetas();
         etiqueta.setNomEtiquetas(nombre);
         etiqueta.setColor(color);
         etiqueta.setDescripcion(descripcion);
 
+        String nombreusuario = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
         etiquetaServicio.guardarEtiqueta(etiqueta);
 
         model.addAttribute("mensaje", "Etiqueta guardada exitosamente");
+        model.addAttribute("rol", rol);
         model.addAttribute("nombre", nombre);
-        model.addAttribute("email", "usuario@example.com");
+        model.addAttribute("nombreusuario", nombreusuario);
+        model.addAttribute("email", email);
 
         return "formularioEtiqueta";
     }
@@ -54,10 +79,17 @@ public class EtiquetaControlador {
         String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
 
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
         List<Etiquetas> etiquetas = etiquetaServicio.buscarTodasLasEtiquetas();
 
         model.addAttribute("etiquetas", etiquetas);
         model.addAttribute("nombre", nombre);
+        model.addAttribute("rol", rol);
         model.addAttribute("email", email);
         return "consultaEtiquetas";
     }
