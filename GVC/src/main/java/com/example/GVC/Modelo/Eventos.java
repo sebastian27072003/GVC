@@ -1,5 +1,6 @@
 package com.example.GVC.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -43,9 +44,23 @@ public class Eventos {
     @Column(name = "campus")
     private String campus;
 
-    @OneToMany(mappedBy = "evento" , cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<EventosEtiquetas> eventosEtiquetas;
+    @Column(name = "estado")
+    private String estado;
 
+    @Column(name = "capacidad")
+    private Long capacidad;
+
+    // Relación muchos-a-muchos con Etiquetas
+    @ManyToMany
+    @JsonIgnoreProperties("eventos")
+    @JoinTable(
+            name = "EventosEtiquetas",
+            joinColumns = @JoinColumn(name = "idEvento"),
+            inverseJoinColumns = @JoinColumn(name = "idEtiqueta")
+    )
+    private List<Etiquetas> etiquetas;
+
+    // Getters y Setters
 
     public Long getIdEventos() {
         return idEventos;
@@ -53,6 +68,22 @@ public class Eventos {
 
     public void setIdEventos(Long idEventos) {
         this.idEventos = idEventos;
+    }
+
+    public Long getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Long capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getNomEvento() {
@@ -135,11 +166,11 @@ public class Eventos {
         this.campus = campus;
     }
 
-    public List<EventosEtiquetas> getEventosEtiquetas() {
-        return eventosEtiquetas;
+    public List<Etiquetas> getEtiquetas() {
+        return etiquetas;
     }
 
-    public void setEventosEtiquetas(List<EventosEtiquetas> eventosEtiquetas) {
-        this.eventosEtiquetas = eventosEtiquetas;
+    public void setEtiquetas(List<Etiquetas> etiquetas) {
+        this.etiquetas = etiquetas;
     }
 }

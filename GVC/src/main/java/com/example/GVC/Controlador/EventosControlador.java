@@ -3,11 +3,15 @@ package com.example.GVC.Controlador;
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
+import com.example.GVC.Servicio.UsuarioServicio;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,44 +21,54 @@ public class EventosControlador {
 
     private final EventosServicio eventosServicio;
 
-    public EventosControlador(EventosServicio eventosServicio) {
+    private final UsuarioServicio usuarioServicio;
+
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio) {
         this.eventosServicio = eventosServicio;
+        this.usuarioServicio = usuarioServicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
     @GetMapping("/eventos/alta")
     public String mostrarFormularioAltaEvento(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
-        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
+        List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas(); // Obtener todas las etiquetas disponibles
 
         model.addAttribute("nombre", nombre);
         model.addAttribute("email", email);
+        model.addAttribute("rol", rol);
         model.addAttribute("evento", new Eventos());
+        model.addAttribute("etiquetas", etiquetas); // Agregar etiquetas al modelo
 
         return "altaEvento"; // Vista del formulario de alta de evento
     }
 
-    // Consulta de eventos mostrando nombre y email del usuario autenticado
-    @GetMapping("/usuario-eventos")
-    public String mostrarUsuario(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
-        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
-
-        model.addAttribute("nombre", nombre);
-        model.addAttribute("email", email);
-
-        return "consultarEventos"; // Vista para consultar eventos
-    }
-
-
     // Filtrado de eventos basado en varios criterios
     @GetMapping("/filtrar-eventos")
-    public String filtrarEventos(
+    public String filtrarEventos(@AuthenticationPrincipal OidcUser oidcUser,
             @RequestParam(value = "campus", required = false) String campus,
             @RequestParam(value = "facultad", required = false) String facultad,
             @RequestParam(value = "etiqueta", required = false) Long etiquetaId,
             @RequestParam(value = "nombreEvento", required = false) String nombreEvento,
+
             Model model) {
+
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
 
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
 
@@ -66,9 +80,9 @@ public class EventosControlador {
 
         if (etiquetaId != null) {
             eventos = eventos.stream()
-                    .filter(evento -> evento.getEventosEtiquetas() != null &&
-                            evento.getEventosEtiquetas().stream()
-                                    .anyMatch(etiqueta -> etiqueta.getEtiqueta().getIdEtiquetas().equals(etiquetaId)))
+                    .filter(evento -> evento.getEtiquetas() != null &&
+                            evento.getEtiquetas().stream()
+                                    .anyMatch(etiqueta -> etiqueta.getIdEtiquetas().equals(etiquetaId)))
                     .collect(Collectors.toList());
         }
 
@@ -79,6 +93,7 @@ public class EventosControlador {
         }
 
         model.addAttribute("eventos", eventos);
+        model.addAttribute("rol", rol);
         return "fragments/tablaEventos :: tabla-eventos"; // Fragmento de la tabla con los resultados filtrados
     }
 
@@ -86,21 +101,29 @@ public class EventosControlador {
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id) {
         eventosServicio.eliminarEvento(id);
-        return "redirect:/eventos"; // Redirige a la lista de eventos tras eliminar
+        return "redirect:/eventos/consultar"; // Redirige a la lista de eventos tras eliminar
     }
 
     @PostMapping("/eventos/guardar")
-    public String guardarEvento(@ModelAttribute("evento") Eventos evento) {
-        System.out.println("Nombre del evento: " + evento.getNomEvento());
+    public String guardarEvento(@ModelAttribute("evento") Eventos evento, @RequestParam List<Long> etiquetasSeleccionadas) {
+        List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas); // Obtener etiquetas por IDs
+        evento.setEtiquetas(etiquetas); // Asignar etiquetas al evento
         eventosServicio.guardarEvento(evento);
-        return "redirect:/eventos";  // Redirige a la página de consulta de eventos después de guardar
+        return "redirect:/eventos/consultar";  // Redirige a la página de consulta de eventos después de guardar
     }
 
-    @GetMapping("/eventos")
+    @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
         // Datos del usuario autenticado
-        String nombre = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
 
         // Obtener todos los eventos y etiquetas
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
@@ -109,10 +132,66 @@ public class EventosControlador {
         // Agregar datos al modelo para la vista
         model.addAttribute("nombre", nombre);
         model.addAttribute("email", email);
+        model.addAttribute("rol", rol);
         model.addAttribute("eventos", eventos);
         model.addAttribute("etiquetas", etiquetas);
 
-        return "consultaEventos"; // Asegúrate de que esta es la vista correcta
+        return "consultaEventos"; // Vista para consultar eventos
     }
 
+    // Obtener los datos del evento como JSON para la edición
+    @GetMapping("/eventos/editar/{id}")
+    @ResponseBody
+    public ResponseEntity<Eventos> obtenerEventoPorId(@PathVariable Long id) {
+        try {
+            Eventos evento = eventosServicio.buscarEventoPorId(id);
+            if (evento == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            System.out.println("Evento a editar: " + evento);
+            return ResponseEntity.ok(evento);
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // Guardar cambios en el evento editado
+    @PostMapping("/eventos/editar/{id}")
+    public String actualizarEvento(@PathVariable Long id, @ModelAttribute("evento") Eventos eventoActualizado, @RequestParam(required = false) List<Long> etiquetasSeleccionadas) {
+        try {
+            Eventos eventoExistente = eventosServicio.buscarEventoPorId(id);
+            if (eventoExistente == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
+            }
+
+
+            // Actualizar los datos del evento existente
+            eventoExistente.setNomEvento(eventoActualizado.getNomEvento());
+            eventoExistente.setCampus(eventoActualizado.getCampus());
+            eventoExistente.setFacultad(eventoActualizado.getFacultad());
+            eventoExistente.setFecha(eventoActualizado.getFecha());
+            eventoExistente.setLugar(eventoActualizado.getLugar());
+            eventoExistente.setDescripcion(eventoActualizado.getDescripcion());
+            eventoExistente.setEstado(eventoActualizado.getEstado());
+            eventoExistente.setHoraInicio(eventoActualizado.getHoraInicio());
+            eventoExistente.setHoraFinal(eventoActualizado.getHoraFinal());
+            eventoExistente.setEncargado(eventoActualizado.getEncargado());
+            eventoExistente.setCapacidad(eventoActualizado.getCapacidad());
+
+            // Asignar etiquetas si se proporcionan
+            if (etiquetasSeleccionadas != null) {
+                List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas);
+                eventoExistente.setEtiquetas(etiquetas);
+            }
+
+            // Guardar el evento actualizado
+            eventosServicio.actualizarEvento(id, eventoExistente);
+
+            return "redirect:/eventos/consultar"; // Redirigir después de guardar
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir error en la consola
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el evento");
+        }
+    }
 }

@@ -15,6 +15,8 @@ public class UsuarioServicio {
     private final UsuarioRepositorio usuarioRepositorio;
     private final PasswordEncoder passwordEncoder; // Inyección del PasswordEncoder
 
+
+
     // Constructor para la inyección de dependencias
     @Autowired
     public UsuarioServicio(UsuarioRepositorio usuarioRepositorio, PasswordEncoder passwordEncoder) {
@@ -38,7 +40,7 @@ public class UsuarioServicio {
     }
 
     public Usuario obtenerORegistrarUsuario(OAuth2User oAuth2User) {
-        String email = oAuth2User.getAttribute("Email");
+        String email = oAuth2User.getAttribute("email");
 
         // Verificar si el usuario ya existe en la base de datos
         Optional<Usuario> usuarioExistente = usuarioRepositorio.findByEmail(email);
@@ -56,5 +58,14 @@ public class UsuarioServicio {
 
             return usuarioRepositorio.save(nuevoUsuario);  // Guardar el usuario en la BD
         }
+    }
+
+    public String obtenerRolPorEmail(String email) {
+        Optional<Usuario> usuarioOptional = usuarioRepositorio.findByEmail(email);
+        if (!usuarioOptional.isPresent()) {
+            System.out.println("No se encontró usuario con email: " + email);
+        }
+        System.out.println("Rol" + usuarioOptional);
+        return usuarioOptional.map(Usuario::getRol).orElse("USER");
     }
 }

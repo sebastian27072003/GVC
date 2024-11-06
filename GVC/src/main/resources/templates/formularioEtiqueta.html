@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -253,7 +253,7 @@
     <div class="user-info">
         <i class='bx bxs-user-circle'></i>
         <div class="user-details">
-            <h1>Bienvenido, <span th:text="${nombre}">Nombre</span>!</h1>
+            <h1>Bienvenido, <span th:text="${nombreusuario}">Nombre</span>!</h1>
             <p>Correo: <span th:text="${email}">Correo</span></p>
         </div>
     </div>
@@ -266,37 +266,37 @@
     <div class="leftSide-contenedor">
         <div class="leftSide">
 
-            <a href="altaProfesor.html">
+            <a href="">
                 <div class="contenidoLeft">
                     <i class='bx bxs-contact'></i>
                     <h3>Inicio</h3>
                 </div>
             </a>
-            <a href="consultaProfesores.html">
+            <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
+                <div class="contenidoLeft">
+                    <i class='bx bx-collection'></i>
+                    <h3>Consultar Etiquetas</h3>
+                </div>
+            </a>
+            <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-street-view'></i>
                     <h3>Crear Eventos</h3>
                 </div>
             </a>
-            <a href="altaUnidadesDeAprendizaje.html">
-                <div class="contenidoLeft">
-                    <i class='bx bx-folder-plus'></i>
-                    <h3>Crear Etiquetas</h3>
-                </div>
-            </a>
-            <a href="consultaUnidadesDeAprendizaje.html">
+            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
                     <h3>Consultar Eventos</h3>
                 </div>
             </a>
-            <a href="login.html">
+            <a href="">
                 <div class="contenidoLeft">
                     <i class='bx bxs-exit'></i>
                     <h3>Consultar Estadisticas</h3>
                 </div>
             </a>
-            <a href="consultaUnidadesDeAprendizaje.html">
+            <a href="/logout">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
                     <h3>Salir</h3>
@@ -316,8 +316,11 @@
                 <input type="text" name="nombre" id="NomEtiquetas" class="textInput" autocomplete="off" placeholder="Nombre Etiqueta"/>
             </div>
             <div class="campo">
-                <label for="Color">Color</label>
-                <input type="text" name="color" id="Color" class="textInput" autocomplete="off" placeholder="#FFFFFF"/>
+                <label for="Color">Escoge el color de la etiqueta</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="color" name="color" id="Color" class="textInput" autocomplete="off" value="#FFFFFF" style="width: 50px; height: 50px; border: none;"/>
+                    <input type="text" name="colorHex" id="ColorHex" class="textInput" value="#FFFFFF" readonly style="margin-left: 15px; width: 100px; text-align: center;"/>
+                </div>
             </div>
             <div class="campo">
                 <label for="Descripcion">Descripcion</label>
@@ -338,6 +341,14 @@
 <footer th:fragment="footer" class="bg-dark text-white text-center p-1">
     <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
 </footer>
+<script>
+    const colorInput = document.getElementById('Color');
+    const colorHexInput = document.getElementById('ColorHex');
+
+    colorInput.addEventListener('input', () => {
+        colorHexInput.value = colorInput.value;
+    });
+</script>
 
 </body>
 </html>
