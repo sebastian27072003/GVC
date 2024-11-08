@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -10,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
     <link rel="stylesheet" href="/style.css">
+
     <style>
         .toast {
     opacity: 1 !important;
@@ -83,100 +85,100 @@
         </div>
     </div>
 
-            <div class="Forma">
-                <h2 class="form-title">Alta de Evento</h2>
-                <div id="mensajeToast" style="display: none;"></div>
-                <form id="altaEventoForm" action="/eventos/guardar" method="POST" enctype="multipart/form-data">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="nombreEvento" class="form-label">Nombre del evento</label>
-                            <input type="text" class="form-control" id="nombreEvento" name="nomEvento" placeholder="Nombre" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="campus" class="form-label">Campus</label>
-                            <select class="form-control" id="campus" name="campus" onchange="cargarFacultades()" required>
-                                <option value="">Seleccione el campus</option>
-                                <option value="Mexicali">Campus Mexicali</option>
-                                <option value="Tijuana">Campus Tijuana</option>
-                                <option value="Ensenada">Campus Ensenada</option>
-                                <option value="VallePalmas">Unidad Valle de las Palmas</option>
-                                <option value="Tecate">Campus Tecate</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="facultad" class="form-label">Facultad</label>
-                            <select class="form-control" id="facultad" name="facultad" required>
-                                <option value="">Seleccione la facultad</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="horaInicio" class="form-label">Hora de Inicio</label>
-                            <input type="time" class="form-control" id="horaInicio" name="horaInicio" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="horaFinal" class="form-label">Hora de Fin</label>
-                            <input type="time" class="form-control" id="horaFinal" name="horaFinal" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="fechaEvento" class="form-label">Fecha del evento</label>
-                            <input type="date" class="form-control" id="fechaEvento" name="fecha" placeholder="DD/MM/AA" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="lugar" class="form-label">Lugar</label>
-                            <input type="text" class="form-control" id="lugar" name="lugar" placeholder="Seleccione lugar del evento" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="etiquetas" class="form-label">Etiquetas</label>
-                            <select class="form-control" id="etiquetas" name="etiquetasSeleccionadas" multiple required>
-                                <option value="">Seleccione la(s) etiqueta(s)</option>
-                                <!-- Recorrer las etiquetas para mostrarlas en la lista -->
-                                <th:block th:each="etiqueta : ${etiquetas}">
-                                    <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
-                                </th:block>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="descripcion" class="form-label">Descripción del evento</label>
-                            <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Texto..." required></textarea>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="encargado" class="form-label">Encargado</label>
-                            <input type="text" class="form-control" id="encargado" name="encargado" placeholder="Nombre del encargado" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="estado" class="form-label">Estado</label>
-                            <select class="form-control" id="estado" name="estado" required>
-                                <option value="">Seleccione el estado del evento</option>
-                                <option value="En Curso">En Curso</option>
-                                <option value="Proximo">Próximo</option>
-                                <option value="Finalizado">Finalizado</option>
-                                <option value="Cancelado">Cancelado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="capacidad" class="form-label">Capacidad</label>
-                            <input type="number" class="form-control" id="capacidad" name="capacidad" placeholder="Capacidad de asistentes" required min="1">
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-success btn-aceptar">Aceptar</button>
-                        <button type="reset" class="btn btn-danger btn-cancelar">Cancelar</button>
-                    </div>
-                </form>
+    <div class="Forma">
+        <h2 class="form-title">Alta de Evento</h2>
+        <div id="mensajeToast" style="display: none;"></div>
+        <form id="altaEventoForm" action="/eventos/guardar" method="POST" enctype="multipart/form-data">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="nombreEvento" class="form-label">Nombre del evento</label>
+                    <input type="text" class="form-control" id="nombreEvento" name="nomEvento" placeholder="Nombre" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+                </div>
+                <div class="col-md-6">
+                    <label for="campus" class="form-label">Campus</label>
+                    <select class="form-control" id="campus" name="campus" onchange="cargarFacultades()" required>
+                        <option value="">Seleccione el campus</option>
+                        <option value="Mexicali">Campus Mexicali</option>
+                        <option value="Tijuana">Campus Tijuana</option>
+                        <option value="Ensenada">Campus Ensenada</option>
+                        <option value="VallePalmas">Unidad Valle de las Palmas</option>
+                        <option value="Tecate">Campus Tecate</option>
+                    </select>
+                </div>
             </div>
-        </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="facultad" class="form-label">Facultad</label>
+                    <select class="form-control" id="facultad" name="facultad" required>
+                        <option value="">Seleccione la facultad</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="horaInicio" class="form-label">Hora de Inicio</label>
+                    <input type="time" class="form-control" id="horaInicio" name="horaInicio" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="horaFinal" class="form-label">Hora de Fin</label>
+                    <input type="time" class="form-control" id="horaFinal" name="horaFinal" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="fechaEvento" class="form-label">Fecha del evento</label>
+                    <input type="date" class="form-control" id="fechaEvento" name="fecha" placeholder="DD/MM/AA" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="lugar" class="form-label">Lugar</label>
+                    <input type="text" class="form-control" id="lugar" name="lugar" placeholder="Seleccione lugar del evento" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="etiquetas" class="form-label">Etiquetas</label>
+                    <select class="form-control" id="etiquetas" name="etiquetasSeleccionadas" multiple required>
+                        <option value="">Seleccione la(s) etiqueta(s)</option>
+                        <!-- Recorrer las etiquetas para mostrarlas en la lista -->
+                        <th:block th:each="etiqueta : ${etiquetas}">
+                            <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
+                        </th:block>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="descripcion" class="form-label">Descripción del evento</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Texto..." required></textarea>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="encargado" class="form-label">Encargado</label>
+                    <input type="text" class="form-control" id="encargado" name="encargado" placeholder="Nombre del encargado" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-control" id="estado" name="estado" required>
+                        <option value="">Seleccione el estado del evento</option>
+                        <option value="En Curso">En Curso</option>
+                        <option value="Proximo">Próximo</option>
+                        <option value="Finalizado">Finalizado</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="capacidad" class="form-label">Capacidad</label>
+                    <input type="number" class="form-control" id="capacidad" name="capacidad" placeholder="Capacidad de asistentes" required min="1">
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success btn-aceptar">Aceptar</button>
+                <button type="reset" class="btn btn-danger btn-cancelar">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
 <!-- Bootstrap JS -->
@@ -276,12 +278,9 @@
             });
         }
     }
+
+
 </script>
-
-<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
-    <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
-
-</footer>
 
 <script th:inline="javascript">
 
@@ -303,6 +302,10 @@
 
     }
 </script>
+
+<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
+    <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
+</footer>
 </body>
 <!-- Footer -->
 

@@ -5,6 +5,7 @@ import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Repositorio.EventosRepositorio;
 import com.example.GVC.Repositorio.EtiquetasRepositorio;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,9 +48,6 @@ public class EventosServicio {
         return etiquetasRepositorio.findAll();
     }
 
-
-
-
     // Guardar un nuevo evento
     public void guardarEvento(Eventos evento) {
         eventosRepositorio.save(evento);
@@ -73,8 +71,7 @@ public class EventosServicio {
         if (eventoExistenteOpt.isPresent()) {
             Eventos eventoExistente = eventoExistenteOpt.get();
 
-            System.out.println("Hora final recibida: " + eventoActualizado.getHoraFinal());
-            // Actualizar los campos con los valores del evento actualizado
+            // Actualizar campos básicos del evento
             eventoExistente.setNomEvento(eventoActualizado.getNomEvento());
             eventoExistente.setFacultad(eventoActualizado.getFacultad());
             eventoExistente.setHoraInicio(eventoActualizado.getHoraInicio());
@@ -88,19 +85,31 @@ public class EventosServicio {
             eventoExistente.setEstado(eventoActualizado.getEstado());
             eventoExistente.setCapacidad(eventoActualizado.getCapacidad());
 
-            // Actualizar etiquetas (si el evento actualizado tiene etiquetas)
+            // Actualizar etiquetas
             if (eventoActualizado.getEtiquetas() != null) {
-                List<Etiquetas> etiquetas = etiquetasRepositorio.findAllById(
-                        eventoActualizado.getEtiquetas().stream()
-                                .map(Etiquetas::getIdEtiquetas)
-                                .collect(Collectors.toList())
-                );
-                eventoExistente.setEtiquetas(etiquetas);
-            }
+                List<Long> etiquetasIds = eventoActualizado.getEtiquetas()
+                        .stream()
+                        .map(Etiquetas::getIdEtiquetas)
+                        .collect(Collectors.toList());
 
-            // Guardar el evento actualizado
-            eventosRepositorio.save(eventoExistente);
+                actualizarEtiquetasEvento(eventoExistente, etiquetasIds);
+            } else {
+                eventosRepositorio.save(eventoExistente); // Guardar sin etiquetas si no hay cambios
+            }
         }
+    }
+    @Transactional
+    public void actualizarEtiquetasEvento(Eventos evento, List<Long> etiquetasIds) {
+        // Eliminar las etiquetas actuales
+        evento.getEtiquetas().clear();
+        eventosRepositorio.saveAndFlush(evento); // Asegura que las etiquetas se eliminan en la BD
+
+        // Asignar las nuevas etiquetas
+        List<Etiquetas> nuevasEtiquetas = etiquetasRepositorio.findAllById(etiquetasIds);
+        evento.setEtiquetas(nuevasEtiquetas);
+
+        // Guardar el evento con las nuevas etiquetas
+        eventosRepositorio.save(evento);
     }
 
     // Buscar etiquetas por una lista de IDs

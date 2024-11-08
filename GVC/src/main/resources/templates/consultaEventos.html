@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
@@ -12,8 +13,7 @@
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
   <link href="/style.css" rel="stylesheet"/>
   <title>Eventos</title>
-
-<style>
+  <style>
     .toast {
       opacity: 1 !important;
   }
@@ -44,7 +44,7 @@
 <div class="contenedorPrincipal">
   <div class="leftSide-contenedor">
     <div class="leftSide">
-      <a href="/home">
+      <a href="">
         <div class="contenidoLeft">
           <i class='bx bxs-contact'></i>
           <h3>Inicio</h3>
@@ -68,6 +68,12 @@
           <h3>Consultar Etiquetas</h3>
         </div>
       </a>
+      <a href="">
+        <div class="contenidoLeft">
+          <i class='bx bxs-exit'></i>
+          <h3>Consultar Estadísticas</h3>
+        </div>
+      </a>
       <a href="/logout">
         <div class="contenidoLeft">
           <i class='bx bx-collection'></i>
@@ -78,8 +84,6 @@
   </div>
 
   <div class="Forma">
-
-
     <h2>Consulta de Eventos</h2>
     <div id="mensajeToast" style="display: none;"></div>
     <form class="row gy-3 align-items-center" method="GET" action="/eventos/consultar">
@@ -121,7 +125,7 @@
     </form>
 
 
-    
+
 
     <table class="table table-striped table-hover mt-4">
       <thead class="table-light">
@@ -167,7 +171,7 @@
           <!-- Nombre del Evento -->
           <div class="mb-3">
             <label for="nombreEventoEditar" class="form-label">Nombre del Evento</label>
-            <input type="text" class="form-control" id="nombreEventoEditar" name="nomEvento" required>
+            <input type="text" class="form-control" id="nombreEventoEditar" name="nomEvento" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
           </div>
 
           <!-- Campus -->
@@ -203,7 +207,6 @@
             <input type="time" class="form-control" id="horaFinEditar" name="horaFinal" required>
           </div>
 
-
           <!-- Fecha del Evento -->
           <div class="mb-3">
             <label for="fechaEditar" class="form-label">Fecha del Evento</label>
@@ -213,7 +216,7 @@
           <!-- Lugar -->
           <div class="mb-3">
             <label for="lugarEditar" class="form-label">Lugar</label>
-            <input type="text" class="form-control" id="lugarEditar" name="lugar" required>
+            <input type="text" class="form-control" id="lugarEditar" name="lugar" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
           </div>
 
           <!-- Descripción -->
@@ -225,13 +228,14 @@
           <!-- Encargado -->
           <div class="mb-3">
             <label for="encargadoEditar" class="form-label">Encargado</label>
-            <input type="text" class="form-control" id="encargadoEditar" name="encargado" required>
+            <input type="text" class="form-control" id="encargadoEditar" name="encargado" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
           </div>
 
           <!-- Estado -->
           <div class="mb-3">
             <label for="estadoEditar" class="form-label">Estado</label>
             <select class="form-control" id="estadoEditar" name="estado" required>
+              <option value="">Seleccione el estado del evento</option>
               <option value="En Curso">En Curso</option>
               <option value="Proximo">Próximo</option>
               <option value="Finalizado">Finalizado</option>
@@ -242,13 +246,13 @@
           <!-- Capacidad -->
           <div class="mb-3">
             <label for="capacidadEditar" class="form-label">Capacidad</label>
-            <input type="number" class="form-control" id="capacidadEditar" name="capacidad" required>
+            <input type="number" class="form-control" id="capacidadEditar" name="capacidad" required min="1">
           </div>
 
           <!-- Etiquetas -->
           <div class="mb-3">
             <label for="etiquetasEditar" class="form-label">Etiquetas</label>
-            <select multiple class="form-control" id="etiquetasEditar" name="etiquetas">
+            <select multiple class="form-control" id="etiquetasEditar" name="etiquetasSeleccionadas" required>
               <option th:each="etiqueta : ${etiquetas}" th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
             </select>
           </div>
@@ -256,12 +260,15 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="guardarCambiosEvento()">Guardar Cambios</button>
+        <button type="button" class="btn btn-primary" id="guardarCambiosBtn" onclick="guardarCambiosEvento()" disabled>Guardar Cambios</button>
       </div>
     </div>
   </div>
+  <div id="notification" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1050;">
+    Evento modificado correctamente.
+    <button type="button" class="btn-close" onclick="hideNotification()"></button>
+  </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <script th:inline="javascript">
@@ -281,7 +288,7 @@
   }
 </script>
 
-
+</body>
 <script>
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
@@ -410,14 +417,42 @@
   }
 
 
+  /*
   function guardarCambiosEvento() {
-    const form = document.getElementById('formEditarEvento');  // Obtenemos el formulario del evento
-    const eventoId = document.getElementById('eventoIdEditar').value;  // Obtenemos el ID del evento
-    form.action = `/eventos/editar/${eventoId}`;  // Asignamos la acción al formulario
-    form.method = 'POST';  // Aseguramos que se haga una solicitud POST
+    const eventoId = document.getElementById('eventoIdEditar').value;
+    const formData = new FormData(document.getElementById('formEditarEvento'));
 
-    form.submit();  // Enviamos el formulario
+    // Log para verificar qué datos se están enviando
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
+
+    fetch(`/eventos/editar/${eventoId}`, {
+      method: 'POST',
+      body: formData,
+    })
+            .then(response => {
+              if (response.ok) {
+                location.reload();
+              } else {
+                alert('Error al actualizar el evento.');
+              }
+            })
+            .catch(error => console.error('Error al actualizar el evento:', error));
+  }
+  */
+
+  function guardarCambiosEvento() {
+    const form = document.getElementById('formEditarEvento');
+    const eventoId = document.getElementById('eventoIdEditar').value;
+    form.action = `/eventos/editar/${eventoId}`;
+    form.method = 'POST';
+
+    form.submit();
 }
+
+
+
 
   function cargarFacultadesEditar(campus, facultadSeleccionada) {
     const facultadSelect = document.getElementById("facultadEditar");
@@ -485,10 +520,76 @@
       cargarFacultades();
     }
   };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Validar fecha mínima
+    const fechaEditar = document.getElementById('fechaEditar');
+    const today = new Date().toISOString().split('T')[0];
+    fechaEditar.setAttribute('min', today);
+
+    // Elementos del modal
+    const formEditarEvento = document.getElementById('formEditarEvento');
+    const guardarCambiosBtn = document.getElementById('guardarCambiosBtn');
+    const horaInicioEditar = document.getElementById('horaInicioEditar');
+    const horaFinEditar = document.getElementById('horaFinEditar');
+
+    // Habilitar/deshabilitar el botón de guardar basado en la validación de los campos
+    function validarFormulario() {
+      const camposValidos = Array.from(formEditarEvento.elements).every(input => input.checkValidity());
+      guardarCambiosBtn.disabled = !camposValidos;
+    }
+
+    // Validar horario de inicio y fin
+    formEditarEvento.addEventListener('input', function (e) {
+      if (e.target === horaInicioEditar || e.target === horaFinEditar) {
+        if (horaFinEditar.value && horaInicioEditar.value && horaFinEditar.value <= horaInicioEditar.value) {
+          horaFinEditar.setCustomValidity("La hora de fin debe ser posterior a la hora de inicio.");
+        } else {
+          horaFinEditar.setCustomValidity("");
+        }
+      }
+      validarFormulario();
+    });
+
+    // Validación de cada campo del formulario
+    formEditarEvento.addEventListener('input', validarFormulario);
+
+    // Al cargar los datos en el modal de edición, asegúrate de verificar si el formulario es válido
+    function abrirModalEditar(eventoId) {
+      fetch(`/eventos/editar/${eventoId}`)
+              .then(response => response.json())
+              .then(evento => {
+                document.getElementById('eventoIdEditar').value = evento.idEventos;
+                document.getElementById('nombreEventoEditar').value = evento.nomEvento;
+                document.getElementById('campusEditar').value = evento.campus;
+                cargarFacultadesEditar(evento.campus, evento.facultad);
+                document.getElementById('horaInicioEditar').value = evento.horaInicio;
+                document.getElementById('horaFinEditar').value = evento.horaFinal;
+                document.getElementById('fechaEditar').value = evento.fecha;
+                document.getElementById('lugarEditar').value = evento.lugar;
+                document.getElementById('descripcionEditar').value = evento.descripcion;
+                document.getElementById('encargadoEditar').value = evento.encargado;
+                document.getElementById('estadoEditar').value = evento.estado;
+                document.getElementById('capacidadEditar').value = evento.capacidad;
+                const etiquetasSelect = document.getElementById('etiquetasEditar');
+                Array.from(etiquetasSelect.options).forEach(option => {
+                  option.selected = evento.etiquetas && evento.etiquetas.some(etiqueta => etiqueta.idEtiquetas == option.value);
+                });
+                // Validar formulario al abrir el modal
+                validarFormulario();
+                const modal = new bootstrap.Modal(document.getElementById('editarEventoModal'));
+                modal.show();
+              })
+              .catch(error => console.error('Error al cargar los datos del evento:', error));
+    }
+  });
+
+
 </script>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 <!-- Footer -->
 <footer th:fragment="footer" class="bg-dark text-white text-center p-1">
   <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>

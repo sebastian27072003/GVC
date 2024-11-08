@@ -1,10 +1,10 @@
+
 package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
 import com.example.GVC.Servicio.UsuarioServicio;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +25,6 @@ public class EventosControlador {
 
     private final UsuarioServicio usuarioServicio;
 
-    @Autowired
     public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
@@ -60,12 +59,12 @@ public class EventosControlador {
     // Filtrado de eventos basado en varios criterios
     @GetMapping("/filtrar-eventos")
     public String filtrarEventos(@AuthenticationPrincipal OidcUser oidcUser,
-            @RequestParam(value = "campus", required = false) String campus,
-            @RequestParam(value = "facultad", required = false) String facultad,
-            @RequestParam(value = "etiqueta", required = false) Long etiquetaId,
-            @RequestParam(value = "nombreEvento", required = false) String nombreEvento,
+                                 @RequestParam(value = "campus", required = false) String campus,
+                                 @RequestParam(value = "facultad", required = false) String facultad,
+                                 @RequestParam(value = "etiqueta", required = false) Long etiquetaId,
+                                 @RequestParam(value = "nombreEvento", required = false) String nombreEvento,
 
-            Model model) {
+                                 Model model) {
 
         String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
         String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
@@ -94,7 +93,7 @@ public class EventosControlador {
 
         if (nombreEvento != null && !nombreEvento.isEmpty()) {
             eventos = eventos.stream()
-                    .filter(evento -> evento.getNomEvento().toLowerCase().contains(nombreEvento.toLowerCase()))
+                    .filter(evento -> evento.getNomEvento().equalsIgnoreCase(nombreEvento))
                     .collect(Collectors.toList());
         }
 
@@ -108,7 +107,7 @@ public class EventosControlador {
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         eventosServicio.eliminarEvento(id);
         redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido eliminado exitosamente.");
-        return "redirect:/eventos/consultar";
+        return "redirect:/eventos/consultar"; // Redirige a la lista de eventos tras eliminar
     }
 
     @PostMapping("/eventos/guardar")
@@ -136,8 +135,6 @@ public class EventosControlador {
         String mensaje = (String) model.asMap().get("mensaje");
         System.out.println("Mensaje flash agregado: " + mensaje);
         model.addAttribute("mensaje", mensaje);
-
-
 
         // Obtener todos los eventos y etiquetas
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
@@ -172,11 +169,10 @@ public class EventosControlador {
 
     // Guardar cambios en el evento editado
     @PostMapping("/eventos/editar/{id}")
-    public String actualizarEvento(@PathVariable Long id,
-                                   @ModelAttribute("evento") Eventos eventoActualizado,
-                                   @RequestParam(required = false) List<Long> etiquetasSeleccionadas,
-                                   RedirectAttributes redirectAttributes) {
+    public String actualizarEvento(@PathVariable Long id, @ModelAttribute("evento") Eventos eventoActualizado, @RequestParam(required = false) List<Long> etiquetasSeleccionadas,RedirectAttributes redirectAttributes) {
         try {
+            System.out.println("Etiquetas seleccionadas: " + etiquetasSeleccionadas);
+
             Eventos eventoExistente = eventosServicio.buscarEventoPorId(id);
             if (eventoExistente == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
@@ -204,7 +200,6 @@ public class EventosControlador {
 
             // Guardar el evento actualizado
             eventosServicio.actualizarEvento(id, eventoExistente);
-
             redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido actualizado exitosamente.");
 
             return "redirect:/eventos/consultar"; // Redirigir después de guardar
