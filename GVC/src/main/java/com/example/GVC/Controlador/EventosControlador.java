@@ -4,6 +4,7 @@ import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EventosServicio;
 import com.example.GVC.Servicio.UsuarioServicio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class EventosControlador {
 
     private final UsuarioServicio usuarioServicio;
 
+    @Autowired
     public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
@@ -99,9 +102,10 @@ public class EventosControlador {
 
     // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
-    public String eliminarEvento(@PathVariable Long id) {
+    public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         eventosServicio.eliminarEvento(id);
-        return "redirect:/eventos/consultar"; // Redirige a la lista de eventos tras eliminar
+        redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido eliminado exitosamente.");
+        return "redirect:/eventos/consultar";
     }
 
     @PostMapping("/eventos/guardar")
@@ -124,6 +128,9 @@ public class EventosControlador {
             System.out.println("Rol recuperado para " + email + ": " + rol);
         }
 
+
+        String mensaje = (String) model.asMap().get("mensaje");
+        model.addAttribute("mensaje", mensaje);
 
         // Obtener todos los eventos y etiquetas
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();

@@ -47,6 +47,9 @@ public class EventosServicio {
         return etiquetasRepositorio.findAll();
     }
 
+
+
+
     // Guardar un nuevo evento
     public void guardarEvento(Eventos evento) {
         eventosRepositorio.save(evento);
