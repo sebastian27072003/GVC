@@ -43,6 +43,9 @@ public class EventosControlador {
             System.out.println("Rol recuperado para " + email + ": " + rol);
         }
 
+        String mensaje = (String) model.asMap().get("mensaje");
+        model.addAttribute("mensaje", mensaje);
+
         List<Etiquetas> etiquetas = eventosServicio.buscarTodasLasEtiquetas(); // Obtener todas las etiquetas disponibles
 
         model.addAttribute("nombre", nombre);
@@ -109,11 +112,12 @@ public class EventosControlador {
     }
 
     @PostMapping("/eventos/guardar")
-    public String guardarEvento(@ModelAttribute("evento") Eventos evento, @RequestParam List<Long> etiquetasSeleccionadas) {
+    public String guardarEvento(@ModelAttribute("evento") Eventos evento, @RequestParam List<Long> etiquetasSeleccionadas,RedirectAttributes redirectAttributes) {
         List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas); // Obtener etiquetas por IDs
         evento.setEtiquetas(etiquetas); // Asignar etiquetas al evento
         eventosServicio.guardarEvento(evento);
-        return "redirect:/eventos/consultar";  // Redirige a la página de consulta de eventos después de guardar
+        redirectAttributes.addFlashAttribute("mensaje", "El evento se a guardado exitosamente.");
+        return "redirect:/eventos/alta";  // Redirige a la página de consulta de eventos después de guardar
     }
 
     @GetMapping("/eventos/consultar")
@@ -130,7 +134,10 @@ public class EventosControlador {
 
 
         String mensaje = (String) model.asMap().get("mensaje");
+        System.out.println("Mensaje flash agregado: " + mensaje);
         model.addAttribute("mensaje", mensaje);
+
+
 
         // Obtener todos los eventos y etiquetas
         List<Eventos> eventos = eventosServicio.buscarTodosLosEventos();
@@ -165,7 +172,10 @@ public class EventosControlador {
 
     // Guardar cambios en el evento editado
     @PostMapping("/eventos/editar/{id}")
-    public String actualizarEvento(@PathVariable Long id, @ModelAttribute("evento") Eventos eventoActualizado, @RequestParam(required = false) List<Long> etiquetasSeleccionadas) {
+    public String actualizarEvento(@PathVariable Long id,
+                                   @ModelAttribute("evento") Eventos eventoActualizado,
+                                   @RequestParam(required = false) List<Long> etiquetasSeleccionadas,
+                                   RedirectAttributes redirectAttributes) {
         try {
             Eventos eventoExistente = eventosServicio.buscarEventoPorId(id);
             if (eventoExistente == null) {
@@ -194,6 +204,8 @@ public class EventosControlador {
 
             // Guardar el evento actualizado
             eventosServicio.actualizarEvento(id, eventoExistente);
+
+            redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido actualizado exitosamente.");
 
             return "redirect:/eventos/consultar"; // Redirigir después de guardar
         } catch (Exception e) {

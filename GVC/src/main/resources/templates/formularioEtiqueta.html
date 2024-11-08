@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alta de Etiquetas</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <link href="/style.css" rel="stylesheet"/>
 </head>
-
+<style>
+    .toast {
+     opacity: 1 !important;
+ }
+</style>
 
 <body>
 <div class="top"></div>
@@ -35,7 +42,7 @@
     <!-- Menú lateral -->
     <div class="leftSide-contenedor">
         <div class="leftSide">
-            <a href="">
+            <a href="/home">
                 <div class="contenidoLeft">
                     <i class='bx bxs-contact'></i>
                     <h3>Inicio</h3>
@@ -57,12 +64,6 @@
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
                     <h3>Consultar Eventos</h3>
-                </div>
-            </a>
-            <a href="">
-                <div class="contenidoLeft">
-                    <i class='bx bxs-exit'></i>
-                    <h3>Consultar Estadisticas</h3>
                 </div>
             </a>
             <a href="/logout">
@@ -112,6 +113,27 @@
     colorInput.addEventListener('input', () => {
         colorHexInput.value = colorInput.value;
     });
+</script>
+
+<script th:inline="javascript">
+
+    var mensaje = [[${mensaje}]];
+
+
+    if (mensaje && mensaje !== '') {
+
+        toastr.success(mensaje, '', {
+            "positionClass": "toast-top-right",
+            "toastClass": "toast",
+            "timeOut": "5000",
+            "closeButton": true,
+            "progressBar": true,
+            "newestOnTop": true,
+            "backgroundColor": "#007141",
+            "opacity": 1
+        });
+
+    }
 </script>
 </body>
 <footer class="bg-dark text-white text-center p-1">

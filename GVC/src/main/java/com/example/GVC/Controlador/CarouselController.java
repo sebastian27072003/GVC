@@ -1,5 +1,6 @@
 package com.example.GVC.Controlador;
 
+import com.example.GVC.Servicio.UsuarioServicio;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -14,9 +15,11 @@ import java.util.List;
 public class CarouselController {
 
   private final OidcUserService oidcUser;
+  private final UsuarioServicio usuarioServicio;
 
-  public CarouselController(OidcUserService oidcUser) {
+  public CarouselController(OidcUserService oidcUser, UsuarioServicio usuarioServicio) {
     this.oidcUser = oidcUser;
+      this.usuarioServicio = usuarioServicio;
   }
 
   @GetMapping("/home")
@@ -27,6 +30,8 @@ public class CarouselController {
             "/ojo3.jpg"
     );
 
+
+
     String nombre = "Invitado"; // Valor por defecto
     String email = "No disponible"; // Valor por defecto
 
@@ -34,8 +39,16 @@ public class CarouselController {
       nombre = oidcUser.getAttribute("name");
       email = oidcUser.getAttribute("email");
     }
+
+    String rol = "";
+    if (oidcUser != null) {
+      rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+      System.out.println("Rol recuperado para " + email + ": " + rol);
+    }
+
     // Puedes reemplazar estos valores con los datos del usuario actual
     model.addAttribute("nombre", nombre);
+    model.addAttribute("rol", rol);
     model.addAttribute("email", email);
 
     model.addAttribute("imagenes", imagenes);

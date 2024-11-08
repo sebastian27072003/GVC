@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class EtiquetaControlador {
 
     // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
-    public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,@RequestParam String nombre, @RequestParam String color, @RequestParam String descripcion, Model model) {
+    public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,@RequestParam String nombre, @RequestParam String color, @RequestParam String descripcion,RedirectAttributes redirectAttributes, Model model) {
         Etiquetas etiqueta = new Etiquetas();
         etiqueta.setNomEtiquetas(nombre);
         etiqueta.setColor(color);
@@ -64,6 +65,8 @@ public class EtiquetaControlador {
         }
 
         etiquetaServicio.guardarEtiqueta(etiqueta);
+
+        redirectAttributes.addFlashAttribute("mensaje", "La etiqueta se guardo exitosamente.");
 
         model.addAttribute("mensaje", "Etiqueta guardada exitosamente");
         model.addAttribute("rol", rol);
@@ -85,6 +88,10 @@ public class EtiquetaControlador {
             System.out.println("Rol recuperado para " + email + ": " + rol);
         }
 
+        String mensaje = (String) model.asMap().get("mensaje");
+        System.out.println("Mensaje flash agregado: " + mensaje);
+        model.addAttribute("mensaje", mensaje);
+
         List<Etiquetas> etiquetas = etiquetaServicio.buscarTodasLasEtiquetas();
 
         model.addAttribute("etiquetas", etiquetas);
@@ -95,8 +102,9 @@ public class EtiquetaControlador {
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminarEtiqueta(@PathVariable Long id) {
+    public String eliminarEtiqueta(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         etiquetaServicio.eliminarEtiqueta(id);
+        redirectAttributes.addFlashAttribute("mensaje", "La etiqueta ha sido eliminada exitosamente.");
         return "redirect:/etiquetas/consulta";
     }
 
@@ -106,6 +114,7 @@ public class EtiquetaControlador {
                                  @RequestParam String nombre,
                                  @RequestParam String color,
                                  @RequestParam String descripcion,
+                                 RedirectAttributes redirectAttributes,
                                  Model model) {
         Etiquetas etiquetaExistente = etiquetaServicio.buscarPorId(id);
         if (etiquetaExistente == null) {
@@ -115,7 +124,9 @@ public class EtiquetaControlador {
         etiquetaExistente.setNomEtiquetas(nombre);
         etiquetaExistente.setColor(color);
         etiquetaExistente.setDescripcion(descripcion);
+
         etiquetaServicio.guardarEtiqueta(etiquetaExistente);
+        redirectAttributes.addFlashAttribute("mensaje", "La etiqueta ha sido actualizada exitosamente.");
 
         return "redirect:/etiquetas/consulta";
     }

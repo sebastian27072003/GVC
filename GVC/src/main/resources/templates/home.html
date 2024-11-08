@@ -8,24 +8,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
     <title>Eventos</title>
+</head>
 
 <body>
-<div class="top">
+<div class="top"></div>
 
-</div>
 <!-- Header -->
-
 <header class="header">
-
-
     <div style="display: flex; align-items: center;">
         <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
         <div>
             <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
             <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
-
         </div>
-
     </div>
     <div class="user-info">
         <i class='bx bxs-user-circle'></i>
@@ -36,44 +31,36 @@
     </div>
 </header>
 
-
 <!-- Contenedor Principal -->
 <div class="contenedorPrincipal">
     <!-- Menú lateral -->
     <div class="leftSide-contenedor">
         <div class="leftSide">
-
-            <a href="altaProfesor.html">
-                <div class="contenidoLeft">
-                    <i class='bx bxs-contact'></i>
-                    <h3>Inicio</h3>
-                </div>
-            </a>
-            <a href="consultaProfesores.html">
+            <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-street-view'></i>
                     <h3>Crear Eventos</h3>
                 </div>
             </a>
-            <a href="altaUnidadesDeAprendizaje.html">
+            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
+            <div class="contenidoLeft">
+                <i class='bx bx-collection'></i>
+                <h3>Consultar Eventos</h3>
+            </div>
+            </a>
+            <a href="/etiquetas/nueva" th:if="${rol.matches('SUPERADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-folder-plus'></i>
                     <h3>Crear Etiquetas</h3>
                 </div>
             </a>
-            <a href="consultaUnidadesDeAprendizaje.html">
+            <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
-                    <h3>Consultar Eventos</h3>
+                    <h3>Consultar Etiquetas</h3>
                 </div>
             </a>
-            <a href="login.html">
-                <div class="contenidoLeft">
-                    <i class='bx bxs-exit'></i>
-                    <h3>Consultar Estadisticas</h3>
-                </div>
-            </a>
-            <a href="consultaUnidadesDeAprendizaje.html">
+            <a href="/logout">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
                     <h3>Salir</h3>
@@ -82,13 +69,14 @@
         </div>
     </div>
 
-
+    <!-- Contenido Principal -->
+    <main>
         <h1>Inicio</h1>
         <div class="container mt-5">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <ol class="carousel-indicators">
                     <li th:each="imagen, iterStat : ${imagenes}"
-                        th:data-slide-to="${iterStat.index}"
+                        th:data-bs-slide-to="${iterStat.index}"
                         th:classappend="${iterStat.index == 0} ? 'active' : ''"></li>
                 </ol>
                 <div class="carousel-inner">
@@ -97,32 +85,28 @@
                         <img th:src="${imagen}" class="d-block w-100" alt="Imagen">
                     </div>
                 </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Anterior</span>
+                    <span class="visually-hidden">Anterior</span>
                 </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Siguiente</span>
+                    <span class="visually-hidden">Siguiente</span>
                 </a>
             </div>
-
-
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </div>
+        </div>
+    </main>
 </div>
-</main>
 
-
-
-
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
 <!-- Footer -->
 <footer th:fragment="footer" class="bg-dark text-white text-center p-1">
     <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
 </footer>
+
+</body>
 </html>
