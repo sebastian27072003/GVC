@@ -112,6 +112,23 @@
 
 </div>
 
+<div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmarEliminacionModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas eliminar esta etiqueta?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarEliminarEtiqueta">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="editarEtiquetaModal" tabindex="-1" aria-labelledby="editarEtiquetaModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -167,14 +184,16 @@
     editarDescripcion.addEventListener("input", toggleGuardarButton);
 
     window.confirmarEliminacion = function(idEtiquetas) {
-      const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta Etiqueta?");
-      if (confirmacion) {
-        console.log("ID de la etiqueta:", idEtiquetas);
-        window.location.href = '/etiquetas/eliminar/' + idEtiquetas;
-      } else {
-        console.log("Eliminación cancelada");
-      }
-    };
+  idEtiquetaEliminar = idEtiquetas;
+  const modalConfirmacion = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+  modalConfirmacion.show();
+};
+
+document.getElementById('btnConfirmarEliminarEtiqueta').addEventListener('click', function() {
+  if (idEtiquetaEliminar) {
+    window.location.href = '/etiquetas/eliminar/' + idEtiquetaEliminar;
+  }
+});
 
     window.editarEtiqueta = function(idEtiquetas) {
       console.log("ID de la etiqueta a editar:", idEtiquetas);

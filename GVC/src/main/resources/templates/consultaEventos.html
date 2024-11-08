@@ -156,6 +156,25 @@
   </div>
 </div>
 
+<!-- Modal de Confirmación de Eliminación -->
+<div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmarEliminacionModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas eliminar este evento?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal para Editar Evento -->
 <div class="modal fade" id="editarEventoModal" tabindex="-1" aria-labelledby="editarEventoModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -290,6 +309,9 @@
 
 </body>
 <script>
+
+  let eventoIdEliminar = null;
+
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
     const campusSelect = document.getElementById("campus").value;
@@ -364,14 +386,16 @@
   }
 
   function confirmarEliminacion(eventoId) {
-    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este evento?");
-    if (confirmacion) {
-      console.log("ID del evento:", eventoId);
-      window.location.href = '/eventos/eliminar/' + eventoId;
-    } else {
-      console.log("Eliminación cancelada");
-    }
+  eventoIdEliminar = eventoId;
+  const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+  modal.show();
+}
+
+document.getElementById('btnConfirmarEliminar').addEventListener('click', () => {
+  if (eventoIdEliminar) {
+    window.location.href = '/eventos/eliminar/' + eventoIdEliminar;
   }
+});
 
   function abrirModalEditar(eventoId) {
     console.log("Evento ID:", eventoId);
