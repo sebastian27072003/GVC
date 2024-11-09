@@ -188,7 +188,7 @@
 
 <!-- Modal para Editar Evento -->
 <div class="modal fade" id="editarEventoModal" tabindex="-1" aria-labelledby="editarEventoModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editarEventoModalLabel">Editar Evento</h5>
@@ -198,93 +198,107 @@
         <form id="formEditarEvento">
           <input type="hidden" id="eventoIdEditar" name="eventoId">
 
-          <!-- Nombre del Evento -->
-          <div class="mb-3">
-            <label for="nombreEventoEditar" class="form-label">Nombre del Evento</label>
-            <input type="text" class="form-control" id="nombreEventoEditar" name="nomEvento" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+          <div class="row">
+            <!-- Nombre del Evento -->
+            <div class="col-md-6 mb-3">
+              <label for="nombreEventoEditar" class="form-label">Nombre del Evento</label>
+              <input type="text" class="form-control" id="nombreEventoEditar" name="nomEvento" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+            </div>
+
+            <!-- Campus -->
+            <div class="col-md-6 mb-3">
+              <label for="campusEditar" class="form-label">Campus</label>
+              <select class="form-control" id="campusEditar" name="campus" required>
+                <option value="">Seleccione el campus</option>
+                <option value="Mexicali">Mexicali</option>
+                <option value="Tijuana">Tijuana</option>
+                <option value="Ensenada">Ensenada</option>
+                <option value="Unidad Valle de las Palmas">Unidad Valle de las Palmas</option>
+                <option value="Tecate">Tecate</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Campus -->
-          <div class="mb-3">
-            <label for="campusEditar" class="form-label">Campus</label>
-            <select class="form-control" id="campusEditar" name="campus" required>
-              <option value="">Seleccione el campus</option>
-              <option value="Mexicali">Mexicali</option>
-              <option value="Tijuana">Tijuana</option>
-              <option value="Ensenada">Ensenada</option>
-              <option value="Unidad Valle de las Palmas">Unidad Valle de las Palmas</option>
-              <option value="Tecate">Tecate</option>
-            </select>
+          <div class="row">
+            <!-- Facultad -->
+            <div class="col-md-6 mb-3">
+              <label for="facultadEditar" class="form-label">Facultad</label>
+              <select class="form-control" id="facultadEditar" name="facultad" required>
+                <option value="">Seleccione la facultad</option>
+              </select>
+            </div>
+
+            <!-- Hora de Inicio -->
+            <div class="col-md-6 mb-3">
+              <label for="horaInicioEditar" class="form-label">Hora de Inicio</label>
+              <input type="time" class="form-control" id="horaInicioEditar" name="horaInicio" required>
+            </div>
           </div>
 
-          <!-- Facultad -->
-          <div class="mb-3">
-            <label for="facultadEditar" class="form-label">Facultad</label>
-            <select class="form-control" id="facultadEditar" name="facultad" required>
-              <option value="">Seleccione la facultad</option>
-            </select>
+          <div class="row">
+            <!-- Hora de Fin -->
+            <div class="col-md-6 mb-3">
+              <label for="horaFinEditar" class="form-label">Hora de Fin</label>
+              <input type="time" class="form-control" id="horaFinEditar" name="horaFinal" required>
+            </div>
+
+            <!-- Fecha del Evento -->
+            <div class="col-md-6 mb-3">
+              <label for="fechaEditar" class="form-label">Fecha del Evento</label>
+              <input type="date" class="form-control" id="fechaEditar" name="fecha" required>
+            </div>
           </div>
 
-          <!-- Hora de Inicio -->
-          <div class="mb-3">
-            <label for="horaInicioEditar" class="form-label">Hora de Inicio</label>
-            <input type="time" class="form-control" id="horaInicioEditar" name="horaInicio" required>
+          <div class="row">
+            <!-- Lugar -->
+            <div class="col-md-6 mb-3">
+              <label for="lugarEditar" class="form-label">Lugar</label>
+              <input type="text" class="form-control" id="lugarEditar" name="lugar" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+            </div>
+
+            <!-- Capacidad -->
+            <div class="col-md-6 mb-3">
+              <label for="capacidadEditar" class="form-label">Capacidad</label>
+              <input type="number" class="form-control" id="capacidadEditar" name="capacidad" required min="1">
+            </div>
           </div>
 
-          <!-- Hora de Fin -->
-          <div class="mb-3">
-            <label for="horaFinEditar" class="form-label">Hora de Fin</label>
-            <input type="time" class="form-control" id="horaFinEditar" name="horaFinal" required>
+          <div class="row">
+            <!-- Descripción -->
+            <div class="col-md-12 mb-3">
+              <label for="descripcionEditar" class="form-label">Descripción</label>
+              <textarea class="form-control" id="descripcionEditar" name="descripcion" rows="3" required></textarea>
+            </div>
           </div>
 
-          <!-- Fecha del Evento -->
-          <div class="mb-3">
-            <label for="fechaEditar" class="form-label">Fecha del Evento</label>
-            <input type="date" class="form-control" id="fechaEditar" name="fecha" required>
+          <div class="row">
+            <!-- Encargado -->
+            <div class="col-md-6 mb-3">
+              <label for="encargadoEditar" class="form-label">Encargado</label>
+              <input type="text" class="form-control" id="encargadoEditar" name="encargado" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
+            </div>
+
+            <!-- Estado -->
+            <div class="col-md-6 mb-3">
+              <label for="estadoEditar" class="form-label">Estado</label>
+              <select class="form-control" id="estadoEditar" name="estado" required>
+                <option value="">Seleccione el estado del evento</option>
+                <option value="En Curso">En Curso</option>
+                <option value="Proximo">Próximo</option>
+                <option value="Finalizado">Finalizado</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Lugar -->
-          <div class="mb-3">
-            <label for="lugarEditar" class="form-label">Lugar</label>
-            <input type="text" class="form-control" id="lugarEditar" name="lugar" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
-          </div>
-
-          <!-- Descripción -->
-          <div class="mb-3">
-            <label for="descripcionEditar" class="form-label">Descripción</label>
-            <textarea class="form-control" id="descripcionEditar" name="descripcion" required></textarea>
-          </div>
-
-          <!-- Encargado -->
-          <div class="mb-3">
-            <label for="encargadoEditar" class="form-label">Encargado</label>
-            <input type="text" class="form-control" id="encargadoEditar" name="encargado" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
-          </div>
-
-          <!-- Estado -->
-          <div class="mb-3">
-            <label for="estadoEditar" class="form-label">Estado</label>
-            <select class="form-control" id="estadoEditar" name="estado" required>
-              <option value="">Seleccione el estado del evento</option>
-              <option value="En Curso">En Curso</option>
-              <option value="Proximo">Próximo</option>
-              <option value="Finalizado">Finalizado</option>
-              <option value="Cancelado">Cancelado</option>
-            </select>
-          </div>
-
-          <!-- Capacidad -->
-          <div class="mb-3">
-            <label for="capacidadEditar" class="form-label">Capacidad</label>
-            <input type="number" class="form-control" id="capacidadEditar" name="capacidad" required min="1">
-          </div>
-
-          <!-- Etiquetas -->
-          <div class="mb-3">
-            <label for="etiquetasEditar" class="form-label">Etiquetas</label>
-            <select multiple class="form-control" id="etiquetasEditar" name="etiquetasSeleccionadas" required>
-              <option th:each="etiqueta : ${etiquetas}" th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
-            </select>
+          <div class="row">
+            <!-- Etiquetas -->
+            <div class="col-md-12 mb-3">
+              <label for="etiquetasEditar" class="form-label">Etiquetas</label>
+              <select multiple class="form-control" id="etiquetasEditar" name="etiquetasSeleccionadas" required>
+                <option th:each="etiqueta : ${etiquetas}" th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
+              </select>
+            </div>
           </div>
         </form>
       </div>
