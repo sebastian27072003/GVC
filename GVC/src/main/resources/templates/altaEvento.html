@@ -9,6 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
     <link rel="stylesheet" href="/style.css">
 
@@ -136,9 +137,8 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="etiquetas" class="form-label">Etiquetas</label>
+                    <label for="etiquetas" class="form-label">Seleccione la(s) etiqueta(s)</label>
                     <select class="form-control" id="etiquetas" name="etiquetasSeleccionadas" multiple required>
-                        <option value="">Seleccione la(s) etiqueta(s)</option>
                         <!-- Recorrer las etiquetas para mostrarlas en la lista -->
                         <th:block th:each="etiqueta : ${etiquetas}">
                             <option th:value="${etiqueta.idEtiquetas}" th:text="${etiqueta.nomEtiquetas}"></option>
