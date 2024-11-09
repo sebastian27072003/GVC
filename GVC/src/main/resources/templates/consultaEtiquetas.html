@@ -80,6 +80,14 @@
   <div class="Forma">
     <h2>Consulta Etiquetas</h2>
     <div id="mensajeToast" style="display: none;"></div>
+    <div class="col-md-3 d-flex align-items-center">
+      <div class="input-group w-auto">
+        <input type="text" class="form-control" placeholder="Buscar..." id="nombreEtiqueta" style="margin-top: 2rem "/>
+        <button type="button" class="btn btn-outline-success" onclick="filtrarEtiquetas()" style="margin-top: 2rem">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
     <table class="table table-striped table-hover mt-4">
       <thead class="table-light">
       <tr>
@@ -227,6 +235,17 @@ document.getElementById('btnConfirmarEliminarEtiqueta').addEventListener('click'
       form.submit();
     };
   });
+
+  function filtrarEtiquetas() {
+  const nombreEtiqueta = document.getElementById("nombreEtiqueta").value;
+
+  fetch(`/etiquetas/filtrar?nombreEtiqueta=${nombreEtiqueta}`)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("tabla-etiquetas").innerHTML = data;
+    })
+    .catch(error => console.error('Error:', error));
+}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

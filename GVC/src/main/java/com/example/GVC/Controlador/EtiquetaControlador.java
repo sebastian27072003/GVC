@@ -1,6 +1,7 @@
 package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
+import com.example.GVC.Modelo.Eventos;
 import com.example.GVC.Servicio.EtiquetaServicio;
 import com.example.GVC.Servicio.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/etiquetas")
@@ -132,7 +134,26 @@ public class EtiquetaControlador {
     }
 
 
+    @GetMapping("/filtrar")
+    public String filtrarEtiquetas(@AuthenticationPrincipal OidcUser oidcUser,@RequestParam("nombreEtiqueta") String nombreEtiqueta, Model model) {
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
 
+
+        String rol = "";
+
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
+        List<Etiquetas> etiquetas = etiquetaServicio.buscarPorNombre(nombreEtiqueta);
+
+
+        model.addAttribute("rol", rol);
+        model.addAttribute("etiquetas", etiquetas);
+        return "fragments/tablaetiquetas :: tabla-etiquetas";
+    }
 
 
 }

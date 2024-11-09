@@ -45,4 +45,8 @@ public class EtiquetaServicio {
         Optional<Etiquetas> etiqueta = etiquetaRepository.findById(id);
         return etiqueta.orElse(null);
     }
+
+    public List<Etiquetas> buscarPorNombre(String nombreEtiqueta) {
+        return etiquetaRepository.findByNomEtiquetasContainingIgnoreCase(nombreEtiqueta);
+    }
 }

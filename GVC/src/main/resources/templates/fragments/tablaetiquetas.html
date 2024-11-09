@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="tabla-etiquetas">
+    <tr th:each="etiqueta : ${etiquetas}" th:attr="data-id=${etiqueta.idEtiquetas}">
+        <td th:text="${etiqueta.nomEtiquetas}"></td>
+        <td>
+            <span th:style="'background-color:' + ${etiqueta.color} + '; display:inline-block; width:20px; height:20px; margin-right:10px; border: 1px solid #000;'"></span>
+            <span th:text="${etiqueta.color}"></span>
+        </td>
+        <td th:text="${etiqueta.descripcion}"></td>
+        <td th:if="${rol == 'SUPERADMIN'}">
+            <button type="button" class="btn btn-warning me-2"  th:if="${rol == 'SUPERADMIN'}"  th:attr="onclick='editarEtiqueta(' + ${etiqueta.idEtiquetas} + ');'">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-danger me-2"  th:if="${rol == 'SUPERADMIN'}"  th:attr="onclick='confirmarEliminacion(' + ${etiqueta.idEtiquetas} + ');'">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+    </tr>
+</div>
+</body>
+</html>
