@@ -3,6 +3,7 @@ package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
+import com.example.GVC.Servicio.CloudinaryServicio;
 import com.example.GVC.Servicio.EventosServicio;
 import com.example.GVC.Servicio.UsuarioServicio;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,10 +26,12 @@ public class EventosControlador {
     private final EventosServicio eventosServicio;
 
     private final UsuarioServicio usuarioServicio;
+    private final CloudinaryServicio cloudinaryservicio;
 
-    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio) {
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
+        this.cloudinaryservicio = cloudinaryservicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
@@ -111,12 +115,34 @@ public class EventosControlador {
     }
 
     @PostMapping("/eventos/guardar")
-    public String guardarEvento(@ModelAttribute("evento") Eventos evento, @RequestParam List<Long> etiquetasSeleccionadas,RedirectAttributes redirectAttributes) {
-        List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas); // Obtener etiquetas por IDs
-        evento.setEtiquetas(etiquetas); // Asignar etiquetas al evento
-        eventosServicio.guardarEvento(evento);
-        redirectAttributes.addFlashAttribute("mensaje", "El evento se a guardado exitosamente.");
-        return "redirect:/eventos/alta";  // Redirige a la página de consulta de eventos después de guardar
+    public String guardarEvento(@ModelAttribute("evento") Eventos evento,
+                                @RequestParam List<Long> etiquetasSeleccionadas,
+                                @RequestParam("imagenes") MultipartFile imagen,
+                                RedirectAttributes redirectAttributes) {
+        try {
+
+            if (!imagen.getContentType().startsWith("image/")) {
+                redirectAttributes.addFlashAttribute("mensaje", "El archivo subido no es una imagen.");
+                return "redirect:/eventos/alta"; // Regresar al formulario con un mensaje de error
+            }
+            
+            // Subir la imagen a Cloudinary
+            String imageUrl = cloudinaryservicio.uploadImage(imagen);
+            evento.setImagen(imageUrl); // Guarda la URL de la imagen en el evento
+
+            // Aquí van otras operaciones como guardar etiquetas y evento
+            List<Etiquetas> etiquetas = eventosServicio.buscarEtiquetasPorIds(etiquetasSeleccionadas);
+            evento.setEtiquetas(etiquetas);
+            eventosServicio.guardarEvento(evento);
+
+            redirectAttributes.addFlashAttribute("mensaje", "El evento se ha guardado exitosamente.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("mensaje", "Hubo un error al subir la imagen.");
+        }
+
+        return "redirect:/eventos/alta";
+
     }
 
     @GetMapping("/eventos/consultar")

@@ -151,7 +151,8 @@
         <td th:text="${evento.fecha}"></td>
         <td>
           <!-- Botones de acción -->
-          <button type="button" class="btn btn-success me-2" th:if="${rol == 'USER' || rol == 'SUPERADMIN' || rol == 'ADMIN'}">
+          <button type="button" class="btn btn-success me-2"
+                  th:attr="onclick='mostrarImagen(' + ${evento.idEventos} + ', \'' + ${evento.imagen} + '\')'">
             <i class="bi bi-eye"></i>
           </button>
           <button type="button" class="btn btn-warning me-2" th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}" th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'">
@@ -181,6 +182,25 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="mostrarImagenModal" tabindex="-1" aria-labelledby="mostrarImagenModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mostrarImagenModalLabel">Imagen del Evento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img id="imagenEvento" src="https://via.placeholder.com/150" class="img-fluid" alt="Imagen del Evento">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -336,6 +356,18 @@
 <script>
 
   let eventoIdEliminar = null;
+
+ function mostrarImagen(idEvento, urlImagen) {
+  console.log('Mostrando imagen para el evento:', idEvento);
+  console.log('URL de la imagen:', urlImagen);  // Verifica si la URL es correcta
+
+  // Asigna la URL de la imagen al modal
+  document.getElementById('imagenEvento').src = urlImagen;
+
+  // Muestra el modal
+  var myModal = new bootstrap.Modal(document.getElementById('mostrarImagenModal'));
+  myModal.show();
+}
 
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
@@ -499,6 +531,8 @@ document.getElementById('btnConfirmarEliminar').addEventListener('click', () => 
 
     form.submit();
 }
+
+
 
 
 

@@ -27,7 +27,8 @@
             <td th:text="${evento.fecha}"></td>
             <td>
                 <!-- Botones de acción -->
-                <button type="button" class="btn btn-success me-2" th:if="${rol == 'USER' || rol == 'SUPERADMIN' || rol == 'ADMIN'}">
+                <button type="button" class="btn btn-success me-2"
+                        th:attr="onclick='mostrarImagen(' + ${evento.idEventos} + ', \'' + ${evento.imagen} + '\')'">
                     <i class="bi bi-eye"></i>
                 </button>
                 <button type="button" class="btn btn-warning me-2" th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}" th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'">
