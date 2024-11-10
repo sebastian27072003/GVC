@@ -60,3 +60,4 @@ public class CarouselController {
     return "home"; // Vista para consultar eventos
   }
 }
+

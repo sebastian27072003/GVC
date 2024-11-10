@@ -123,12 +123,8 @@ a:hover {
 }
 
 h2 {
-    font-size: 1cm;
-    margin-bottom: 0.5cm;
-}
-
-label{
-    font-weight: bold;
+    font-size: 1.6cm;
+    margin-bottom: 1.5cm;
 }
 
 .campo {
@@ -181,7 +177,7 @@ label{
 
 /* Footer */
 footer {
-
+    background-color: #003A1F;
     color: white;
     text-align: center;
     padding: 10px;
@@ -213,7 +209,8 @@ footer {
 }
 
 footer {
-    background-color: #343a40;
+    align-items:flex-end;
+    background-color: #003A1F;
     color: white;
     text-align: center;
     padding: 10px;

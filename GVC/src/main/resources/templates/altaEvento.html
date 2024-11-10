@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" >
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +27,7 @@
 <!-- Header -->
 <header class="header">
     <div style="display: flex; align-items: center;">
-        <img src="/Logo3.jpg" alt="Logo UABC" style="width: 60px; height: 50px; margin-right: 20px; margin-left: 90px">
+        <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
         <div>
             <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
             <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
@@ -69,6 +69,12 @@
                 <div class="contenidoLeft">
                     <i class='bx bx-book-open'></i>
                     <h3>Consultar Eventos</h3>
+                </div>
+            </a>
+            <a href="">
+                <div class="contenidoLeft">
+                    <i class='bx bxs-exit'></i>
+                    <h3>Consultar Estadisticas</h3>
                 </div>
             </a>
             <a href="/logout">
@@ -260,7 +266,7 @@
                 "Escuela de Enología y Gastronomía",
                 "Instituto de Investigaciones Oceanológicas"
             ],
-            "Unidad Valle de las Palmas": [
+            "VallePalmas": [
                 "Facultad de Ciencias de la Salud",
                 "Facultad de Ingeniería y Negocios",
                 "Facultad de Ciencias de la Ingeniería y Tecnología"
@@ -285,8 +291,9 @@
 </script>
 
 <script th:inline="javascript">
+
     var mensaje = [[${mensaje}]];
-    var tipoMensaje = [[${tipoMensaje}]];
+
 
     if (mensaje && mensaje !== '') {
         if (tipoMensaje === 'exito') {
@@ -314,12 +321,11 @@
         }
     }
 </script>
-</body>
 
 <footer th:fragment="footer" class=" text-white text-center p-1">
     <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
 </footer>
-
-
+</body>
+<!-- Footer -->
 
 </html>
