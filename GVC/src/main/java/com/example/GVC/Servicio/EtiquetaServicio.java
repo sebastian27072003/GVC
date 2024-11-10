@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class EtiquetaServicio {
 
@@ -40,6 +41,12 @@ public class EtiquetaServicio {
         }
     }
 
+    // Método para verificar si el nombre de la etiqueta es único
+    public boolean verificarNombreEtiquetaUnico(String nombre) {
+        List<Etiquetas> etiquetaExistente = etiquetaRepository.findByNomEtiquetasContainingIgnoreCase(nombre);
+        return etiquetaExistente.isEmpty(); // Devuelve true si no existe una etiqueta con ese nombre
+    }
+
     // Método para buscar una etiqueta por su ID
     public Etiquetas buscarPorId(Long id) {
         Optional<Etiquetas> etiqueta = etiquetaRepository.findById(id);
@@ -50,3 +57,5 @@ public class EtiquetaServicio {
         return etiquetaRepository.findByNomEtiquetasContainingIgnoreCase(nombreEtiqueta);
     }
 }
+
+

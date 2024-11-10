@@ -264,7 +264,8 @@ footer {
 
 
     color: white; /* Color de texto para la descripción */
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+    opacity: 0.85;
+    background-color: #333333; /* Fondo oscuro semi-transparente */
     padding: 10px; /* Espaciado interno */
 
     z-index: 10; /* Asegura que la descripción quede encima de la imagen */
@@ -283,8 +284,8 @@ footer {
 
 /* Estilo cuando el usuario pasa el ratón por encima de los botones */
 .carousel .carousel-control-prev:hover, .carousel .carousel-control-next:hover {
-    opacity: .6 !important; /* Los botones se vuelven completamente opacos al hacer hover */
-    background-color:#F1A631;
+    opacity: .5 !important; /* Los botones se vuelven completamente opacos al hacer hover */
+    background-color:#333333;
 }
 
 
