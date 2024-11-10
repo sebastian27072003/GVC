@@ -106,6 +106,23 @@ public class EventosControlador {
         return "fragments/tablaEventos :: tabla-eventos"; // Fragmento de la tabla con los resultados filtrados
     }
 
+    // Obtener los datos del evento para visualizar
+    @GetMapping("/eventos/ver/{id}")
+    @ResponseBody
+    public ResponseEntity<Eventos> obtenerEventoPorIdParaVer(@PathVariable Long id) {
+        try {
+            Eventos evento = eventosServicio.buscarEventoPorId(id);
+            if (evento == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            System.out.println("Evento a ver: " + evento);
+            return ResponseEntity.ok(evento);
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {

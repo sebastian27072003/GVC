@@ -49,34 +49,47 @@ public class EtiquetaControlador {
         return "formularioEtiqueta";
     }
 
-    // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
-    public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,@RequestParam String nombre, @RequestParam String color, @RequestParam String descripcion,RedirectAttributes redirectAttributes, Model model) {
+    public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,
+                                  @RequestParam String nombre,
+                                  @RequestParam String color,
+                                  @RequestParam String descripcion,
+                                  RedirectAttributes redirectAttributes) {
+
+        // Verificar si el color es hexadecimal válido
+        if (!esColorHexadecimalValido(color)) {
+            redirectAttributes.addFlashAttribute("mensaje", "El color debe ser un valor hexadecimal válido.");
+            return "formularioEtiqueta";
+        }
+
+        // Verificar si el nombre de la etiqueta ya está en uso
+        if (!etiquetaServicio.verificarNombreEtiquetaUnico(nombre)) {
+            redirectAttributes.addFlashAttribute("mensaje", "El nombre de la etiqueta ya está en uso.");
+            return "redirect:/etiquetas/nueva";
+        }
+
+        // Guardar la nueva etiqueta si pasa todas las validaciones
         Etiquetas etiqueta = new Etiquetas();
         etiqueta.setNomEtiquetas(nombre);
         etiqueta.setColor(color);
         etiqueta.setDescripcion(descripcion);
 
-        String nombreusuario = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
-        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
-
-        String rol = "";
-        if (oidcUser != null) {
-            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
-            System.out.println("Rol recuperado para " + email + ": " + rol);
-        }
-
         etiquetaServicio.guardarEtiqueta(etiqueta);
 
-        redirectAttributes.addFlashAttribute("mensaje", "La etiqueta se guardo exitosamente.");
+        redirectAttributes.addFlashAttribute("mensaje", "La etiqueta se guardó exitosamente.");
+        return "redirect:/etiquetas/consulta";
+    }
 
-        model.addAttribute("mensaje", "Etiqueta guardada exitosamente");
-        model.addAttribute("rol", rol);
-        model.addAttribute("nombre", nombre);
-        model.addAttribute("nombreusuario", nombreusuario);
-        model.addAttribute("email", email);
+    // Función para validar si el color es un valor hexadecimal
+    private boolean esColorHexadecimalValido(String color) {
+        // Expresión regular para validar el formato hexadecimal (#RRGGBB o #RGB)
+        return color.matches("^#([0-9a-fA-F]{3}){1,2}$");
+    }
 
-        return "formularioEtiqueta";
+    @GetMapping("/validarNombre")
+    @ResponseBody
+    public boolean validarNombreEtiqueta(@RequestParam String nombre) {
+        return etiquetaServicio.verificarNombreEtiquetaUnico(nombre);
     }
 
     @GetMapping("/consulta")

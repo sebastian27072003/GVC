@@ -61,7 +61,7 @@
 <div class="contenedorPrincipal">
   <div class="leftSide-contenedor">
     <div class="leftSide">
-      <a href="">
+      <a href="/home">
         <div class="contenidoLeft">
           <i class='bx bxs-contact'></i>
           <h3>Inicio</h3>
@@ -161,7 +161,7 @@
         <td>
           <!-- Botones de acción -->
           <button type="button" class="btn btn-success me-2"
-                  th:attr="onclick='mostrarImagen(' + ${evento.idEventos} + ', \'' + ${evento.imagen} + '\')'">
+                  th:attr="onclick='verEvento(' + ${evento.idEventos} + ')'" >
             <i class="bi bi-eye"></i>
           </button>
           <button type="button" class="btn btn-warning me-2" th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}" th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'">
@@ -198,15 +198,30 @@
 
 
 
-<div class="modal fade" id="mostrarImagenModal" tabindex="-1" aria-labelledby="mostrarImagenModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="verEventoModal" tabindex="-1" aria-labelledby="verEventoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 60%; /* tamaño más grande, 90% del ancho de la página */">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="mostrarImagenModalLabel">Imagen del Evento</h5>
+        <h5 class="modal-title" id="verEventoModalLabel">Detalles del Evento</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <img id="imagenEvento" src="https://via.placeholder.com/150" class="img-fluid" alt="Imagen del Evento">
+      <div class="modal-body d-flex">
+        <!-- Imagen del evento -->
+        <div class="me-3" style="flex: 0 0 250px;">
+          <img id="eventoImagen" class="img-fluid" alt="Imagen del Evento" style="width: 100%; height: auto;">
+        </div>
+        <!-- Texto del evento -->
+        <div style="flex: 1;">
+          <p><strong>Nombre:</strong> <span id="nomEvento"></span></p>
+          <p><strong>Hora de Inicio:</strong> <span id="horaInicio"></span></p>
+          <p><strong>Hora de Fin:</strong> <span id="horaFin"></span></p>
+          <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+          <p><strong>Lugar:</strong> <span id="lugar"></span></p>
+          <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
+          <p><strong>Encargado:</strong> <span id="encargado"></span></p>
+          <p><strong>Estado:</strong> <span id="estado"></span></p>
+          <p><strong>Capacidad:</strong> <span id="capacidad"></span></p>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -366,17 +381,50 @@
 
   let eventoIdEliminar = null;
 
- function mostrarImagen(idEvento, urlImagen) {
-  console.log('Mostrando imagen para el evento:', idEvento);
-  console.log('URL de la imagen:', urlImagen);  // Verifica si la URL es correcta
+function verEvento(eventoId) {
+// Realiza la solicitud al servidor para obtener los datos del evento
+    fetch(`/eventos/ver/${eventoId}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(evento => {
+              if (!evento) {
+                console.error("Datos del evento no encontrados:", evento);
+                alert('Error al cargar los datos del evento.');
+                return;
+              }
 
-  // Asigna la URL de la imagen al modal
-  document.getElementById('imagenEvento').src = urlImagen;
+              // Llenar los campos del modal con los datos del evento
+              document.getElementById('nomEvento').textContent = evento.nomEvento;
+              document.getElementById('horaInicio').textContent = evento.horaInicio;
+              document.getElementById('horaFin').textContent = evento.horaFinal;
+              document.getElementById('fecha').textContent = evento.fecha;
+              document.getElementById('lugar').textContent = evento.lugar;
+              document.getElementById('descripcion').textContent = evento.descripcion;
+              document.getElementById('encargado').textContent = evento.encargado;
+              document.getElementById('estado').textContent = evento.estado;
+              document.getElementById('capacidad').textContent = evento.capacidad;
 
-  // Muestra el modal
-  var myModal = new bootstrap.Modal(document.getElementById('mostrarImagenModal'));
-  myModal.show();
-}
+              // Mostrar la imagen
+              const imagenUrl = evento.imagen; // Asegúrate de que 'evento.imagen' contenga la URL de la imagen
+              document.getElementById('eventoImagen').src = imagenUrl; // Asigna la URL a la imagen en el modal
+
+              // Inicializar y mostrar el modal
+              const modalElement = document.getElementById('verEventoModal');
+              const modal = new bootstrap.Modal(modalElement);
+              modal.show();
+
+              console.log("Modal mostrado correctamente.");
+            })
+            .catch(error => {
+              console.error('Error al cargar los datos del evento:', error);
+              alert('Error al cargar los datos del evento.');
+            });
+  }
+
 
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
