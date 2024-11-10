@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
-    <title>Eventos</title>
+    <link href="/style.css" rel="stylesheet"/>
+    <title>INICIO</title>
 </head>
 
 <body>
@@ -36,6 +37,18 @@
     <!-- Menú lateral -->
     <div class="leftSide-contenedor">
         <div class="leftSide">
+            <a href="/home">
+                <div class="contenidoLeft">
+                    <i class='bx bxs-contact'></i>
+                    <h3>Inicio</h3>
+                </div>
+            </a>
+            <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
+                <div class="contenidoLeft">
+                    <i class='bx bx-collection'></i>
+                    <h3>Consultar Etiquetas</h3>
+                </div>
+            </a>
             <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-street-view'></i>
@@ -43,21 +56,9 @@
                 </div>
             </a>
             <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
-            <div class="contenidoLeft">
-                <i class='bx bx-collection'></i>
-                <h3>Consultar Eventos</h3>
-            </div>
-            </a>
-            <a href="/etiquetas/nueva" th:if="${rol.matches('SUPERADMIN')}">
-                <div class="contenidoLeft">
-                    <i class='bx bx-folder-plus'></i>
-                    <h3>Crear Etiquetas</h3>
-                </div>
-            </a>
-            <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-collection'></i>
-                    <h3>Consultar Etiquetas</h3>
+                    <h3>Consultar Eventos</h3>
                 </div>
             </a>
             <a href="/logout">
@@ -68,34 +69,18 @@
             </a>
         </div>
     </div>
-
-    <!-- Contenido Principal -->
     <main>
-        <h1>Inicio</h1>
+        <h1 class="titulo">Bienvenido a Nuestro Sitio Web</h1>
+
+        <div th:replace="~{fragments/carruselEventos :: carruselEventos}"></div>
+
         <div class="container mt-5">
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li th:each="imagen, iterStat : ${imagenes}"
-                        th:data-bs-slide-to="${iterStat.index}"
-                        th:classappend="${iterStat.index == 0} ? 'active' : ''"></li>
-                </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item" th:each="imagen, iterStat : ${imagenes}"
-                         th:classappend="${iterStat.index == 0} ? 'active' : ''">
-                        <img th:src="${imagen}" class="d-block w-100" alt="Imagen">
-                    </div>
-                </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Anterior</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Siguiente</span>
-                </a>
-            </div>
+            <h2>Lista De Eventos</h2>
+            <div th:replace="~{fragments/tarjetasCarrusel :: tarjetas-contenedor}"></div>
         </div>
     </main>
+
+
 </div>
 
 <!-- Scripts -->
@@ -103,8 +88,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- Footer -->
-<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
+<footer >
     <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
 </footer>
 

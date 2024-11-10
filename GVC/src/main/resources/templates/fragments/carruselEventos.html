@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="/style.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<style>
+
+</style>
+<body>
+<!-- fragments/carruselEventos.html -->
+<div th:fragment="carruselEventos">
+    <div id="carouselEventos" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div th:each="evento, iterStat : ${eventos}" class="carousel-item"
+                 th:classappend="${iterStat.index == 0} ? ' active' : ''">
+
+                <!-- Condicional para mostrar la imagen solo si no es null -->
+                <div th:if="${evento.imagen != null}">
+                    <img th:src="@{${evento.imagen}}" class="d-block w-100 imagen-carrusel" alt="Imagen del evento">
+                </div>
+
+                <div th:unless="${evento.imagen != null}" class="no-image-placeholder">
+                    <!-- Si la imagen es null, se muestra un mensaje centrado -->
+                    <p>No hay imagen disponible</p>
+                </div>
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5 th:text="${evento.nomEvento}"></h5>
+                    <p th:text="${evento.descripcion}"></p>
+                    <p th:text="${evento.fecha}"></p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselEventos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselEventos" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+    </div>
+</div>
+</body>
+</html>
