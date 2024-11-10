@@ -2,6 +2,23 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <style>
+        table {
+       table-layout: fixed;  /* Hace que las celdas tengan un ancho fijo */
+       width: 100%;  /* Asegura que la tabla ocupe el 100% del espacio disponible */
+     }
+    table td, table th {
+       word-wrap: break-word;
+       overflow-wrap: break-word;
+       white-space: normal;
+       padding: 8px;
+     }
+
+   th:nth-child(4), td:nth-child(4) {
+   width: 25%;
+
+ }
+    </style>
 </head>
 <body>
 <div th:fragment="tabla-eventos">

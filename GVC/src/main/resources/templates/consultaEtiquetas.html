@@ -18,6 +18,23 @@
     .toast {
      opacity: 1 !important;
  }
+
+ table {
+      table-layout: fixed;  /* Hace que las celdas tengan un ancho fijo */
+      width: 100%;  /* Asegura que la tabla ocupe el 100% del espacio disponible */
+    }
+   table td, table th {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      padding: 8px;
+    }
+
+  th:nth-child(3), td:nth-child(3) {
+  width: 30%;
+
+}
+
   </style>
 </head>
 <body>
@@ -106,8 +123,9 @@
           <span th:style="'background-color:' + ${etiqueta.color} + '; display:inline-block; width:20px; height:20px; margin-right:10px; border: 1px solid #000;'"></span>
           <span th:text="${etiqueta.color}"></span>
         </td>
-        <td th:text="${etiqueta.descripcion}"></td>
-        <td th:if="${rol == 'SUPERADMIN'}">
+        <td class="descripcion" th:text="${etiqueta.descripcion}"></td>
+
+        <td th:if="${rol == 'SUPERADMIN'}" >
           <button type="button" class="btn btn-warning me-2"  th:if="${rol == 'SUPERADMIN'}"  th:attr="onclick='editarEtiqueta(' + ${etiqueta.idEtiquetas} + ');'">
             <i class="bi bi-pencil"></i>
           </button>
