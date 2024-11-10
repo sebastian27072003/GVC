@@ -35,6 +35,8 @@
 
 }
 
+
+
   </style>
 </head>
 <body>
@@ -123,7 +125,7 @@
           <span th:style="'background-color:' + ${etiqueta.color} + '; display:inline-block; width:20px; height:20px; margin-right:10px; border: 1px solid #000;'"></span>
           <span th:text="${etiqueta.color}"></span>
         </td>
-        <td class="descripcion" th:text="${etiqueta.descripcion}"></td>
+        <td  th:text="${etiqueta.descripcion}"></td>
 
         <td th:if="${rol == 'SUPERADMIN'}" >
           <button type="button" class="btn btn-warning me-2"  th:if="${rol == 'SUPERADMIN'}"  th:attr="onclick='editarEtiqueta(' + ${etiqueta.idEtiquetas} + ');'">
