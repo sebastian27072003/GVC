@@ -56,7 +56,7 @@
                     <h3>Crear Eventos</h3>
                 </div>
             </a>
-            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
+            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN|USER')}">
                 <div class="contenidoLeft">
                     <i class='bx bx-book-open'></i>
                     <h3>Consultar Eventos</h3>

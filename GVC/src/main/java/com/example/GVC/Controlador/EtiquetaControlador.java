@@ -65,7 +65,7 @@ public class EtiquetaControlador {
 
         // Verificar si el nombre de la etiqueta ya está en uso
         if (!etiquetaServicio.verificarNombreEtiquetaUnico(nombre)) {
-            redirectAttributes.addFlashAttribute("mensaje", "El nombre de la etiqueta ya está en uso.");
+            redirectAttributes.addFlashAttribute("mensaje", "El nombre de la etiqueta ya existe.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "error");
             return "redirect:/etiquetas/nueva";
         }
@@ -80,7 +80,7 @@ public class EtiquetaControlador {
 
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta se guardó exitosamente.");
         redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
-        return "redirect:/etiquetas/consulta";
+        return "redirect:/etiquetas/nueva";
     }
 
     // Función para validar si el color es un valor hexadecimal
