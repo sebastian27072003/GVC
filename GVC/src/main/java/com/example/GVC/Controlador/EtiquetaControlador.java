@@ -165,7 +165,9 @@ public class EtiquetaControlador {
             System.out.println("Rol recuperado para " + email + ": " + rol);
         }
 
-        List<Etiquetas> etiquetas = etiquetaServicio.buscarPorNombre(nombreEtiqueta);
+        List<Etiquetas> etiquetas = (nombreEtiqueta == null || nombreEtiqueta.trim().isEmpty())
+                ? etiquetaServicio.buscarTodasLasEtiquetas() // Método para obtener todas las etiquetas
+                : etiquetaServicio.buscarPorNombre(nombreEtiqueta);
 
 
         model.addAttribute("rol", rol);

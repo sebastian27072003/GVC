@@ -42,7 +42,7 @@ public class EtiquetaServicio {
 
     // Método para verificar si el nombre de la etiqueta es único
     public boolean verificarNombreEtiquetaUnico(String nombre) {
-        List<Etiquetas> etiquetaExistente = etiquetaRepository.findByNomEtiquetasContainingIgnoreCase(nombre);
+        List<Etiquetas> etiquetaExistente = etiquetaRepository.findByNomEtiquetasIgnoreCase(nombre);
         return etiquetaExistente.isEmpty(); // Devuelve true si no existe una etiqueta con ese nombre
     }
 
@@ -52,7 +52,7 @@ public class EtiquetaServicio {
         return etiqueta.orElse(null);
     }
 
-    public List<Etiquetas> buscarPorNombre(String nombreEtiqueta) {
-        return etiquetaRepository.findByNomEtiquetasContainingIgnoreCase(nombreEtiqueta);
+    public List<Etiquetas>buscarPorNombre(String nombreEtiqueta) {
+        return etiquetaRepository.findByNomEtiquetasIgnoreCase(nombreEtiqueta);
     }
 }

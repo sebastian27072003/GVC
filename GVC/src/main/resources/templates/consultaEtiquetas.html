@@ -271,7 +271,7 @@ document.getElementById('btnConfirmarEliminarEtiqueta').addEventListener('click'
 
   $(document).ready(function() {
     $('#tabla-etiqueta').DataTable({
-        "pageLength": 10,
+        "pageLength": 5,
        "lengthMenu": [5, 10, 15, 20],
        "searching": false,
         "ordering": false,
@@ -279,7 +279,7 @@ document.getElementById('btnConfirmarEliminarEtiqueta').addEventListener('click'
         "lengthChange": false,
         "language": {
             "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
-
+             "emptyTable": "No hay etiquetas disponibles",
              "paginate": {
                 "previous": "<",
                 "next": ">"
