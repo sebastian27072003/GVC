@@ -128,6 +128,7 @@ public class EventosControlador {
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         eventosServicio.eliminarEvento(id);
         redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido eliminado exitosamente.");
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         return "redirect:/eventos/consultar"; // Redirige a la lista de eventos tras eliminar
     }
 
@@ -140,6 +141,7 @@ public class EventosControlador {
 
             if (!imagen.getContentType().startsWith("image/")) {
                 redirectAttributes.addFlashAttribute("mensaje", "El archivo subido no es una imagen.");
+                redirectAttributes.addFlashAttribute("tipoMensaje", "error");
                 return "redirect:/eventos/alta"; // Regresar al formulario con un mensaje de error
             }
             
@@ -153,9 +155,11 @@ public class EventosControlador {
             eventosServicio.guardarEvento(evento);
 
             redirectAttributes.addFlashAttribute("mensaje", "El evento se ha guardado exitosamente.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         } catch (Exception e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("mensaje", "Hubo un error al subir la imagen.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "error");
         }
 
         return "redirect:/eventos/alta";
@@ -244,7 +248,7 @@ public class EventosControlador {
             // Guardar el evento actualizado
             eventosServicio.actualizarEvento(id, eventoExistente);
             redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido actualizado exitosamente.");
-
+            redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
             return "redirect:/eventos/consultar"; // Redirigir después de guardar
         } catch (Exception e) {
             e.printStackTrace(); // Imprimir error en la consola

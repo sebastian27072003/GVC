@@ -59,12 +59,14 @@ public class EtiquetaControlador {
         // Verificar si el color es hexadecimal válido
         if (!esColorHexadecimalValido(color)) {
             redirectAttributes.addFlashAttribute("mensaje", "El color debe ser un valor hexadecimal válido.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "error");
             return "formularioEtiqueta";
         }
 
         // Verificar si el nombre de la etiqueta ya está en uso
         if (!etiquetaServicio.verificarNombreEtiquetaUnico(nombre)) {
             redirectAttributes.addFlashAttribute("mensaje", "El nombre de la etiqueta ya está en uso.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "error");
             return "redirect:/etiquetas/nueva";
         }
 
@@ -77,6 +79,7 @@ public class EtiquetaControlador {
         etiquetaServicio.guardarEtiqueta(etiqueta);
 
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta se guardó exitosamente.");
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         return "redirect:/etiquetas/consulta";
     }
 
@@ -120,6 +123,8 @@ public class EtiquetaControlador {
     public String eliminarEtiqueta(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         etiquetaServicio.eliminarEtiqueta(id);
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta ha sido eliminada exitosamente.");
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
+
         return "redirect:/etiquetas/consulta";
     }
 
@@ -142,7 +147,7 @@ public class EtiquetaControlador {
 
         etiquetaServicio.guardarEtiqueta(etiquetaExistente);
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta ha sido actualizada exitosamente.");
-
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         return "redirect:/etiquetas/consulta";
     }
 
