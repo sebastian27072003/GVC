@@ -123,8 +123,12 @@ a:hover {
 }
 
 h2 {
-    font-size: 1.6cm;
-    margin-bottom: 1.5cm;
+    font-size: 1cm;
+    margin-bottom: 0.5cm;
+}
+
+label{
+    font-weight: bold;
 }
 
 .campo {

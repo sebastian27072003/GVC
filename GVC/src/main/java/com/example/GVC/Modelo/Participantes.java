@@ -11,11 +11,17 @@ public class Participantes {
     @Column(name = "idParticipante")  // Define la columna idParticipante en la tabla
     private Long idParticipante;
 
-    @Column(name = "Matricula")  // Define la columna Matricula en la tabla
-    private Long matricula;
+    @Column(name = "Correo")
+    private String email;
 
     @Column(name = "Nombre")  // Define la columna Nombre en la tabla
     private String nombre;
+
+    @Column(name = "Notificaciones")
+    private Boolean notificaciones;
+
+    @Column(name = "Recordatorio")
+    private String recordatorio;
 
     // Getters y Setters
 
@@ -27,12 +33,12 @@ public class Participantes {
         this.idParticipante = idParticipante;
     }
 
-    public Long getMatricula() {
-        return matricula;
+    public String getemail() {
+        return email;
     }
 
-    public void setMatricula(Long matricula) {
-        this.matricula = matricula;
+    public void setemail(String email) {
+        this.email = email;
     }
 
     public String getNombre() {
@@ -41,5 +47,21 @@ public class Participantes {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Boolean getNotificaciones() {
+        return notificaciones;
+    }
+
+    public void setNotificaciones(Boolean notificaciones) {
+        this.notificaciones = notificaciones;
+    }
+
+    public String getRecordatorio() {
+        return recordatorio;
+    }
+
+    public void setRecordatorio(String recordatorio) {
+        this.recordatorio = recordatorio;
     }
 }
