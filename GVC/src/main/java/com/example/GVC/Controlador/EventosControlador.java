@@ -3,9 +3,9 @@ package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
-import com.example.GVC.Servicio.CloudinaryServicio;
-import com.example.GVC.Servicio.EventosServicio;
-import com.example.GVC.Servicio.UsuarioServicio;
+import com.example.GVC.Modelo.Participantes;
+import com.example.GVC.Modelo.ParticipantesEventos;
+import com.example.GVC.Servicio.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,11 +29,15 @@ public class EventosControlador {
 
     private final UsuarioServicio usuarioServicio;
     private final CloudinaryServicio cloudinaryservicio;
+    private final ParticipantesServicio participantesServicio;
+    private final ParticipantesEventosServicio participantesEventosServicio;
 
-    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio) {
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio, ParticipantesServicio participantesServicio, ParticipantesEventosServicio participantesEventosServicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
         this.cloudinaryservicio = cloudinaryservicio;
+        this.participantesServicio = participantesServicio;
+        this.participantesEventosServicio = participantesEventosServicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
@@ -255,4 +261,49 @@ public class EventosControlador {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el evento");
         }
     }
+
+    @PostMapping("/eventos/inscribirse")
+    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Obtener los datos del usuario autenticado
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
+
+        // Buscar el evento
+        Eventos evento = eventosServicio.obtenerEventoPorId(eventoId);
+        if (evento == null) {
+            response.put("success", false);
+            response.put("message", "Evento no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Verificar si hay cupo
+        long participantesCount = participantesEventosServicio.contarParticipantesPorEvento(eventoId);
+        if (participantesCount >= evento.getCapacidad()) {
+            response.put("success", false);
+            response.put("message", "No hay espacio disponible en este evento");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        // Crear o obtener el participante
+        Participantes participante = participantesServicio.obtenerOCrearParticipante(email, nombre);
+
+        // Crear la relación Participante-Evento
+        ParticipantesEventos participantesEventos = new ParticipantesEventos();
+        participantesEventos.setEvento(evento);
+        participantesEventos.setParticipante(participante);
+        participantesEventos.setNotificaciones(false);  // Valor por defecto
+        participantesEventos.setRecordatorio(null);     // Valor por defecto
+
+        // Guardar la relación en la base de datos
+        participantesEventosServicio.guardar(participantesEventos);
+
+        // Respuesta exitosa
+        response.put("success", true);
+        response.put("message", "Inscripción exitosa");
+        return ResponseEntity.ok(response);
+    }
+
+
 }

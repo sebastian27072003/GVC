@@ -198,6 +198,7 @@
 
 
 
+
 <div class="modal fade" id="verEventoModal" tabindex="-1" aria-labelledby="verEventoModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 60%; /* tamaño más grande, 90% del ancho de la página */">
     <div class="modal-content">
@@ -223,7 +224,10 @@
           <p><strong>Capacidad:</strong> <span id="capacidad"></span></p>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer d-flex">
+        <button type="button" class="btn btn-primary me-auto" id="inscribirseBtn">
+          <i class="bi bi-person-plus"></i>
+        </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -395,6 +399,8 @@
 
   let eventoIdEliminar = null;
 
+
+
 function verEvento(eventoId) {
 // Realiza la solicitud al servidor para obtener los datos del evento
     fetch(`/eventos/ver/${eventoId}`)
@@ -426,6 +432,8 @@ function verEvento(eventoId) {
               const imagenUrl = evento.imagen; // Asegúrate de que 'evento.imagen' contenga la URL de la imagen
               document.getElementById('eventoImagen').src = imagenUrl; // Asigna la URL a la imagen en el modal
 
+               document.getElementById('inscribirseBtn').setAttribute('data-evento-id', evento.idEventos);
+
               // Inicializar y mostrar el modal
               const modalElement = document.getElementById('verEventoModal');
               const modal = new bootstrap.Modal(modalElement);
@@ -438,6 +446,37 @@ function verEvento(eventoId) {
               alert('Error al cargar los datos del evento.');
             });
   }
+
+  function handleInscripcion() {
+  const eventoId = this.getAttribute('data-evento-id'); // Obtener el ID del evento
+
+  // Realiza la solicitud POST para inscribir al participante
+  fetch('/eventos/inscribirse', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `eventoId=${eventoId}` // Enviar el ID del evento al backend
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Te has inscrito exitosamente en el evento!');
+    } else {
+      alert('Error al inscribirse: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error al inscribirse:', error);
+    alert('Hubo un error al intentar inscribirte en el evento.');
+  });
+}
+
+const inscribirseBtn = document.getElementById('inscribirseBtn');
+if (inscribirseBtn) {
+  inscribirseBtn.removeEventListener('click', handleInscripcion); // Elimina el listener anterior
+  inscribirseBtn.addEventListener('click', handleInscripcion);
+}
 
 
   function cargarFacultades() {
@@ -738,6 +777,7 @@ document.getElementById('btnEliminar').addEventListener('click', () => {
     }
   });
 
+
   $(document).ready(function() {
     $('#tabla-eventos').DataTable({
         "pageLength": 5,
@@ -747,7 +787,7 @@ document.getElementById('btnEliminar').addEventListener('click', () => {
         "info": false,
         "lengthChange": false,
         "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
+
               "emptyTable": "No hay eventos disponibles",
              "paginate": {
                 "previous": "<",

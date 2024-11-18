@@ -116,4 +116,8 @@ public class EventosServicio {
     public List<Etiquetas> buscarEtiquetasPorIds(List<Long> ids) {
         return etiquetasRepositorio.findAllById(ids);
     }
+
+    public Eventos obtenerEventoPorId(Long eventoId) {
+        return eventosRepositorio.findById(eventoId).orElse(null);
+    }
 }

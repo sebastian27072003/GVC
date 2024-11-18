@@ -8,17 +8,23 @@ public class ParticipantesEventos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_participante_evento")  // Columna de la clave primaria
+    @Column(name = "id_participante_evento")
     private Long idParticipanteEvento;
 
     @ManyToOne
-    @JoinColumn(name = "id_evento", nullable = false)  // Relación con Eventos
+    @JoinColumn(name = "id_evento", nullable = false)
     private Eventos evento;
 
-    @Column(name = "nombre_participante", nullable = false)  // Columna de nombre del participante
-    private String nombreParticipante;
+    @ManyToOne
+    @JoinColumn(name = "id_participante", nullable = false)
+    private Participantes participante;
 
-    // Getters y Setters
+    @Column(name = "notificaciones")
+    private Boolean notificaciones;
+
+    @Column(name = "recordatorio")
+    private String recordatorio;
+
 
     public Long getIdParticipanteEvento() {
         return idParticipanteEvento;
@@ -36,11 +42,27 @@ public class ParticipantesEventos {
         this.evento = evento;
     }
 
-    public String getNombreParticipante() {
-        return nombreParticipante;
+    public Participantes getParticipante() {
+        return participante;
     }
 
-    public void setNombreParticipante(String nombreParticipante) {
-        this.nombreParticipante = nombreParticipante;
+    public void setParticipante(Participantes participante) {
+        this.participante = participante;
+    }
+
+    public Boolean getNotificaciones() {
+        return notificaciones;
+    }
+
+    public void setNotificaciones(Boolean notificaciones) {
+        this.notificaciones = notificaciones;
+    }
+
+    public String getRecordatorio() {
+        return recordatorio;
+    }
+
+    public void setRecordatorio(String recordatorio) {
+        this.recordatorio = recordatorio;
     }
 }

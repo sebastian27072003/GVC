@@ -1,6 +1,9 @@
 package com.example.GVC.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Participantes")
@@ -8,22 +11,18 @@ public class Participantes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idParticipante")  // Define la columna idParticipante en la tabla
+    @Column(name = "idParticipante")
     private Long idParticipante;
 
     @Column(name = "Correo")
     private String email;
 
-    @Column(name = "Nombre")  // Define la columna Nombre en la tabla
+    @Column(name = "Nombre")
     private String nombre;
 
-    @Column(name = "Notificaciones")
-    private Boolean notificaciones;
-
-    @Column(name = "Recordatorio")
-    private String recordatorio;
-
-    // Getters y Setters
+    @OneToMany(mappedBy = "participante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ParticipantesEventos> participantesEventos;
 
     public Long getIdParticipante() {
         return idParticipante;
@@ -37,7 +36,7 @@ public class Participantes {
         return email;
     }
 
-    public void setemail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -49,19 +48,4 @@ public class Participantes {
         this.nombre = nombre;
     }
 
-    public Boolean getNotificaciones() {
-        return notificaciones;
-    }
-
-    public void setNotificaciones(Boolean notificaciones) {
-        this.notificaciones = notificaciones;
-    }
-
-    public String getRecordatorio() {
-        return recordatorio;
-    }
-
-    public void setRecordatorio(String recordatorio) {
-        this.recordatorio = recordatorio;
-    }
 }
