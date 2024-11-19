@@ -96,13 +96,20 @@ a:hover {
 
 /* Ajuste del contenedor principal */
 .contenedorPrincipal {
-    margin-left: 2.3cm; /* Ajuste inicial para el menú colapsado */
-    margin-top: 70px;
+    margin-left: 2.3cm;
+    margin-top: 70px; /* Asegura que el contenido no se solape con el header */
     width: calc(100% - 2.3cm);
-    height: calc(100vh - 70px);
-    padding-bottom: 60px; /* Agregar espacio suficiente en la parte inferior */
+
+    min-height: calc(100vh - 70px);
+    padding-bottom: 60px;
+    padding-top: 70px; /* Añadir padding superior */
     transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
+.contenedorPrincipal {
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
 
 /* Ajuste del contenedor al expandir el menú */
 .leftSide-contenedor:hover ~ .contenedorPrincipal {
@@ -177,7 +184,7 @@ h2 {
 
 /* Footer */
 footer {
-    background-color: #003A1F;
+
     color: white;
     text-align: center;
     padding: 10px;
@@ -218,6 +225,9 @@ footer {
     position: fixed;
     bottom: 0;
 }
+
+
+
 
 
 /* Estilo global para el carrusel */
@@ -329,3 +339,5 @@ footer {
     font-size: 0.9em;
     color: #555;
 }
+
+
