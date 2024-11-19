@@ -96,13 +96,20 @@ a:hover {
 
 /* Ajuste del contenedor principal */
 .contenedorPrincipal {
-    margin-left: 2.3cm; /* Ajuste inicial para el menú colapsado */
-    margin-top: 70px;
+    margin-left: 2.3cm;
+    margin-top: 70px; /* Asegura que el contenido no se solape con el header */
     width: calc(100% - 2.3cm);
-    height: calc(100vh - 70px);
-    padding-bottom: 60px; /* Agregar espacio suficiente en la parte inferior */
+
+    min-height: calc(100vh - 70px);
+    padding-bottom: 60px;
+    padding-top: 70px; /* Añadir padding superior */
     transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
+.contenedorPrincipal {
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
 
 /* Ajuste del contenedor al expandir el menú */
 .leftSide-contenedor:hover ~ .contenedorPrincipal {
@@ -209,7 +216,8 @@ footer {
 }
 
 footer {
-    background-color: #343a40;
+    align-items:flex-end;
+    background-color: #003A1F;
     color: white;
     text-align: center;
     padding: 10px;
@@ -217,3 +225,119 @@ footer {
     position: fixed;
     bottom: 0;
 }
+
+
+
+
+
+/* Estilo global para el carrusel */
+#carouselEventos {
+    max-width: 100%; /* Asegura que el carrusel ocupe todo el ancho del contenedor */
+    max-height: 800px; /* Controla la altura máxima del carrusel */
+    overflow: hidden; /* Evita que el contenido se desborde */
+}
+
+/* Ajusta el contenedor de la imagen */
+.carousel-inner {
+    height: 100%;
+    position: relative; /* Necesario para colocar la descripción sobre la imagen */
+}
+
+.carousel-item img {
+    object-fit: contain; /* Ajusta la imagen dentro del contenedor sin recortarla */
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: auto; /* Mantiene la proporción de la imagen */
+    max-height: 800px; /* Limita la altura de la imagen a 500px */
+    display: block;
+    margin: 0 auto; /* Centra la imagen horizontalmente */
+}
+
+.titulo {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    color: #F1A631; /* Color atractivo */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra de texto para darle profundidad */
+    padding: 20px;
+    background: linear-gradient(45deg, #003A1F, #007141); /* Degradado de colores */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+
+
+/* Descripción sobre la imagen */
+.carousel-caption {
+    position: absolute; /* Posiciona la descripción sobre la imagen */
+
+
+    color: white; /* Color de texto para la descripción */
+    opacity: 0.85;
+    background-color: #333333; /* Fondo oscuro semi-transparente */
+    padding: 10px; /* Espaciado interno */
+
+    z-index: 10; /* Asegura que la descripción quede encima de la imagen */
+}
+.imagen-carrusel {
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+    width: 100%; /* Ajusta el ancho al contenedor */
+    max-height: 800px; /* Limita la altura máxima a 800px */
+}
+
+/* Estilo para los botones de navegación */
+.carousel .carousel-control-prev, .carousel .carousel-control-next {
+    opacity: 0.5 !important; /* Establece la opacidad por defecto */
+    transition: opacity 0.3s ease !important; /* Transición suave para el cambio de opacidad */
+}
+
+/* Estilo cuando el usuario pasa el ratón por encima de los botones */
+.carousel .carousel-control-prev:hover, .carousel .carousel-control-next:hover {
+    opacity: .5 !important; /* Los botones se vuelven completamente opacos al hacer hover */
+    background-color:#333333;
+}
+
+
+.tarjetas-contenedor {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.tarjeta {
+    width: 250px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tarjeta img {
+    width: 100%;
+    height: auto;
+}
+
+.tarjeta-info {
+    padding: 15px;
+}
+
+.categoria {
+    background-color: red;
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+}
+
+.tarjeta-info h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.fecha {
+    font-size: 0.9em;
+    color: #555;
+}
+
+
