@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar Sesión</title>
-
+  <link rel="icon" href="/gpiLogo2.jpg" type="image/x-icon">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <link href="login.css" rel="stylesheet">
+  <title>Iniciar Sesión</title>
+
+
 </head>
 <style>
   /*
@@ -54,8 +55,8 @@ and open the template in the editor.
     bottom: 0;
     left: 0;
     right: 0;
-    height: 45%;
-    width: 45%;
+    height: 25%;
+    width: 30%;
     padding: 25px;
     padding-bottom: 600px;
     margin: auto;
@@ -114,38 +115,16 @@ and open the template in the editor.
 <body>
 <div class="row">
   <div class="login">
-    <img src="/gpiLogoBonitoUabc.png" alt="Logo UABCL" class="logo">
+    <img src="https://res.cloudinary.com/dsozg8sim/image/upload/v1731194432/gpiLogoBonitoUabc_ghgdup.png" alt="Logo UABCL" class="logo">
     <h1>Iniciar Sesión</h1>
 
     <div class="panel-header"></div>
     <div class="panel-body">
 
-      <form action="/login" method="POST"> <!-- Enviar al endpoint de login con método POST -->
-        <div class="panel-form">
-          <div class="form-group">
-            <i class='bx bx-home-alt-2' style="font-size: 3em; color: black;"></i>
-            <input type="text" class="form-control" name="username"
-                   placeholder="Correo Electrónico:" autocomplete="off" required>
-          </div>
-
-          <hr style="border: none; height: 2px; background-color: #585757; width: 100%;">
-
-          <div class="form-group">
-            <i class='bx bx-lock-alt' style="font-size: 3em; color: black;"></i>
-            <input type="password" class="form-control" name="password"
-                   placeholder="Contraseña:" required>
-          </div>
-        </div>
-
-        <form action="/login" method="POST">
-
-          <button class="btn btn-success" type="submit">Iniciar sesión</button>
-        </form>
-
         <form action="/oauth2/authorization/google"method="POST">
           <button class="btn btn-googleLogin" type="submit">
 
-              <img src="/gpigoogle.png" alt="Google Logo" style="width: 20px; margin-right: 5px;"> <!-- Cambia 'ruta/al/logo/gpigoogle.png' por la ruta correcta de tu logo -->
+              <img src="https://res.cloudinary.com/dsozg8sim/image/upload/v1731194318/gpigoogle_i3e0kn.png" alt="Google Logo" style="width: 20px; margin-right: 5px;">
             Inicia sesión con Google
 
           </button>
@@ -157,9 +136,9 @@ and open the template in the editor.
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
 </div>
 </body>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </html>

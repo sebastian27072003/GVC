@@ -18,6 +18,23 @@
     .toast {
      opacity: 1 !important;
  }
+
+ table {
+      table-layout: fixed;  /* Hace que las celdas tengan un ancho fijo */
+      width: 100%;  /* Asegura que la tabla ocupe el 100% del espacio disponible */
+    }
+   table td, table th {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      padding: 8px;
+    }
+
+  th:nth-child(3), td:nth-child(3) {
+  width: 30%;
+
+}
+
   </style>
 </head>
 <body>
@@ -52,25 +69,25 @@
       </a>
       <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
         <div class="contenidoLeft">
-          <i class='bx bx-street-view'></i>
+          <i class='bx bx-paper-plane'></i>
           <h3>Crear Eventos</h3>
         </div>
       </a>
       <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
         <div class="contenidoLeft">
-          <i class='bx bx-collection'></i>
+          <i class='bx bx-book-open'></i>
           <h3>Consultar Eventos</h3>
         </div>
       </a>
       <a href="/etiquetas/nueva" th:if="${rol.matches('SUPERADMIN')}">
         <div class="contenidoLeft">
-          <i class='bx bx-folder-plus'></i>
+          <i class='bx bx-add-to-queue'></i>
           <h3>Crear Etiquetas</h3>
         </div>
       </a>
       <a href="/logout">
         <div class="contenidoLeft">
-          <i class='bx bx-collection'></i>
+          <i class='bx bx-task-x'></i>
           <h3>Salir</h3>
         </div>
       </a>
@@ -106,8 +123,9 @@
           <span th:style="'background-color:' + ${etiqueta.color} + '; display:inline-block; width:20px; height:20px; margin-right:10px; border: 1px solid #000;'"></span>
           <span th:text="${etiqueta.color}"></span>
         </td>
-        <td th:text="${etiqueta.descripcion}"></td>
-        <td th:if="${rol == 'SUPERADMIN'}">
+        <td class="descripcion" th:text="${etiqueta.descripcion}"></td>
+
+        <td th:if="${rol == 'SUPERADMIN'}" >
           <button type="button" class="btn btn-warning me-2"  th:if="${rol == 'SUPERADMIN'}"  th:attr="onclick='editarEtiqueta(' + ${etiqueta.idEtiquetas} + ');'">
             <i class="bi bi-pencil"></i>
           </button>
@@ -292,10 +310,11 @@ document.getElementById('btnConfirmarEliminarEtiqueta').addEventListener('click'
 
   }
 </script>
-<footer >
-  <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
-</footer>
+
 </body>
 
+<footer th:fragment="footer" class=" text-white text-center p-1">
+  <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
+</footer>
 
 </html>

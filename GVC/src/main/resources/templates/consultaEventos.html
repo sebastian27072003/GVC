@@ -13,21 +13,27 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
-  <!-- Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Bootstrap JS Bundle (incluye Popper.js) -->
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-
   <link href="/style.css" rel="stylesheet"/>
   <title>Eventos</title>
   <style>
     .toast {
       opacity: 1 !important;
   }
+    table {
+      table-layout: fixed;  /* Hace que las celdas tengan un ancho fijo */
+      width: 100%;  /* Asegura que la tabla ocupe el 100% del espacio disponible */
+    }
+   table td, table th {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      padding: 8px;
+    }
+
+  th:nth-child(4), td:nth-child(4) {
+  width: 25%;
+
+}
   </style>
 </head>
 <body>
@@ -63,31 +69,25 @@
       </a>
       <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
         <div class="contenidoLeft">
-          <i class='bx bx-street-view'></i>
+          <i class='bx bx-paper-plane'></i>
           <h3>Crear Eventos</h3>
         </div>
       </a>
       <a href="/etiquetas/nueva" th:if="${rol.matches('SUPERADMIN')}">
         <div class="contenidoLeft">
-          <i class='bx bx-folder-plus'></i>
+          <i class='bx bx-add-to-queue'></i>
           <h3>Crear Etiquetas</h3>
         </div>
       </a>
       <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
         <div class="contenidoLeft">
-          <i class='bx bx-collection'></i>
+          <i class='bx bx-folder-plus'></i>
           <h3>Consultar Etiquetas</h3>
-        </div>
-      </a>
-      <a href="">
-        <div class="contenidoLeft">
-          <i class='bx bxs-exit'></i>
-          <h3>Consultar Estadísticas</h3>
         </div>
       </a>
       <a href="/logout">
         <div class="contenidoLeft">
-          <i class='bx bx-collection'></i>
+          <i class='bx bx-task-x'></i>
           <h3>Salir</h3>
         </div>
       </a>
@@ -160,18 +160,10 @@
         <td th:text="${evento.fecha}"></td>
         <td>
           <!-- Botones de acción -->
-
           <button type="button" class="btn btn-success me-2"
-                  th:attr="onclick='verEvento(' + ${evento.idEventos} + ')'" >
+                  th:attr="onclick='mostrarImagen(' + ${evento.idEventos} + ', \'' + ${evento.imagen} + '\')'">
             <i class="bi bi-eye"></i>
           </button>
-
-
-
-
-
-
-
           <button type="button" class="btn btn-warning me-2" th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}" th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'">
             <i class="bi bi-pencil"></i>
           </button>
@@ -198,38 +190,23 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+        <button type="button" class="btn btn-danger" id="btnEliminar">Eliminar</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- Modal para Ver Detalles del Evento -->
-<div class="modal fade" id="verEventoModal" tabindex="-1" aria-labelledby="verEventoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 60%; /* tamaño más grande, 90% del ancho de la página */">
+
+<div class="modal fade" id="mostrarImagenModal" tabindex="-1" aria-labelledby="mostrarImagenModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="verEventoModalLabel">Detalles del Evento</h5>
+        <h5 class="modal-title" id="mostrarImagenModalLabel">Imagen del Evento</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body d-flex">
-        <!-- Imagen del evento -->
-        <div class="me-3" style="flex: 0 0 250px;">
-          <img id="eventoImagen" class="img-fluid" alt="Imagen del Evento" style="width: 100%; height: auto;">
-        </div>
-        <!-- Texto del evento -->
-        <div style="flex: 1;">
-          <p><strong>Nombre:</strong> <span id="nomEvento"></span></p>
-          <p><strong>Hora de Inicio:</strong> <span id="horaInicio"></span></p>
-          <p><strong>Hora de Fin:</strong> <span id="horaFin"></span></p>
-          <p><strong>Fecha:</strong> <span id="fecha"></span></p>
-          <p><strong>Lugar:</strong> <span id="lugar"></span></p>
-          <p><strong>Descripción:</strong> <span id="descripcion"></span></p>
-          <p><strong>Encargado:</strong> <span id="encargado"></span></p>
-          <p><strong>Estado:</strong> <span id="estado"></span></p>
-          <p><strong>Capacidad:</strong> <span id="capacidad"></span></p>
-        </div>
+      <div class="modal-body">
+        <img id="imagenEvento" src="https://via.placeholder.com/150" class="img-fluid" alt="Imagen del Evento">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -237,14 +214,6 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
 
 <!-- Modal para Editar Evento -->
 <div class="modal fade" id="editarEventoModal" tabindex="-1" aria-labelledby="editarEventoModalLabel" aria-hidden="true">
@@ -395,58 +364,19 @@
 </body>
 <script>
 
-  function verEvento(eventoId) {
-    console.log("Evento ID:", eventoId);
+  let eventoIdEliminar = null;
 
-    // Realiza la solicitud al servidor para obtener los datos del evento
-    fetch(`/eventos/ver/${eventoId}`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`Error en la respuesta del servidor: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then(evento => {
-              if (!evento) {
-                console.error("Datos del evento no encontrados:", evento);
-                alert('Error al cargar los datos del evento.');
-                return;
-              }
+ function mostrarImagen(idEvento, urlImagen) {
+  console.log('Mostrando imagen para el evento:', idEvento);
+  console.log('URL de la imagen:', urlImagen);  // Verifica si la URL es correcta
 
-              // Llenar los campos del modal con los datos del evento
-              document.getElementById('nomEvento').textContent = evento.nomEvento;
-              document.getElementById('horaInicio').textContent = evento.horaInicio;
-              document.getElementById('horaFin').textContent = evento.horaFinal;
-              document.getElementById('fecha').textContent = evento.fecha;
-              document.getElementById('lugar').textContent = evento.lugar;
-              document.getElementById('descripcion').textContent = evento.descripcion;
-              document.getElementById('encargado').textContent = evento.encargado;
-              document.getElementById('estado').textContent = evento.estado;
-              document.getElementById('capacidad').textContent = evento.capacidad;
+  // Asigna la URL de la imagen al modal
+  document.getElementById('imagenEvento').src = urlImagen;
 
-              // Mostrar la imagen
-              const imagenUrl = evento.imagen; // Asegúrate de que 'evento.imagen' contenga la URL de la imagen
-              document.getElementById('eventoImagen').src = imagenUrl; // Asigna la URL a la imagen en el modal
-
-              // Inicializar y mostrar el modal
-              const modalElement = document.getElementById('verEventoModal');
-              const modal = new bootstrap.Modal(modalElement);
-              modal.show();
-
-              console.log("Modal mostrado correctamente.");
-            })
-            .catch(error => {
-              console.error('Error al cargar los datos del evento:', error);
-              alert('Error al cargar los datos del evento.');
-            });
-  }
-
-
-
-
-
-
-
+  // Muestra el modal
+  var myModal = new bootstrap.Modal(document.getElementById('mostrarImagenModal'));
+  myModal.show();
+}
 
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
@@ -527,7 +457,7 @@
   modal.show();
 }
 
-document.getElementById('btnConfirmarEliminar').addEventListener('click', () => {
+document.getElementById('btnEliminar').addEventListener('click', () => {
   if (eventoIdEliminar) {
     window.location.href = '/eventos/eliminar/' + eventoIdEliminar;
   }
@@ -769,11 +699,10 @@ document.getElementById('btnConfirmarEliminar').addEventListener('click', () => 
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<footer >
-  <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
-</footer>
 
 
 <!-- Footer -->
-
+<footer th:fragment="footer" class="text-white text-center p-1">
+  <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
+</footer>
 </html>
