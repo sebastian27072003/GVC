@@ -1,4 +1,4 @@
-package com.example.GVC.Controlador;
+ package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -38,7 +37,7 @@ public class CarouselController {
 
     String rol = "";
     if (oidcUser != null) {
-      rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+      rol = usuarioServicio.obtenerRolPorEmail(email); // Método para obtener el rol
       System.out.println("Rol recuperado para " + email + ": " + rol);
     }
 
@@ -60,4 +59,3 @@ public class CarouselController {
     return "home"; // Vista para consultar eventos
   }
 }
-
