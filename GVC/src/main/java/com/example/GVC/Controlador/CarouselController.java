@@ -52,7 +52,6 @@ public class CarouselController {
 
     // Agregar datos al modelo para la vista
     model.addAttribute("nombre", nombre);
-    model.addAttribute("email", email);
     model.addAttribute("rol", rol);
     model.addAttribute("eventos", eventos);
     model.addAttribute("etiquetas", etiquetas);
@@ -60,3 +59,4 @@ public class CarouselController {
     return "home"; // Vista para consultar eventos
   }
 }
+

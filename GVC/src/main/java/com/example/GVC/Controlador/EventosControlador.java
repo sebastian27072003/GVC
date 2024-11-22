@@ -3,9 +3,9 @@ package com.example.GVC.Controlador;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
-import com.example.GVC.Servicio.CloudinaryServicio;
-import com.example.GVC.Servicio.EventosServicio;
-import com.example.GVC.Servicio.UsuarioServicio;
+import com.example.GVC.Modelo.Participantes;
+import com.example.GVC.Modelo.ParticipantesEventos;
+import com.example.GVC.Servicio.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,11 +29,15 @@ public class EventosControlador {
 
     private final UsuarioServicio usuarioServicio;
     private final CloudinaryServicio cloudinaryservicio;
+    private final ParticipantesServicio participantesServicio;
+    private final ParticipantesEventosServicio participantesEventosServicio;
 
-    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio) {
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio, ParticipantesServicio participantesServicio, ParticipantesEventosServicio participantesEventosServicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
         this.cloudinaryservicio = cloudinaryservicio;
+        this.participantesServicio = participantesServicio;
+        this.participantesEventosServicio = participantesEventosServicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
@@ -107,11 +113,29 @@ public class EventosControlador {
         return "fragments/tablaEventos :: tabla-eventos"; // Fragmento de la tabla con los resultados filtrados
     }
 
+    // Obtener los datos del evento para visualizar
+    @GetMapping("/eventos/ver/{id}")
+    @ResponseBody
+    public ResponseEntity<Eventos> obtenerEventoPorIdParaVer(@PathVariable Long id) {
+        try {
+            Eventos evento = eventosServicio.buscarEventoPorId(id);
+            if (evento == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            System.out.println("Evento a ver: " + evento);
+            return ResponseEntity.ok(evento);
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         eventosServicio.eliminarEvento(id);
         redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido eliminado exitosamente.");
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         return "redirect:/eventos/consultar"; // Redirige a la lista de eventos tras eliminar
     }
 
@@ -124,6 +148,7 @@ public class EventosControlador {
 
             if (!imagen.getContentType().startsWith("image/")) {
                 redirectAttributes.addFlashAttribute("mensaje", "El archivo subido no es una imagen.");
+                redirectAttributes.addFlashAttribute("tipoMensaje", "error");
                 return "redirect:/eventos/alta"; // Regresar al formulario con un mensaje de error
             }
             
@@ -137,9 +162,11 @@ public class EventosControlador {
             eventosServicio.guardarEvento(evento);
 
             redirectAttributes.addFlashAttribute("mensaje", "El evento se ha guardado exitosamente.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         } catch (Exception e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("mensaje", "Hubo un error al subir la imagen.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "error");
         }
 
         return "redirect:/eventos/alta";
@@ -251,11 +278,56 @@ public class EventosControlador {
             // Guardar el evento actualizado
             eventosServicio.actualizarEvento(id, eventoExistente);
             redirectAttributes.addFlashAttribute("mensaje", "El evento ha sido actualizado exitosamente.");
-
+            redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
             return "redirect:/eventos/consultar"; // Redirigir después de guardar
         } catch (Exception e) {
             e.printStackTrace(); // Imprimir error en la consola
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el evento");
         }
     }
+
+    @PostMapping("/eventos/inscribirse")
+    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Obtener los datos del usuario autenticado
+        String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : "No disponible";
+
+        // Buscar el evento
+        Eventos evento = eventosServicio.obtenerEventoPorId(eventoId);
+        if (evento == null) {
+            response.put("success", false);
+            response.put("message", "Evento no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Verificar si hay cupo
+        long participantesCount = participantesEventosServicio.contarParticipantesPorEvento(eventoId);
+        if (participantesCount >= evento.getCapacidad()) {
+            response.put("success", false);
+            response.put("message", "No hay espacio disponible en este evento");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        // Crear o obtener el participante
+        Participantes participante = participantesServicio.obtenerOCrearParticipante(email, nombre);
+
+        // Crear la relación Participante-Evento
+        ParticipantesEventos participantesEventos = new ParticipantesEventos();
+        participantesEventos.setEvento(evento);
+        participantesEventos.setParticipante(participante);
+        participantesEventos.setNotificaciones(false);  // Valor por defecto
+        participantesEventos.setRecordatorio(null);     // Valor por defecto
+
+        // Guardar la relación en la base de datos
+        participantesEventosServicio.guardar(participantesEventos);
+
+        // Respuesta exitosa
+        response.put("success", true);
+        response.put("message", "Inscripción exitosa");
+        return ResponseEntity.ok(response);
+    }
+
+
 }

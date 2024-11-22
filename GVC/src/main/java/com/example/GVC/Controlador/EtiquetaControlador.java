@@ -49,6 +49,7 @@ public class EtiquetaControlador {
         return "formularioEtiqueta";
     }
 
+    // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
     public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,
                                   @RequestParam String nombre,
@@ -59,12 +60,14 @@ public class EtiquetaControlador {
         // Verificar si el color es hexadecimal válido
         if (!esColorHexadecimalValido(color)) {
             redirectAttributes.addFlashAttribute("mensaje", "El color debe ser un valor hexadecimal válido.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "error");
             return "formularioEtiqueta";
         }
 
         // Verificar si el nombre de la etiqueta ya está en uso
         if (!etiquetaServicio.verificarNombreEtiquetaUnico(nombre)) {
-            redirectAttributes.addFlashAttribute("mensaje", "El nombre de la etiqueta ya está en uso.");
+            redirectAttributes.addFlashAttribute("mensaje", "El nombre de la etiqueta ya existe.");
+            redirectAttributes.addFlashAttribute("tipoMensaje", "error");
             return "redirect:/etiquetas/nueva";
         }
 
@@ -74,10 +77,20 @@ public class EtiquetaControlador {
         etiqueta.setColor(color);
         etiqueta.setDescripcion(descripcion);
 
+        String nombreusuario = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
+
         etiquetaServicio.guardarEtiqueta(etiqueta);
 
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta se guardó exitosamente.");
-        return "redirect:/etiquetas/consulta";
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
+        return "redirect:/etiquetas/nueva";
     }
 
     // Función para validar si el color es un valor hexadecimal
@@ -120,6 +133,8 @@ public class EtiquetaControlador {
     public String eliminarEtiqueta(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         etiquetaServicio.eliminarEtiqueta(id);
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta ha sido eliminada exitosamente.");
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
+
         return "redirect:/etiquetas/consulta";
     }
 
@@ -142,7 +157,7 @@ public class EtiquetaControlador {
 
         etiquetaServicio.guardarEtiqueta(etiquetaExistente);
         redirectAttributes.addFlashAttribute("mensaje", "La etiqueta ha sido actualizada exitosamente.");
-
+        redirectAttributes.addFlashAttribute("tipoMensaje", "exito");
         return "redirect:/etiquetas/consulta";
     }
 
@@ -160,7 +175,9 @@ public class EtiquetaControlador {
             System.out.println("Rol recuperado para " + email + ": " + rol);
         }
 
-        List<Etiquetas> etiquetas = etiquetaServicio.buscarPorNombre(nombreEtiqueta);
+        List<Etiquetas> etiquetas = (nombreEtiqueta == null || nombreEtiqueta.trim().isEmpty())
+                ? etiquetaServicio.buscarTodasLasEtiquetas() // Método para obtener todas las etiquetas
+                : etiquetaServicio.buscarPorNombre(nombreEtiqueta);
 
 
         model.addAttribute("rol", rol);

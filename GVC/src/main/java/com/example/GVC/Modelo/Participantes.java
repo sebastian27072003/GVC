@@ -1,6 +1,9 @@
 package com.example.GVC.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Participantes")
@@ -8,16 +11,18 @@ public class Participantes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idParticipante")  // Define la columna idParticipante en la tabla
+    @Column(name = "idParticipante")
     private Long idParticipante;
 
-    @Column(name = "Matricula")  // Define la columna Matricula en la tabla
-    private Long matricula;
+    @Column(name = "Correo")
+    private String email;
 
-    @Column(name = "Nombre")  // Define la columna Nombre en la tabla
+    @Column(name = "Nombre")
     private String nombre;
 
-    // Getters y Setters
+    @OneToMany(mappedBy = "participante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ParticipantesEventos> participantesEventos;
 
     public Long getIdParticipante() {
         return idParticipante;
@@ -27,12 +32,12 @@ public class Participantes {
         this.idParticipante = idParticipante;
     }
 
-    public Long getMatricula() {
-        return matricula;
+    public String getemail() {
+        return email;
     }
 
-    public void setMatricula(Long matricula) {
-        this.matricula = matricula;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getNombre() {
@@ -42,4 +47,5 @@ public class Participantes {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
 }

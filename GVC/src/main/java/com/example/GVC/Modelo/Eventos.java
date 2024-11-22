@@ -1,5 +1,6 @@
 package com.example.GVC.Modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalTime;
@@ -60,7 +61,17 @@ public class Eventos {
     )
     private List<Etiquetas> etiquetas;
 
-    // Getters y Setters
+    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ParticipantesEventos> participantesEventos;
+
+    public List<ParticipantesEventos> getParticipantesEventos() {
+        return participantesEventos;
+    }
+
+    public void setParticipantesEventos(List<ParticipantesEventos> participantesEventos) {
+        this.participantesEventos = participantesEventos;
+    }
 
     public Long getIdEventos() {
         return idEventos;

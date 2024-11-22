@@ -13,12 +13,12 @@
 </head>
 
 <body>
-<div class="top"></div>
+<dv class="top"></dv>
 
 <!-- Header -->
 <header class="header">
     <div style="display: flex; align-items: center;">
-        <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
+        <img src="/Logo3.jpg" alt="Logo UABC" style="width: 60px; height: 50px; margin-right: 20px; margin-left: 90px">
         <div>
             <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
             <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
@@ -38,33 +38,33 @@
     <!-- Menú lateral -->
     <div class="leftSide-contenedor">
         <div class="leftSide">
-            <a href="/home">
+            <a href="/etiquetas/nueva" th:if="${rol.matches('SUPERADMIN')}">
                 <div class="contenidoLeft">
-                    <i class='bx bxs-contact'></i>
-                    <h3>Inicio</h3>
+                    <i class='bx bx-add-to-queue'></i>
+                    <h3>Crear Etiquetas</h3>
                 </div>
             </a>
             <a href="/etiquetas/consulta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
-                    <i class='bx bx-collection'></i>
+                    <i class='bx bx-folder-plus'></i>
                     <h3>Consultar Etiquetas</h3>
                 </div>
             </a>
             <a href="/eventos/alta" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
                 <div class="contenidoLeft">
-                    <i class='bx bx-street-view'></i>
+                    <i class='bx bx-paper-plane'></i>
                     <h3>Crear Eventos</h3>
                 </div>
             </a>
-            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN')}">
+            <a href="/eventos/consultar" th:if="${rol.matches('SUPERADMIN|ADMIN|USER')}">
                 <div class="contenidoLeft">
-                    <i class='bx bx-collection'></i>
+                    <i class='bx bx-book-open'></i>
                     <h3>Consultar Eventos</h3>
                 </div>
             </a>
             <a href="/logout">
                 <div class="contenidoLeft">
-                    <i class='bx bx-collection'></i>
+                    <i class='bx bx-task-x'></i>
                     <h3>Salir</h3>
                 </div>
             </a>
