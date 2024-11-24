@@ -115,20 +115,40 @@ public class EventosControlador {
     // Obtener los datos del evento para visualizar
     @GetMapping("/eventos/ver/{id}")
     @ResponseBody
-    public ResponseEntity<Eventos> obtenerEventoPorIdParaVer(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> obtenerEventoPorIdParaVer(@PathVariable Long id, @AuthenticationPrincipal OidcUser oidcUser) {
         try {
+            // Buscar el evento por su ID
             Eventos evento = eventosServicio.buscarEventoPorId(id);
             if (evento == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+
+            // Obtener el email del usuario autenticado
+            String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
+
+            // Verificar si el usuario ya está registrado en el evento
+            boolean yaRegistrado = false;
+            if (email != null) {
+                Participantes participante = participantesServicio.buscarPorEmail(email);
+                if (participante != null) {
+                    yaRegistrado = participantesEventosServicio.existeRelacion(participante.getIdParticipante(), id);
+                }
+            }
+
+            // Crear la respuesta con datos del evento y el estado de registro
+            Map<String, Object> response = new HashMap<>();
+            response.put("evento", evento);             // Datos del evento
+            response.put("yaRegistrado", yaRegistrado); // Estado de registro del usuario
+
             System.out.println("Evento a ver: " + evento);
-            return ResponseEntity.ok(evento);
+            System.out.println("Usuario registrado: " + yaRegistrado);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
+            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depuración
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -150,7 +170,7 @@ public class EventosControlador {
                 redirectAttributes.addFlashAttribute("tipoMensaje", "error");
                 return "redirect:/eventos/alta"; // Regresar al formulario con un mensaje de error
             }
-            
+
             // Subir la imagen a Cloudinary
             String imageUrl = cloudinaryservicio.uploadImage(imagen);
             evento.setImagen(imageUrl); // Guarda la URL de la imagen en el evento
@@ -171,6 +191,8 @@ public class EventosControlador {
         return "redirect:/eventos/alta";
 
     }
+
+
 
     @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
@@ -302,6 +324,61 @@ public class EventosControlador {
         // Respuesta exitosa
         response.put("success", true);
         response.put("message", "Inscripción exitosa");
+        return ResponseEntity.ok(response);
+    }
+
+    // Verificar si el usuario está registrado en el evento
+    @GetMapping("/eventos/verificar-registro")
+    @ResponseBody
+    public ResponseEntity<Boolean> verificarRegistro(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
+
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // No autenticado
+        }
+
+        Participantes participante = participantesServicio.buscarPorEmail(email);
+
+        if (participante == null) {
+            return ResponseEntity.ok(false); // El usuario no tiene un registro como participante
+        }
+
+        boolean estaRegistrado = participantesEventosServicio.estaRegistradoEnEvento(participante.getIdParticipante(), eventoId);
+        return ResponseEntity.ok(estaRegistrado);
+    }
+
+    // Eliminar registro (desinscribirse) del evento
+    @DeleteMapping("/eventos/eliminar-registro")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> eliminarRegistro(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
+
+        if (email == null) {
+            response.put("success", false);
+            response.put("message", "Usuario no autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        Participantes participante = participantesServicio.buscarPorEmail(email);
+
+        if (participante == null) {
+            response.put("success", false);
+            response.put("message", "Participante no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        boolean eliminado = participantesEventosServicio.eliminarRegistro(participante.getIdParticipante(), eventoId);
+
+        if (eliminado) {
+            response.put("success", true);
+            response.put("message", "Te has desinscrito del evento correctamente");
+        } else {
+            response.put("success", false);
+            response.put("message", "No estás registrado en este evento");
+        }
+
         return ResponseEntity.ok(response);
     }
 
