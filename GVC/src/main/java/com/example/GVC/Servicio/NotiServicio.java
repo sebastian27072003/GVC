@@ -24,7 +24,7 @@ public class NotiServicio {
     @Autowired
     private EventosRepositorio eventosRepositorio;
 
-    @Scheduled(cron = "0 0 9 * * ?")  // Ejecuta a las 9:00 AM, 1:00 PM y 5:00 PM
+    @Scheduled(cron = "0 0 9 * * ?")  // Ejecuta a las 9:00 AM
     @Transactional
     public void enviarRecordatoriosEventos() {
         LocalDateTime ahora = LocalDateTime.now();

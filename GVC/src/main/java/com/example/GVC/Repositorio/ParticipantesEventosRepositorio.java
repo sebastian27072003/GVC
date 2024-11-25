@@ -35,4 +35,3 @@ public interface ParticipantesEventosRepositorio extends JpaRepository<Participa
 
 
 
-}

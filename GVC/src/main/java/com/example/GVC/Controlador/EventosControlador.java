@@ -241,40 +241,7 @@ public class EventosControlador {
     }
 
 
-    // Obtener los datos del evento para visualizar
-    @GetMapping("/eventos/ver/{id}")
-    @ResponseBody
-    public ResponseEntity<Eventos> obtenerEventoPorIdParaVer(@PathVariable Long id) {
-        try {
-            Eventos evento = eventosServicio.buscarEventoPorId(id);
-            if (evento == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            System.out.println("Evento a ver: " + evento);
-            return ResponseEntity.ok(evento);
-        } catch (Exception e) {
-            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
-
-    // Obtener los datos del evento como JSON para la edición
-    @GetMapping("/eventos/editar/{id}")
-    @ResponseBody
-    public ResponseEntity<Eventos> obtenerEventoPorId(@PathVariable Long id) {
-        try {
-            Eventos evento = eventosServicio.buscarEventoPorId(id);
-            if (evento == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            System.out.println("Evento a editar: " + evento);
-            return ResponseEntity.ok(evento);
-        } catch (Exception e) {
-            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
     // Guardar cambios en el evento editado
     @PostMapping("/eventos/editar/{id}")
@@ -356,11 +323,11 @@ public class EventosControlador {
         ParticipantesEventos participantesEventos = new ParticipantesEventos();
         participantesEventos.setEvento(evento);
         participantesEventos.setParticipante(participante);
-        participantesEventos.setNotificaciones(recibirNotificaciones);  // Establecer si el participante quiere recibir notificaciones
+        participantesEventos.setNotificaciones(true);  // Establecer si el participante quiere recibir notificaciones
         participantesEventos.setRecordatorio(null);     // Valor por defecto
 
         // Guardar la relación en la base de datos
-        participantesEventosServicio.guardarParticipante(participantesEventos);
+        participantesEventosServicio.guardar(participantesEventos);
 
         // Enviar correo de confirmación solo si el usuario se ha inscrito
         String asunto = "Confirmación de inscripción al evento: " + evento.getNomEvento();
