@@ -5,17 +5,17 @@
 </head>
 <body>
 <div class="tarjetas-contenedor" th:fragment="tarjetas-contenedor">
-  <div th:each="evento : ${eventos}" class="tarjeta">
-    <img th:src="@{${evento.imagen != null ? evento.imagen : '/default.jpg'}}" alt="Imagen del evento">
+    <div th:each="evento : ${eventos}" class="tarjeta">
+        <img th:src="@{${evento.imagen != null ? evento.imagen : '/default.jpg'}}" alt="Imagen del evento">
 
 
-    <div class="tarjeta-info">
+        <div class="tarjeta-info">
 
-      <h3 th:text="${evento.nomEvento}">Nombre del evento</h3>
-      <p th:text="${evento.lugar}">Lugar del evento</p>
+            <h3 th:text="${evento.nomEvento}">Nombre del evento</h3>
+            <p th:text="${evento.lugar}">Lugar del evento</p>
 
+        </div>
     </div>
-  </div>
 </div>
 </body>
 </html>

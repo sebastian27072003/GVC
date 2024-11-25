@@ -210,6 +210,25 @@ public class EventosControlador {
         return "consultaEventos"; // Vista para consultar eventos
     }
 
+
+    // Obtener los datos del evento para visualizar
+    @GetMapping("/eventos/ver/{id}")
+    @ResponseBody
+    public ResponseEntity<Eventos> obtenerEventoPorIdParaVer(@PathVariable Long id) {
+        try {
+            Eventos evento = eventosServicio.buscarEventoPorId(id);
+            if (evento == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            System.out.println("Evento a ver: " + evento);
+            return ResponseEntity.ok(evento);
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
     // Obtener los datos del evento como JSON para la edición
     @GetMapping("/eventos/editar/{id}")
     @ResponseBody

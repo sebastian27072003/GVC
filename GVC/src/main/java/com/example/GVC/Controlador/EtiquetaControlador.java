@@ -49,6 +49,7 @@ public class EtiquetaControlador {
         return "formularioEtiqueta";
     }
 
+    // Método para guardar la nueva etiqueta
     @PostMapping("/guardar")
     public String guardarEtiqueta(@AuthenticationPrincipal OidcUser oidcUser,
                                   @RequestParam String nombre,
@@ -75,6 +76,15 @@ public class EtiquetaControlador {
         etiqueta.setNomEtiquetas(nombre);
         etiqueta.setColor(color);
         etiqueta.setDescripcion(descripcion);
+
+        String nombreusuario = oidcUser != null ? oidcUser.getAttribute("name").toString() : "Invitado";
+        String email = oidcUser != null ? oidcUser.getAttribute("email").toString() : "No disponible";
+
+        String rol = "";
+        if (oidcUser != null) {
+            rol = usuarioServicio.obtenerRolPorEmail(email); // Metodo para obtener el rol
+            System.out.println("Rol recuperado para " + email + ": " + rol);
+        }
 
         etiquetaServicio.guardarEtiqueta(etiqueta);
 
