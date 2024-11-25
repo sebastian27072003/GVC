@@ -31,13 +31,15 @@ public class EventosControlador {
     private final CloudinaryServicio cloudinaryservicio;
     private final ParticipantesServicio participantesServicio;
     private final ParticipantesEventosServicio participantesEventosServicio;
+    private final EmailServicio emailServicio;
 
-    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio, ParticipantesServicio participantesServicio, ParticipantesEventosServicio participantesEventosServicio) {
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio, ParticipantesServicio participantesServicio, ParticipantesEventosServicio participantesEventosServicio, EmailServicio emailServicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
         this.cloudinaryservicio = cloudinaryservicio;
         this.participantesServicio = participantesServicio;
         this.participantesEventosServicio = participantesEventosServicio;
+        this.emailServicio = emailServicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
@@ -267,8 +269,13 @@ public class EventosControlador {
         }
     }
 
+
     @PostMapping("/eventos/inscribirse")
-    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> inscribirseEvento(
+            @RequestParam Long eventoId,
+            @RequestParam(defaultValue = "false") boolean recibirNotificaciones, // parámetro para la notificación
+            @AuthenticationPrincipal OidcUser oidcUser) {
+
         Map<String, Object> response = new HashMap<>();
 
         // Obtener los datos del usuario autenticado
@@ -284,7 +291,7 @@ public class EventosControlador {
         }
 
         // Verificar si hay cupo
-        long participantesCount = participantesEventosServicio.contarParticipantesPorEvento(eventoId);
+        long participantesCount = participantesEventosServicio.contarParticipantes(eventoId);
         if (participantesCount >= evento.getCapacidad()) {
             response.put("success", false);
             response.put("message", "No hay espacio disponible en este evento");
@@ -298,15 +305,26 @@ public class EventosControlador {
         ParticipantesEventos participantesEventos = new ParticipantesEventos();
         participantesEventos.setEvento(evento);
         participantesEventos.setParticipante(participante);
-        participantesEventos.setNotificaciones(false);  // Valor por defecto
+        participantesEventos.setNotificaciones(recibirNotificaciones);  // Establecer si el participante quiere recibir notificaciones
         participantesEventos.setRecordatorio(null);     // Valor por defecto
 
         // Guardar la relación en la base de datos
-        participantesEventosServicio.guardar(participantesEventos);
+        participantesEventosServicio.guardarParticipante(participantesEventos);
+
+        // Enviar correo de confirmación solo si el usuario se ha inscrito
+        String asunto = "Confirmación de inscripción al evento: " + evento.getNomEvento();
+        String mensaje = "Hola " + nombre + ",\n\n"
+                + "Te has inscrito exitosamente al evento: " + evento.getNomEvento() + ".\n"
+                + "Fecha: " + evento.getFecha() + "\n"
+                + "Lugar: " + evento.getLugar() + "\n\n"
+                + "Gracias por tu registro.";
+
+        // Enviar correo de confirmación
+        emailServicio.enviarCorreo(email, asunto, mensaje);
 
         // Respuesta exitosa
         response.put("success", true);
-        response.put("message", "Inscripción exitosa");
+        response.put("message", "Inscripción exitosa y correo enviado");
         return ResponseEntity.ok(response);
     }
 
