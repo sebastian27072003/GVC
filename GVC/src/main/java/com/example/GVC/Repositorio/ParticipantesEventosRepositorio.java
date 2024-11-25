@@ -10,6 +10,15 @@ import java.util.List;
 public interface ParticipantesEventosRepositorio extends JpaRepository<ParticipantesEventos, Long> {
 
     // Contar los participantes por evento
+
+
+    // Buscar la relación participante-evento específica
+    ParticipantesEventos findByParticipante_IdParticipanteAndEvento_IdEventos(Long participanteId, Long eventoId);
+
+    boolean existsByParticipante_IdParticipanteAndEvento_IdEventos(Long participanteId, Long eventoId);
+
+
+    // Contar los participantes inscritos en un evento específico
     long countByEvento_IdEventos(Long eventoId);
 
     // Obtener la lista de participantes por evento
@@ -20,4 +29,10 @@ public interface ParticipantesEventosRepositorio extends JpaRepository<Participa
 
     // Verificar si un usuario ya está inscrito en un evento
     boolean existsByEvento_IdEventosAndParticipante_Email(Long eventoId, String email);
+}
+
+
+
+
+
 }

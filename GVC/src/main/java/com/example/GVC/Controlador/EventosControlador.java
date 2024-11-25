@@ -118,17 +118,45 @@ public class EventosControlador {
     // Obtener los datos del evento para visualizar
     @GetMapping("/eventos/ver/{id}")
     @ResponseBody
-    public ResponseEntity<Eventos> obtenerEventoPorIdParaVer(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> obtenerEventoPorIdParaVer(@PathVariable(required = false) Long id, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Validación del ID
+        if (id == null || id <= 0) {
+            response.put("success", false);
+            response.put("message", "ID del evento no proporcionado o inválido");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         try {
+            // Buscar el evento por su ID
             Eventos evento = eventosServicio.buscarEventoPorId(id);
             if (evento == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                response.put("success", false);
+                response.put("message", "Evento no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
-            System.out.println("Evento a ver: " + evento);
-            return ResponseEntity.ok(evento);
+
+            String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
+
+            // Verificar si el usuario está registrado
+            boolean yaRegistrado = false;
+            if (email != null) {
+                Participantes participante = participantesServicio.buscarPorEmail(email);
+                if (participante != null) {
+                    yaRegistrado = participantesEventosServicio.existeRelacion(participante.getIdParticipante(), id);
+                }
+            }
+
+            response.put("evento", evento);
+            response.put("yaRegistrado", yaRegistrado);
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depurar
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Error interno del servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -153,7 +181,7 @@ public class EventosControlador {
                 redirectAttributes.addFlashAttribute("tipoMensaje", "error");
                 return "redirect:/eventos/alta"; // Regresar al formulario con un mensaje de error
             }
-            
+
             // Subir la imagen a Cloudinary
             String imageUrl = cloudinaryservicio.uploadImage(imagen);
             evento.setImagen(imageUrl); // Guarda la URL de la imagen en el evento
@@ -174,6 +202,8 @@ public class EventosControlador {
         return "redirect:/eventos/alta";
 
     }
+
+
 
     @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
@@ -288,14 +318,16 @@ public class EventosControlador {
         }
     }
 
-
     @PostMapping("/eventos/inscribirse")
-    public ResponseEntity<Map<String, Object>> inscribirseEvento(
-            @RequestParam Long eventoId,
-            @RequestParam(defaultValue = "false") boolean recibirNotificaciones, // parámetro para la notificación
-            @AuthenticationPrincipal OidcUser oidcUser) {
-
+    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam(required = false) Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
         Map<String, Object> response = new HashMap<>();
+
+        // Validar que el ID del evento no sea nulo
+        if (eventoId == null) {
+            response.put("success", false);
+            response.put("message", "El ID del evento es inválido o no fue proporcionado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         // Obtener los datos del usuario autenticado
         String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
@@ -310,7 +342,7 @@ public class EventosControlador {
         }
 
         // Verificar si hay cupo
-        long participantesCount = participantesEventosServicio.contarParticipantes(eventoId);
+        long participantesCount = participantesEventosServicio.contarParticipantesPorEvento(eventoId);
         if (participantesCount >= evento.getCapacidad()) {
             response.put("success", false);
             response.put("message", "No hay espacio disponible en este evento");
@@ -344,6 +376,68 @@ public class EventosControlador {
         // Respuesta exitosa
         response.put("success", true);
         response.put("message", "Inscripción exitosa y correo enviado");
+        return ResponseEntity.ok(response);
+    }
+
+    // Verificar si el usuario está registrado en el evento
+    @GetMapping("/eventos/verificar-registro")
+    @ResponseBody
+    public ResponseEntity<Boolean> verificarRegistro(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
+
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // No autenticado
+        }
+
+        Participantes participante = participantesServicio.buscarPorEmail(email);
+
+        if (participante == null) {
+            return ResponseEntity.ok(false); // El usuario no tiene un registro como participante
+        }
+
+        boolean estaRegistrado = participantesEventosServicio.estaRegistradoEnEvento(participante.getIdParticipante(), eventoId);
+        return ResponseEntity.ok(estaRegistrado);
+    }
+
+    // Eliminar registro (desinscribirse) del evento
+    @DeleteMapping("/eventos/eliminar-registro")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> eliminarRegistro(@RequestParam(required = false) Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Validar que el ID del evento no sea nulo
+        if (eventoId == null) {
+            response.put("success", false);
+            response.put("message", "El ID del evento es inválido o no fue proporcionado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
+
+        if (email == null) {
+            response.put("success", false);
+            response.put("message", "Usuario no autenticado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        Participantes participante = participantesServicio.buscarPorEmail(email);
+
+        if (participante == null) {
+            response.put("success", false);
+            response.put("message", "Participante no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        boolean eliminado = participantesEventosServicio.eliminarRegistro(participante.getIdParticipante(), eventoId);
+
+        if (eliminado) {
+            response.put("success", true);
+            response.put("message", "Te has desinscrito del evento correctamente");
+        } else {
+            response.put("success", false);
+            response.put("message", "No estás registrado en este evento");
+        }
+
         return ResponseEntity.ok(response);
     }
 
