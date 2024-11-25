@@ -236,10 +236,13 @@
       <div class="modal-footer d-flex">
         <button type="button" class="btn btn-primary me-auto" id="inscribirseBtn">
           <i class="bi bi-person-plus"></i>
+          Inscribirse
         </button>
         <button type="button" class="btn btn-danger me-auto" id="eliminarRegistroBtn" style="display: none;">
           <i class="bi bi-person-dash"></i>
+          Desinscribirse
         </button>
+        <button id="verParticipantesBtn" class="btn btn-primary">Ver Participantes</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -250,6 +253,22 @@
 
 
 
+<!-- Modal para mostrar la lista de participantes -->
+<div class="modal" tabindex="-1" id="participantesModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Participantes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul id="participantesLista">
+          <!-- Los participantes se cargarán aquí -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -416,6 +435,64 @@
 
 </body>
 <script>
+
+  // Función para ver la lista de participantes de un evento
+  function verParticipantes() {
+    const modalElement = document.getElementById("verEventoModal");
+    const eventoId = modalElement.getAttribute("data-evento-id");
+
+    if (!eventoId) {
+      alert("Error: El evento no tiene un ID válido.");
+      console.error("Evento ID inválido al intentar ver los participantes:", eventoId);
+      return;
+    }
+
+    // Hacer la solicitud para obtener los participantes del evento
+    fetch(`/eventos/${eventoId}/participantes`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(participantes => {
+              const participantesLista = document.getElementById("participantesLista");
+              participantesLista.innerHTML = ''; // Limpiar la lista existente
+
+              if (participantes && participantes.length > 0) {
+                // Si hay participantes, agregarlos a la lista
+                participantes.forEach(participante => {
+                  const listItem = document.createElement("li");
+                  listItem.textContent = `${participante.nombre} (${participante.email})`;
+                  participantesLista.appendChild(listItem);
+                });
+              } else {
+                // Si no hay participantes, mostrar un mensaje
+                const listItem = document.createElement("li");
+                listItem.textContent = "No hay participantes registrados para este evento.";
+                participantesLista.appendChild(listItem);
+              }
+
+              // Mostrar el modal con la lista de participantes
+              const participantesModal = new bootstrap.Modal(document.getElementById("participantesModal"));
+              participantesModal.show();
+            })
+            .catch(error => {
+              console.error("Error al cargar los participantes:", error);
+              alert("Hubo un error al cargar los participantes del evento.");
+            });
+  }
+
+  // Asignar el evento al botón de ver participantes
+  document.addEventListener("DOMContentLoaded", function () {
+    const verParticipantesBtn = document.getElementById("verParticipantesBtn");
+
+    if (verParticipantesBtn) {
+      verParticipantesBtn.addEventListener("click", verParticipantes);
+    }
+  });
+
+
 
   let eventoIdEliminar = null;
 

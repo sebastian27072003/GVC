@@ -204,6 +204,21 @@ public class EventosControlador {
     }
 
 
+    @GetMapping("/eventos/{id}/participantes")
+    @ResponseBody
+    public ResponseEntity<List<Participantes>> obtenerParticipantesPorEvento(@PathVariable Long id) {
+        try {
+            List<ParticipantesEventos> participantesEventos = participantesEventosServicio.obtenerParticipantesPorEvento(id);
+            List<Participantes> participantes = participantesEventos.stream()
+                    .map(ParticipantesEventos::getParticipante) // Extrae el participante de cada relación
+                    .toList();
+            return ResponseEntity.ok(participantes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 
     @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
@@ -308,6 +323,15 @@ public class EventosControlador {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        // Verificar si el participante ya está inscrito en el evento
+        Participantes participante = participantesServicio.obtenerOCrearParticipante(email, nombre);
+        boolean yaInscrito = participantesEventosServicio.estaInscrito(eventoId, email);
+        if (yaInscrito) {
+            response.put("success", false);
+            response.put("message", "Ya estás inscrito en este evento");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         // Verificar si hay cupo
         long participantesCount = participantesEventosServicio.contarParticipantesPorEvento(eventoId);
         if (participantesCount >= evento.getCapacidad()) {
@@ -315,9 +339,6 @@ public class EventosControlador {
             response.put("message", "No hay espacio disponible en este evento");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-
-        // Crear o obtener el participante
-        Participantes participante = participantesServicio.obtenerOCrearParticipante(email, nombre);
 
         // Crear la relación Participante-Evento
         ParticipantesEventos participantesEventos = new ParticipantesEventos();
@@ -345,6 +366,7 @@ public class EventosControlador {
         response.put("message", "Inscripción exitosa y correo enviado");
         return ResponseEntity.ok(response);
     }
+
 
     // Verificar si el usuario está registrado en el evento
     @GetMapping("/eventos/verificar-registro")

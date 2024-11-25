@@ -1,5 +1,6 @@
 package com.example.GVC.Repositorio;
 
+import com.example.GVC.Modelo.Participantes;
 import com.example.GVC.Modelo.ParticipantesEventos;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,8 @@ public interface ParticipantesEventosRepositorio extends JpaRepository<Participa
 
     // Verificar si un usuario ya está inscrito en un evento
     boolean existsByEvento_IdEventosAndParticipante_Email(Long eventoId, String email);
+
+
 }
 
 

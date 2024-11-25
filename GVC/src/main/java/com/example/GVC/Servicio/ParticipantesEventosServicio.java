@@ -1,5 +1,6 @@
 package com.example.GVC.Servicio;
 
+import com.example.GVC.Modelo.Participantes;
 import com.example.GVC.Modelo.ParticipantesEventos;
 import com.example.GVC.Repositorio.ParticipantesEventosRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,13 @@ public class ParticipantesEventosServicio {
         participantesEventosRepositorio.save(participantesEventos);
     }
 
+
+
     // Contar los participantes inscritos en un evento
     public long contarParticipantesPorEvento(Long eventoId) {
         return participantesEventosRepositorio.countByEvento_IdEventos(eventoId);
     }
 
-    // Obtener la lista de participantes de un evento
     public List<ParticipantesEventos> obtenerParticipantesPorEvento(Long eventoId) {
         return participantesEventosRepositorio.findByEvento_IdEventos(eventoId);
     }
@@ -42,7 +44,6 @@ public class ParticipantesEventosServicio {
     public void inscribirUsuario(ParticipantesEventos participantesEventos) {
         participantesEventosRepositorio.save(participantesEventos);
     }
-
 
     // Verificar si un participante está registrado en un evento
     public boolean estaRegistradoEnEvento(Long participanteId, Long eventoId) {
@@ -63,6 +64,5 @@ public class ParticipantesEventosServicio {
     public boolean existeRelacion(Long participanteId, Long eventoId) {
         return participantesEventosRepositorio.existsByParticipante_IdParticipanteAndEvento_IdEventos(participanteId, eventoId);
     }
-
 
 }
