@@ -115,18 +115,28 @@ public class EventosControlador {
     // Obtener los datos del evento para visualizar
     @GetMapping("/eventos/ver/{id}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> obtenerEventoPorIdParaVer(@PathVariable Long id, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> obtenerEventoPorIdParaVer(@PathVariable(required = false) Long id, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Validación del ID
+        if (id == null || id <= 0) {
+            response.put("success", false);
+            response.put("message", "ID del evento no proporcionado o inválido");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         try {
             // Buscar el evento por su ID
             Eventos evento = eventosServicio.buscarEventoPorId(id);
             if (evento == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                response.put("success", false);
+                response.put("message", "Evento no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
 
-            // Obtener el email del usuario autenticado
             String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
 
-            // Verificar si el usuario ya está registrado en el evento
+            // Verificar si el usuario está registrado
             boolean yaRegistrado = false;
             if (email != null) {
                 Participantes participante = participantesServicio.buscarPorEmail(email);
@@ -135,20 +145,18 @@ public class EventosControlador {
                 }
             }
 
-            // Crear la respuesta con datos del evento y el estado de registro
-            Map<String, Object> response = new HashMap<>();
-            response.put("evento", evento);             // Datos del evento
-            response.put("yaRegistrado", yaRegistrado); // Estado de registro del usuario
-
-            System.out.println("Evento a ver: " + evento);
-            System.out.println("Usuario registrado: " + yaRegistrado);
-
+            response.put("evento", evento);
+            response.put("yaRegistrado", yaRegistrado);
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depuración
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Error interno del servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -285,8 +293,15 @@ public class EventosControlador {
     }
 
     @PostMapping("/eventos/inscribirse")
-    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam(required = false) Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
         Map<String, Object> response = new HashMap<>();
+
+        // Validar que el ID del evento no sea nulo
+        if (eventoId == null) {
+            response.put("success", false);
+            response.put("message", "El ID del evento es inválido o no fue proporcionado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         // Obtener los datos del usuario autenticado
         String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
@@ -350,8 +365,15 @@ public class EventosControlador {
     // Eliminar registro (desinscribirse) del evento
     @DeleteMapping("/eventos/eliminar-registro")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> eliminarRegistro(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> eliminarRegistro(@RequestParam(required = false) Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
         Map<String, Object> response = new HashMap<>();
+
+        // Validar que el ID del evento no sea nulo
+        if (eventoId == null) {
+            response.put("success", false);
+            response.put("message", "El ID del evento es inválido o no fue proporcionado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
 
