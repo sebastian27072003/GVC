@@ -22,4 +22,10 @@ public class ParticipantesServicio {
         }
         return participante;
     }
+
+
+    // Nuevo método para buscar un participante por email
+    public Participantes buscarPorEmail(String email) {
+        return participantesRepositorio.findByEmail(email);
+    }
 }

@@ -18,22 +18,22 @@
   <style>
     .toast {
       opacity: 1 !important;
-  }
+    }
     table {
       table-layout: fixed;  /* Hace que las celdas tengan un ancho fijo */
       width: 100%;  /* Asegura que la tabla ocupe el 100% del espacio disponible */
     }
-   table td, table th {
+    table td, table th {
       word-wrap: break-word;
       overflow-wrap: break-word;
       white-space: normal;
       padding: 8px;
     }
 
-  th:nth-child(4), td:nth-child(4) {
-  width: 25%;
+    th:nth-child(4), td:nth-child(4) {
+      width: 25%;
 
-}
+    }
   </style>
 </head>
 <body>
@@ -228,6 +228,9 @@
         <button type="button" class="btn btn-primary me-auto" id="inscribirseBtn">
           <i class="bi bi-person-plus"></i>
         </button>
+        <button type="button" class="btn btn-danger me-auto" id="eliminarRegistroBtn" onclick="eliminarInscripcion(${eventoId})" style="display: none;">
+          <i class="bi bi-person-dash"></i>
+        </button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
@@ -368,29 +371,29 @@
   var tipoMensaje = [[${tipoMensaje}]];
 
   if (mensaje && mensaje !== '') {
-      if (tipoMensaje === 'exito') {
-          toastr.success(mensaje, '', {
-              "positionClass": "toast-top-right",
-              "toastClass": "toast",
-              "timeOut": "5000",
-              "closeButton": true,
-              "progressBar": true,
-              "newestOnTop": true,
-              "backgroundColor": "#007141",
-              "opacity": 1
-          });
-      } else if (tipoMensaje === 'error') {
-          toastr.error(mensaje, '', {
-              "positionClass": "toast-top-right",
-              "toastClass": "toast",
-              "timeOut": "5000",
-              "closeButton": true,
-              "progressBar": true,
-              "newestOnTop": true,
-              "backgroundColor": "#d9534f",
-              "opacity": 1
-          });
-      }
+    if (tipoMensaje === 'exito') {
+      toastr.success(mensaje, '', {
+        "positionClass": "toast-top-right",
+        "toastClass": "toast",
+        "timeOut": "5000",
+        "closeButton": true,
+        "progressBar": true,
+        "newestOnTop": true,
+        "backgroundColor": "#007141",
+        "opacity": 1
+      });
+    } else if (tipoMensaje === 'error') {
+      toastr.error(mensaje, '', {
+        "positionClass": "toast-top-right",
+        "toastClass": "toast",
+        "timeOut": "5000",
+        "closeButton": true,
+        "progressBar": true,
+        "newestOnTop": true,
+        "backgroundColor": "#d9534f",
+        "opacity": 1
+      });
+    }
   }
 </script>
 
@@ -401,8 +404,7 @@
 
 
 
-function verEvento(eventoId) {
-// Realiza la solicitud al servidor para obtener los datos del evento
+  function verEvento(eventoId) {
     fetch(`/eventos/ver/${eventoId}`)
             .then(response => {
               if (!response.ok) {
@@ -410,73 +412,151 @@ function verEvento(eventoId) {
               }
               return response.json();
             })
-            .then(evento => {
+            .then(data => {
+              const evento = data.evento;
+              const yaRegistrado = data.yaRegistrado;
+
               if (!evento) {
                 console.error("Datos del evento no encontrados:", evento);
-                alert('Error al cargar los datos del evento.');
+                alert("Error al cargar los datos del evento.");
                 return;
               }
 
-              // Llenar los campos del modal con los datos del evento
-              document.getElementById('nomEvento').textContent = evento.nomEvento;
-              document.getElementById('horaInicio').textContent = evento.horaInicio;
-              document.getElementById('horaFin').textContent = evento.horaFinal;
-              document.getElementById('fecha').textContent = evento.fecha;
-              document.getElementById('lugar').textContent = evento.lugar;
-              document.getElementById('descripcion').textContent = evento.descripcion;
-              document.getElementById('encargado').textContent = evento.encargado;
-              document.getElementById('estado').textContent = evento.estado;
-              document.getElementById('capacidad').textContent = evento.capacidad;
+              // Llenar los campos del modal
+              document.getElementById("nomEvento").textContent = evento.nomEvento;
+              document.getElementById("horaInicio").textContent = evento.horaInicio;
+              document.getElementById("horaFin").textContent = evento.horaFinal;
+              document.getElementById("fecha").textContent = evento.fecha;
+              document.getElementById("lugar").textContent = evento.lugar;
+              document.getElementById("descripcion").textContent = evento.descripcion;
+              document.getElementById("encargado").textContent = evento.encargado;
+              document.getElementById("estado").textContent = evento.estado;
+              document.getElementById("capacidad").textContent = evento.capacidad;
 
-              // Mostrar la imagen
-              const imagenUrl = evento.imagen; // Asegúrate de que 'evento.imagen' contenga la URL de la imagen
-              document.getElementById('eventoImagen').src = imagenUrl; // Asigna la URL a la imagen en el modal
+              // Imagen del evento
+              const imagenUrl = evento.imagen || "/default-image.jpg"; // Agrega un fallback si la imagen no está disponible
+              document.getElementById("eventoImagen").src = imagenUrl;
 
-               document.getElementById('inscribirseBtn').setAttribute('data-evento-id', evento.idEventos);
+              // Configurar los botones
+              const inscribirseBtn = document.getElementById("inscribirseBtn");
+              const eliminarRegistroBtn = document.getElementById("eliminarRegistroBtn");
 
-              // Inicializar y mostrar el modal
-              const modalElement = document.getElementById('verEventoModal');
+              // Validar si `evento.idEventos` tiene un valor válido
+              if (!evento.idEventos) {
+                console.error("El ID del evento no es válido:", evento.idEventos);
+                alert("Error al cargar los detalles del evento. Por favor, intenta nuevamente.");
+                return; // Detiene la ejecución si el ID no es válido
+              }
+
+              // Asignar el atributo data-evento-id a los botones
+              inscribirseBtn.setAttribute("data-evento-id", evento.idEventos);
+              eliminarRegistroBtn.setAttribute("data-evento-id", evento.idEventos);
+
+              // Mostrar/ocultar botones según el estado de registro
+              if (yaRegistrado) {
+                inscribirseBtn.style.display = "none";
+                eliminarRegistroBtn.style.display = "inline-block";
+              } else {
+                inscribirseBtn.style.display = "inline-block";
+                eliminarRegistroBtn.style.display = "none";
+              }
+
+              // Mostrar el modal
+              const modalElement = document.getElementById("verEventoModal");
               const modal = new bootstrap.Modal(modalElement);
               modal.show();
-
-              console.log("Modal mostrado correctamente.");
             })
             .catch(error => {
-              console.error('Error al cargar los datos del evento:', error);
-              alert('Error al cargar los datos del evento.');
+              console.error("Error al cargar los datos del evento:", error);
+              alert("Error al cargar los datos del evento.");
+            });
+  }
+  // Manejo de inscripción
+  // Manejo de inscripción
+  function handleInscripcion(event) {
+    const eventoId = event.target.getAttribute("data-evento-id");
+
+    if (!eventoId) {
+      alert("Error: El evento no tiene un ID válido. Por favor, intenta nuevamente.");
+      console.error("Evento ID inválido al intentar inscribirse:", eventoId);
+      return; // Detiene la ejecución si no hay un ID válido
+    }
+
+    fetch("/eventos/inscribirse", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `eventoId=${eventoId}`,
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert("Te has inscrito exitosamente en el evento!");
+
+                // Actualizar el estado del botón
+                document.getElementById("inscribirseBtn").style.display = "none";
+                document.getElementById("eliminarRegistroBtn").style.display = "inline-block";
+              } else {
+                alert("Error al inscribirse: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("Error al inscribirse:", error);
+              alert("Hubo un error al intentar inscribirte en el evento.");
             });
   }
 
-  function handleInscripcion() {
-  const eventoId = this.getAttribute('data-evento-id'); // Obtener el ID del evento
+  // Manejo de eliminación de inscripción
+  function eliminarInscripcion(event) {
+    const eventoId = event.target.getAttribute("data-evento-id");
 
-  // Realiza la solicitud POST para inscribir al participante
-  fetch('/eventos/inscribirse', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: `eventoId=${eventoId}` // Enviar el ID del evento al backend
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('Te has inscrito exitosamente en el evento!');
-    } else {
-      alert('Error al inscribirse: ' + data.message);
+    if (!eventoId) {
+      alert("Error: El evento no tiene un ID válido para eliminar la inscripción.");
+      console.error("Evento ID inválido al intentar eliminar la inscripción:", eventoId);
+      return; // Detiene la ejecución si no hay un ID válido
     }
-  })
-  .catch(error => {
-    console.error('Error al inscribirse:', error);
-    alert('Hubo un error al intentar inscribirte en el evento.');
-  });
-}
 
-const inscribirseBtn = document.getElementById('inscribirseBtn');
-if (inscribirseBtn) {
-  inscribirseBtn.removeEventListener('click', handleInscripcion); // Elimina el listener anterior
-  inscribirseBtn.addEventListener('click', handleInscripcion);
-}
+    fetch(`/eventos/eliminar-registro?eventoId=${eventoId}`, {
+      method: "DELETE",
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert(data.message);
+                document.getElementById("eliminarRegistroBtn").style.display = "none";
+                document.getElementById("inscribirseBtn").style.display = "inline-block";
+              } else {
+                alert("Error al eliminar la inscripción: " + data.message);
+              }
+            })
+            .catch(error => {
+              console.error("Error al eliminar la inscripción:", error);
+              alert("Hubo un error al intentar eliminar tu inscripción.");
+            });
+  }
+
+
+  // Asignar eventos a los botones dinámicamente
+  document.addEventListener("DOMContentLoaded", function () {
+    const inscribirseBtn = document.getElementById("inscribirseBtn");
+    const eliminarRegistroBtn = document.getElementById("eliminarRegistroBtn");
+
+    if (inscribirseBtn) {
+      inscribirseBtn.addEventListener("click", handleInscripcion);
+    }
+
+    if (eliminarRegistroBtn) {
+      eliminarRegistroBtn.addEventListener("click", eliminarInscripcion);
+    }
+  });
+
+
+  const inscribirseBtn = document.getElementById('inscribirseBtn');
+  if (inscribirseBtn) {
+    inscribirseBtn.removeEventListener('click', handleInscripcion); // Elimina el listener anterior
+    inscribirseBtn.addEventListener('click', handleInscripcion);
+  }
 
 
   function cargarFacultades() {
@@ -553,16 +633,16 @@ if (inscribirseBtn) {
   }
 
   function confirmarEliminacion(eventoId) {
-  eventoIdEliminar = eventoId;
-  const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
-  modal.show();
-}
-
-document.getElementById('btnEliminar').addEventListener('click', () => {
-  if (eventoIdEliminar) {
-    window.location.href = '/eventos/eliminar/' + eventoIdEliminar;
+    eventoIdEliminar = eventoId;
+    const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+    modal.show();
   }
-});
+
+  document.getElementById('btnEliminar').addEventListener('click', () => {
+    if (eventoIdEliminar) {
+      window.location.href = '/eventos/eliminar/' + eventoIdEliminar;
+    }
+  });
 
   function abrirModalEditar(eventoId) {
     console.log("Evento ID:", eventoId);
@@ -640,7 +720,7 @@ document.getElementById('btnEliminar').addEventListener('click', () => {
     form.method = 'POST';
 
     form.submit();
-}
+  }
 
 
 
@@ -780,23 +860,23 @@ document.getElementById('btnEliminar').addEventListener('click', () => {
 
   $(document).ready(function() {
     $('#tabla-eventos').DataTable({
-        "pageLength": 5,
-       "lengthMenu": [5, 10, 15, 20],
-       "searching": false,
-        "ordering": false,
-        "info": false,
-        "lengthChange": false,
-        "language": {
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 15, 20],
+      "searching": false,
+      "ordering": false,
+      "info": false,
+      "lengthChange": false,
+      "language": {
 
-              "emptyTable": "No hay eventos disponibles",
-             "paginate": {
-                "previous": "<",
-                "next": ">"
-            }
+        "emptyTable": "No hay eventos disponibles",
+        "paginate": {
+          "previous": "<",
+          "next": ">"
         }
+      }
 
     });
-});
+  });
 
 </script>
 
