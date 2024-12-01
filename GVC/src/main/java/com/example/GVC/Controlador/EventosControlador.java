@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +32,15 @@ public class EventosControlador {
     private final CloudinaryServicio cloudinaryservicio;
     private final ParticipantesServicio participantesServicio;
     private final ParticipantesEventosServicio participantesEventosServicio;
+    private final EmailServicio emailServicio;
 
-    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio, ParticipantesServicio participantesServicio, ParticipantesEventosServicio participantesEventosServicio) {
+    public EventosControlador(EventosServicio eventosServicio, UsuarioServicio usuarioServicio, CloudinaryServicio cloudinaryservicio, ParticipantesServicio participantesServicio, ParticipantesEventosServicio participantesEventosServicio, EmailServicio emailServicio) {
         this.eventosServicio = eventosServicio;
         this.usuarioServicio = usuarioServicio;
         this.cloudinaryservicio = cloudinaryservicio;
         this.participantesServicio = participantesServicio;
         this.participantesEventosServicio = participantesEventosServicio;
+        this.emailServicio = emailServicio;
     }
 
     // Formulario de alta de eventos con datos del usuario autenticado
@@ -62,6 +65,7 @@ public class EventosControlador {
         model.addAttribute("rol", rol);
         model.addAttribute("evento", new Eventos());
         model.addAttribute("etiquetas", etiquetas); // Agregar etiquetas al modelo
+
 
         return "altaEvento"; // Vista del formulario de alta de evento
     }
@@ -115,18 +119,28 @@ public class EventosControlador {
     // Obtener los datos del evento para visualizar
     @GetMapping("/eventos/ver/{id}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> obtenerEventoPorIdParaVer(@PathVariable Long id, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> obtenerEventoPorIdParaVer(@PathVariable(required = false) Long id, @AuthenticationPrincipal OidcUser oidcUser) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Validación del ID
+        if (id == null || id <= 0) {
+            response.put("success", false);
+            response.put("message", "ID del evento no proporcionado o inválido");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         try {
             // Buscar el evento por su ID
             Eventos evento = eventosServicio.buscarEventoPorId(id);
             if (evento == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                response.put("success", false);
+                response.put("message", "Evento no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
 
-            // Obtener el email del usuario autenticado
             String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
 
-            // Verificar si el usuario ya está registrado en el evento
+            // Verificar si el usuario está registrado
             boolean yaRegistrado = false;
             if (email != null) {
                 Participantes participante = participantesServicio.buscarPorEmail(email);
@@ -135,20 +149,18 @@ public class EventosControlador {
                 }
             }
 
-            // Crear la respuesta con datos del evento y el estado de registro
-            Map<String, Object> response = new HashMap<>();
-            response.put("evento", evento);             // Datos del evento
-            response.put("yaRegistrado", yaRegistrado); // Estado de registro del usuario
-
-            System.out.println("Evento a ver: " + evento);
-            System.out.println("Usuario registrado: " + yaRegistrado);
-
+            response.put("evento", evento);
+            response.put("yaRegistrado", yaRegistrado);
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            e.printStackTrace(); // Imprime la excepción en los registros del servidor para depuración
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Error interno del servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
     // Eliminar evento por ID
     @GetMapping("/eventos/eliminar/{id}")
     public String eliminarEvento(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -193,6 +205,21 @@ public class EventosControlador {
     }
 
 
+    @GetMapping("/eventos/{id}/participantes")
+    @ResponseBody
+    public ResponseEntity<List<Participantes>> obtenerParticipantesPorEvento(@PathVariable Long id) {
+        try {
+            List<ParticipantesEventos> participantesEventos = participantesEventosServicio.obtenerParticipantesPorEvento(id);
+            List<Participantes> participantes = participantesEventos.stream()
+                    .map(ParticipantesEventos::getParticipante) // Extrae el participante de cada relación
+                    .toList();
+            return ResponseEntity.ok(participantes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 
     @GetMapping("/eventos/consultar")
     public String mostrarEventos(@AuthenticationPrincipal OidcUser oidcUser, Model model) {
@@ -222,10 +249,13 @@ public class EventosControlador {
         model.addAttribute("eventos", eventos);
         model.addAttribute("etiquetas", etiquetas);
 
+        model.addAttribute("eventos", eventos);
+
+
+
         return "consultaEventos"; // Vista para consultar eventos
     }
 
-    // Obtener los datos del evento como JSON para la edición
     @GetMapping("/eventos/editar/{id}")
     @ResponseBody
     public ResponseEntity<Eventos> obtenerEventoPorId(@PathVariable Long id) {
@@ -241,6 +271,9 @@ public class EventosControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
+
 
     // Guardar cambios en el evento editado
     @PostMapping("/eventos/editar/{id}")
@@ -285,8 +318,15 @@ public class EventosControlador {
     }
 
     @PostMapping("/eventos/inscribirse")
-    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> inscribirseEvento(@RequestParam(required = false) Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
         Map<String, Object> response = new HashMap<>();
+
+        // Validar que el ID del evento no sea nulo
+        if (eventoId == null) {
+            response.put("success", false);
+            response.put("message", "El ID del evento es inválido o no fue proporcionado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         // Obtener los datos del usuario autenticado
         String nombre = oidcUser != null ? oidcUser.getAttribute("name") : "Invitado";
@@ -300,6 +340,15 @@ public class EventosControlador {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        // Verificar si el participante ya está inscrito en el evento
+        Participantes participante = participantesServicio.obtenerOCrearParticipante(email, nombre);
+        boolean yaInscrito = participantesEventosServicio.estaInscrito(eventoId, email);
+        if (yaInscrito) {
+            response.put("success", false);
+            response.put("message", "Ya estás inscrito en este evento");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
         // Verificar si hay cupo
         long participantesCount = participantesEventosServicio.contarParticipantesPorEvento(eventoId);
         if (participantesCount >= evento.getCapacidad()) {
@@ -308,24 +357,90 @@ public class EventosControlador {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        // Crear o obtener el participante
-        Participantes participante = participantesServicio.obtenerOCrearParticipante(email, nombre);
-
         // Crear la relación Participante-Evento
         ParticipantesEventos participantesEventos = new ParticipantesEventos();
         participantesEventos.setEvento(evento);
         participantesEventos.setParticipante(participante);
-        participantesEventos.setNotificaciones(false);  // Valor por defecto
+        participantesEventos.setNotificaciones(true);  // Establecer si el participante quiere recibir notificaciones
         participantesEventos.setRecordatorio(null);     // Valor por defecto
 
         // Guardar la relación en la base de datos
         participantesEventosServicio.guardar(participantesEventos);
 
+        // Enviar correo de confirmación solo si el usuario se ha inscrito
+        String asunto = "Confirmación de inscripción al evento: " + evento.getNomEvento();
+        String urlImagen = evento.getImagen(); // Asegúrate de que este valor sea la URL completa y accesible
+        String mensajeHTML = "<html>\n"
+                + "<head>\n"
+                + "<style>\n"
+                + "body {\n"
+                + "font-family: Arial, sans-serif;\n"
+                + "background-color: #f4f4f9;\n"
+                + "color: #333;\n"
+                + "line-height: 1.6;\n"
+                + "}\n"
+                + ".container {\n"
+                + "width: 90%;\n"
+                + "max-width: 600px;\n"
+                + "margin: 20px auto;\n"
+                + "background: #ffffff;\n"
+                + "padding: 20px;\n"
+                + "border-radius: 8px;\n"
+                + "box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n"
+                + "}\n"
+                + "h1 {\n"
+                + "color: #0c6eef;\n"
+                + "text-align: center;\n"
+                + "}\n"
+                + ".highlight {\n"
+                + "color: #0c6eef;\n"
+                + "font-weight: bold;\n"
+                + "}\n"
+                + ".details {\n"
+                + "margin-top: 20px;\n"
+                + "}\n"
+                + ".details p {\n"
+                + "margin: 5px 0;\n"
+                + "}\n"
+                + ".footer {\n"
+                + "text-align: center;\n"
+                + "margin-top: 20px;\n"
+                + "font-size: 0.9em;\n"
+                + "color: #777;\n"
+                + "}\n"
+                + "</style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "<div class=\"container\">\n"
+                + "<h1>¡Recordatorio de tu evento en una semana!</h1>\n"
+                + "<div class=\"details\">\n"
+                + "<h2>Evento: <span class=\"highlight\">" + evento.getNomEvento() + "</span></h2>\n"
+                + "<p><strong>Fecha:</strong> " + evento.getFecha() + "</p>\n"
+                + "<p><strong>Hora:</strong> De " + evento.getHoraInicio() + " a " + evento.getHoraFinal() + "</p>\n"
+                + "<p><strong>Facultad:</strong> " + evento.getFacultad() + "</p>\n"
+                + "<p><strong>Campus:</strong> " + evento.getCampus() + "</p>\n"
+                + "<p><strong>Lugar:</strong> " + evento.getLugar() + "</p>\n"
+                + "<p><strong>Descripción:</strong> " + evento.getDescripcion() + "</p>\n"
+                + "<p><strong>Encargado:</strong> " + evento.getEncargado() + "</p>\n"
+                + "</div>\n"
+                + "<img src='" + urlImagen + "' alt='Imagen del Evento' />"
+                + "<div class=\"footer\">\n"
+                + "<p>Si tienes alguna pregunta, no dudes en contactarnos. ¡Nos vemos pronto!</p>\n"
+
+                + "</div>\n"
+                + "</div>\n"
+                + "</body>\n"
+                + "</html>";
+// Enviar correo de confirmación
+        emailServicio.enviarCorreo(email, asunto, mensajeHTML, true); // `true` para indicar que es HTML
+
+
         // Respuesta exitosa
         response.put("success", true);
-        response.put("message", "Inscripción exitosa");
+        response.put("message", "Inscripción exitosa y correo enviado");
         return ResponseEntity.ok(response);
     }
+
 
     // Verificar si el usuario está registrado en el evento
     @GetMapping("/eventos/verificar-registro")
@@ -350,8 +465,15 @@ public class EventosControlador {
     // Eliminar registro (desinscribirse) del evento
     @DeleteMapping("/eventos/eliminar-registro")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> eliminarRegistro(@RequestParam Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<Map<String, Object>> eliminarRegistro(@RequestParam(required = false) Long eventoId, @AuthenticationPrincipal OidcUser oidcUser) {
         Map<String, Object> response = new HashMap<>();
+
+        // Validar que el ID del evento no sea nulo
+        if (eventoId == null) {
+            response.put("success", false);
+            response.put("message", "El ID del evento es inválido o no fue proporcionado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         String email = oidcUser != null ? oidcUser.getAttribute("email") : null;
 

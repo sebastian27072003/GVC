@@ -46,25 +46,22 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())  // Desactiva la protección CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/public/**", "/error").permitAll()
-                        .requestMatchers("/etiquetas/consulta").hasAnyRole( "SUPERADMIN","ADMIN")
-                        .requestMatchers("/etiquetas/nueva").hasAnyRole( "SUPERADMIN")
-                        .requestMatchers("/eventos/alta").hasAnyRole( "SUPERADMIN","ADMIN")
-                        .requestMatchers("/login", "/public/**", "/error", "/logout").permitAll()
-                        .anyRequest().authenticated()
-
-
+                        .requestMatchers("/login", "/public/**", "/error", "/gpiLogoBonitoUabc.png", "/logout").permitAll() // Permite acceso a la imagen y páginas públicas
+                        .requestMatchers("/etiquetas/consulta").hasAnyRole("SUPERADMIN", "ADMIN")
+                        .requestMatchers("/etiquetas/nueva").hasRole("SUPERADMIN")
+                        .requestMatchers("/eventos/alta").hasAnyRole("SUPERADMIN", "ADMIN")
+                        .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
                 )
-
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .oidcUserService(oidcUserService())
                         )
-                        .defaultSuccessUrl("/eventos/consultar", true)
+                        .defaultSuccessUrl("/eventos/consultar", true) // Redirecciona tras el login exitoso
                 );
 
         return http.build();
+
     }
 
 

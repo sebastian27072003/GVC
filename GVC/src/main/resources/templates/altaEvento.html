@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" >
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +27,7 @@
 <!-- Header -->
 <header class="header">
     <div style="display: flex; align-items: center;">
-        <img src="/Logo3.jpg" alt="Logo UABC" style="width: 60px; height: 50px; margin-right: 20px; margin-left: 90px">
+        <img src="/Logo.webp" alt="Logo UABC" style="width: 100px; height: 150px; margin-right: 20px;">
         <div>
             <h1 style="color: #007141; margin: 0;">Universidad Autónoma de Baja California</h1>
             <h3 style="color: black; margin: 0;">SISTEMA INTEGRAL DE EVENTOS</h3>
@@ -71,6 +71,7 @@
                     <h3>Consultar Eventos</h3>
                 </div>
             </a>
+
             <a href="/logout">
                 <div class="contenidoLeft">
                     <i class='bx bx-task-x'></i>
@@ -86,7 +87,7 @@
         <form id="altaEventoForm" action="/eventos/guardar" method="POST" enctype="multipart/form-data">
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="nombreEvento" class="form-label">Nombre del evento</label>
+                    <label for="nombreEvento" class="form-label ">Nombre del evento</label>
                     <input type="text" class="form-control" id="nombreEvento" name="nomEvento" placeholder="Nombre" required pattern="[A-Za-z\s]+" title="Solo letras son permitidas">
                 </div>
                 <div class="col-md-6">
@@ -314,12 +315,11 @@
         }
     }
 </script>
-</body>
 
 <footer th:fragment="footer" class=" text-white text-center p-1">
     <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
 </footer>
-
-
+</body>
+<!-- Footer -->
 
 </html>

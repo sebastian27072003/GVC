@@ -13,6 +13,12 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+  <!-- Bootstrap CSS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Bootstrap JS Bundle (incluye Popper.js) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
   <link href="/style.css" rel="stylesheet"/>
   <title>Eventos</title>
   <style>
@@ -164,7 +170,9 @@
                   th:attr="onclick='verEvento(' + ${evento.idEventos} + ')'" >
             <i class="bi bi-eye"></i>
           </button>
-          <button type="button" class="btn btn-warning me-2" th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}" th:attr="onclick='abrirModalEditar(' + ${evento.idEventos} + ');'">
+          <button type="button" class="btn btn-warning me-2"
+                  th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}"
+                  th:attr="onclick=|abrirModalEditar(${evento.idEventos});|">
             <i class="bi bi-pencil"></i>
           </button>
           <button type="button" class="btn btn-danger me-2" th:if="${rol == 'SUPERADMIN' || rol == 'ADMIN'}" th:attr="onclick='confirmarEliminacion(' + ${evento.idEventos} + ');'">
@@ -227,15 +235,42 @@
       <div class="modal-footer d-flex">
         <button type="button" class="btn btn-primary me-auto" id="inscribirseBtn">
           <i class="bi bi-person-plus"></i>
+          Inscribirse
         </button>
-        <button type="button" class="btn btn-danger me-auto" id="eliminarRegistroBtn" onclick="eliminarInscripcion(${eventoId})" style="display: none;">
+        <button type="button" class="btn btn-danger me-auto" id="eliminarRegistroBtn" style="display: none;">
           <i class="bi bi-person-dash"></i>
+          Desinscribirse
         </button>
+        <button id="verParticipantesBtn" class="btn btn-primary">Ver Participantes</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
+
+
+
+
+
+<!-- Modal para mostrar la lista de participantes -->
+<div class="modal" tabindex="-1" id="participantesModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Participantes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul id="participantesLista">
+          <!-- Los participantes se cargarán aquí -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 <!-- Modal para Editar Evento -->
 <div class="modal fade" id="editarEventoModal" tabindex="-1" aria-labelledby="editarEventoModalLabel" aria-hidden="true">
@@ -400,11 +435,78 @@
 </body>
 <script>
 
+  // Función para ver la lista de participantes de un evento
+  function verParticipantes() {
+    const modalElement = document.getElementById("verEventoModal");
+    const eventoId = modalElement.getAttribute("data-evento-id");
+
+    if (!eventoId) {
+      alert("Error: El evento no tiene un ID válido.");
+      console.error("Evento ID inválido al intentar ver los participantes:", eventoId);
+      return;
+    }
+
+    // Hacer la solicitud para obtener los participantes del evento
+    fetch(`/eventos/${eventoId}/participantes`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(participantes => {
+              const participantesLista = document.getElementById("participantesLista");
+              participantesLista.innerHTML = ''; // Limpiar la lista existente
+
+              if (participantes && participantes.length > 0) {
+                // Si hay participantes, agregarlos a la lista
+                participantes.forEach(participante => {
+                  const listItem = document.createElement("li");
+                  listItem.textContent = `${participante.nombre} (${participante.email})`;
+                  participantesLista.appendChild(listItem);
+                });
+              } else {
+                // Si no hay participantes, mostrar un mensaje
+                const listItem = document.createElement("li");
+                listItem.textContent = "No hay participantes registrados para este evento.";
+                participantesLista.appendChild(listItem);
+              }
+
+              // Mostrar el modal con la lista de participantes
+              const participantesModal = new bootstrap.Modal(document.getElementById("participantesModal"));
+              participantesModal.show();
+            })
+            .catch(error => {
+              console.error("Error al cargar los participantes:", error);
+              alert("Hubo un error al cargar los participantes del evento.");
+            });
+  }
+
+  // Asignar el evento al botón de ver participantes
+  document.addEventListener("DOMContentLoaded", function () {
+    const verParticipantesBtn = document.getElementById("verParticipantesBtn");
+
+    if (verParticipantesBtn) {
+      verParticipantesBtn.addEventListener("click", verParticipantes);
+    }
+  });
+
+
+
   let eventoIdEliminar = null;
 
 
 
+  // Función para abrir el modal y cargar datos del evento
+  // Función para abrir el modal y cargar datos del evento
+  // Función para abrir el modal y cargar datos del evento
   function verEvento(eventoId) {
+    if (!eventoId || isNaN(eventoId)) {
+      console.error("El ID del evento proporcionado no es válido:", eventoId);
+      alert("Error: El ID del evento no es válido. Por favor, intenta nuevamente.");
+      return;
+    }
+
     fetch(`/eventos/ver/${eventoId}`)
             .then(response => {
               if (!response.ok) {
@@ -416,9 +518,9 @@
               const evento = data.evento;
               const yaRegistrado = data.yaRegistrado;
 
-              if (!evento) {
-                console.error("Datos del evento no encontrados:", evento);
-                alert("Error al cargar los datos del evento.");
+              if (!evento || !evento.idEventos) {
+                console.error("Datos del evento no encontrados o el evento no tiene un ID válido:", evento);
+                alert("Error: No se pudieron cargar los datos del evento. Por favor, intenta nuevamente.");
                 return;
               }
 
@@ -434,52 +536,39 @@
               document.getElementById("capacidad").textContent = evento.capacidad;
 
               // Imagen del evento
-              const imagenUrl = evento.imagen || "/default-image.jpg"; // Agrega un fallback si la imagen no está disponible
+              const imagenUrl = evento.imagen || "/default-image.jpg";
               document.getElementById("eventoImagen").src = imagenUrl;
 
-              // Configurar los botones
+              // Configurar botones dinámicamente
+              const modalElement = document.getElementById("verEventoModal");
+              modalElement.setAttribute("data-evento-id", evento.idEventos); // Asignar el ID al modal
+
               const inscribirseBtn = document.getElementById("inscribirseBtn");
               const eliminarRegistroBtn = document.getElementById("eliminarRegistroBtn");
 
-              // Validar si `evento.idEventos` tiene un valor válido
-              if (!evento.idEventos) {
-                console.error("El ID del evento no es válido:", evento.idEventos);
-                alert("Error al cargar los detalles del evento. Por favor, intenta nuevamente.");
-                return; // Detiene la ejecución si el ID no es válido
-              }
-
-              // Asignar el atributo data-evento-id a los botones
-              inscribirseBtn.setAttribute("data-evento-id", evento.idEventos);
-              eliminarRegistroBtn.setAttribute("data-evento-id", evento.idEventos);
-
-              // Mostrar/ocultar botones según el estado de registro
-              if (yaRegistrado) {
-                inscribirseBtn.style.display = "none";
-                eliminarRegistroBtn.style.display = "inline-block";
-              } else {
-                inscribirseBtn.style.display = "inline-block";
-                eliminarRegistroBtn.style.display = "none";
-              }
+              // Mostrar u ocultar botones según el estado de inscripción
+              inscribirseBtn.style.display = yaRegistrado ? "none" : "inline-block";
+              eliminarRegistroBtn.style.display = yaRegistrado ? "inline-block" : "none";
 
               // Mostrar el modal
-              const modalElement = document.getElementById("verEventoModal");
               const modal = new bootstrap.Modal(modalElement);
               modal.show();
             })
             .catch(error => {
               console.error("Error al cargar los datos del evento:", error);
-              alert("Error al cargar los datos del evento.");
+              alert("Error al cargar los datos del evento. Por favor, intenta nuevamente.");
             });
   }
-  // Manejo de inscripción
-  // Manejo de inscripción
-  function handleInscripcion(event) {
-    const eventoId = event.target.getAttribute("data-evento-id");
+
+  // Función para manejar la inscripción
+  function handleInscripcion() {
+    const modalElement = document.getElementById("verEventoModal");
+    const eventoId = modalElement.getAttribute("data-evento-id");
 
     if (!eventoId) {
       alert("Error: El evento no tiene un ID válido. Por favor, intenta nuevamente.");
       console.error("Evento ID inválido al intentar inscribirse:", eventoId);
-      return; // Detiene la ejecución si no hay un ID válido
+      return;
     }
 
     fetch("/eventos/inscribirse", {
@@ -507,14 +596,15 @@
             });
   }
 
-  // Manejo de eliminación de inscripción
-  function eliminarInscripcion(event) {
-    const eventoId = event.target.getAttribute("data-evento-id");
+  // Función para manejar la eliminación de inscripción
+  function eliminarInscripcion() {
+    const modalElement = document.getElementById("verEventoModal");
+    const eventoId = modalElement.getAttribute("data-evento-id");
 
     if (!eventoId) {
       alert("Error: El evento no tiene un ID válido para eliminar la inscripción.");
       console.error("Evento ID inválido al intentar eliminar la inscripción:", eventoId);
-      return; // Detiene la ejecución si no hay un ID válido
+      return;
     }
 
     fetch(`/eventos/eliminar-registro?eventoId=${eventoId}`, {
@@ -536,8 +626,7 @@
             });
   }
 
-
-  // Asignar eventos a los botones dinámicamente
+  // Asignar eventos a los botones al cargar el DOM
   document.addEventListener("DOMContentLoaded", function () {
     const inscribirseBtn = document.getElementById("inscribirseBtn");
     const eliminarRegistroBtn = document.getElementById("eliminarRegistroBtn");
@@ -551,13 +640,11 @@
     }
   });
 
-
-  const inscribirseBtn = document.getElementById('inscribirseBtn');
+  const inscribirseBtn = document.getElementById("inscribirseBtn");
   if (inscribirseBtn) {
-    inscribirseBtn.removeEventListener('click', handleInscripcion); // Elimina el listener anterior
-    inscribirseBtn.addEventListener('click', handleInscripcion);
+    inscribirseBtn.removeEventListener("click", handleInscripcion);
+    inscribirseBtn.addEventListener("click", handleInscripcion);
   }
-
 
   function cargarFacultades() {
     const facultadSelect = document.getElementById("facultad");
@@ -720,7 +807,7 @@
     form.method = 'POST';
 
     form.submit();
-  }
+}
 
 
 
@@ -884,7 +971,7 @@
 
 
 <!-- Footer -->
-<footer th:fragment="footer" class="text-white text-center p-1">
+<footer th:fragment="footer" class="bg-dark text-white text-center p-1">
   <p>&copy; 2024 Universidad Autónoma de Baja California. Todos los derechos reservados.</p>
 </footer>
 </html>

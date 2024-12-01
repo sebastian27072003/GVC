@@ -1,4 +1,3 @@
-
 package com.example.GVC.Repositorio;
 
 import com.example.GVC.Modelo.Participantes;

@@ -2,7 +2,6 @@ package com.example.GVC.Servicio;
 
 import com.example.GVC.Modelo.Etiquetas;
 import com.example.GVC.Modelo.Eventos;
-import com.example.GVC.Modelo.EventosEtiquetas;
 import com.example.GVC.Repositorio.EtiquetasRepositorio;
 import com.example.GVC.Repositorio.EventosRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class EtiquetaServicio {
