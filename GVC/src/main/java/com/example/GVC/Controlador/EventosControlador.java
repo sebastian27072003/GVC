@@ -353,19 +353,68 @@ public class EventosControlador {
 
         // Enviar correo de confirmación solo si el usuario se ha inscrito
         String asunto = "Confirmación de inscripción al evento: " + evento.getNomEvento();
-        String mensajeHTML = MessageFormat.format("""
-                <html>
-                    <head>
-                        <style>
-                            body '{' font-family: Arial, sans-serif; color: #333; '}'
-                            .highlight '{' color: #0c6eef; font-weight: bold; '}'
-                            .footer '{' font-size: 0.9em; color: #777; '}'
-                        </style>
-                    </head>
-                    <body>
-                        <h1>¡Confirmación de Inscripción!</h1>
-                        <p>Hola <span class="highlight">{0}null{1}null{2}null{3}null""", nombre, evento.getNomEvento(), evento.getFecha(), evento.getLugar());
+        String urlImagen = evento.getImagen(); // Asegúrate de que este valor sea la URL completa y accesible
+        String mensajeHTML = "<html>\n"
+                + "<head>\n"
+                + "<style>\n"
+                + "body {\n"
+                + "font-family: Arial, sans-serif;\n"
+                + "background-color: #f4f4f9;\n"
+                + "color: #333;\n"
+                + "line-height: 1.6;\n"
+                + "}\n"
+                + ".container {\n"
+                + "width: 90%;\n"
+                + "max-width: 600px;\n"
+                + "margin: 20px auto;\n"
+                + "background: #ffffff;\n"
+                + "padding: 20px;\n"
+                + "border-radius: 8px;\n"
+                + "box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n"
+                + "}\n"
+                + "h1 {\n"
+                + "color: #0c6eef;\n"
+                + "text-align: center;\n"
+                + "}\n"
+                + ".highlight {\n"
+                + "color: #0c6eef;\n"
+                + "font-weight: bold;\n"
+                + "}\n"
+                + ".details {\n"
+                + "margin-top: 20px;\n"
+                + "}\n"
+                + ".details p {\n"
+                + "margin: 5px 0;\n"
+                + "}\n"
+                + ".footer {\n"
+                + "text-align: center;\n"
+                + "margin-top: 20px;\n"
+                + "font-size: 0.9em;\n"
+                + "color: #777;\n"
+                + "}\n"
+                + "</style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "<div class=\"container\">\n"
+                + "<h1>Confirmacion de inscripción</h1>\n"
+                + "<div class=\"details\">\n"
+                + "<h2>Evento: <span class=\"highlight\">" + evento.getNomEvento() + "</span></h2>\n"
+                + "<p><strong>Fecha:</strong> " + evento.getFecha() + "</p>\n"
+                + "<p><strong>Hora:</strong> De " + evento.getHoraInicio() + " a " + evento.getHoraFinal() + "</p>\n"
+                + "<p><strong>Facultad:</strong> " + evento.getFacultad() + "</p>\n"
+                + "<p><strong>Campus:</strong> " + evento.getCampus() + "</p>\n"
+                + "<p><strong>Lugar:</strong> " + evento.getLugar() + "</p>\n"
+                + "<p><strong>Descripción:</strong> " + evento.getDescripcion() + "</p>\n"
+                + "<p><strong>Encargado:</strong> " + evento.getEncargado() + "</p>\n"
+                + "</div>\n"
+                + "<img src='" + urlImagen + "' alt='Imagen del Evento' />"
+                + "<div class=\"footer\">\n"
+                + "<p>Si tienes alguna pregunta, no dudes en contactarnos. ¡Nos vemos pronto!</p>\n"
 
+                + "</div>\n"
+                + "</div>\n"
+                + "</body>\n"
+                + "</html>";
 // Enviar correo de confirmación
         emailServicio.enviarCorreo(email, asunto, mensajeHTML, true); // `true` para indicar que es HTML
 
