@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -352,14 +353,22 @@ public class EventosControlador {
 
         // Enviar correo de confirmación solo si el usuario se ha inscrito
         String asunto = "Confirmación de inscripción al evento: " + evento.getNomEvento();
-        String mensaje = "Hola " + nombre + ",\n\n"
-                + "Te has inscrito exitosamente al evento: " + evento.getNomEvento() + ".\n"
-                + "Fecha: " + evento.getFecha() + "\n"
-                + "Lugar: " + evento.getLugar() + "\n\n"
-                + "Gracias por tu registro.";
+        String mensajeHTML = MessageFormat.format("""
+                <html>
+                    <head>
+                        <style>
+                            body '{' font-family: Arial, sans-serif; color: #333; '}'
+                            .highlight '{' color: #0c6eef; font-weight: bold; '}'
+                            .footer '{' font-size: 0.9em; color: #777; '}'
+                        </style>
+                    </head>
+                    <body>
+                        <h1>¡Confirmación de Inscripción!</h1>
+                        <p>Hola <span class="highlight">{0}null{1}null{2}null{3}null""", nombre, evento.getNomEvento(), evento.getFecha(), evento.getLugar());
 
-        // Enviar correo de confirmación
-        emailServicio.enviarCorreo(email, asunto, mensaje);
+// Enviar correo de confirmación
+        emailServicio.enviarCorreo(email, asunto, mensajeHTML, true); // `true` para indicar que es HTML
+
 
         // Respuesta exitosa
         response.put("success", true);
