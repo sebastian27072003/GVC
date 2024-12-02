@@ -172,7 +172,7 @@
           <input type="hidden" id="editarIdEtiqueta" name="idEtiqueta">
           <div class="mb-3">
             <label for="editarNombre" class="form-label">Nombre de Etiqueta</label>
-            <input type="text" class="form-control" id="editarNombre" name="nombre" required>
+            <input type="text" class="form-control" id="editarNombre" name="nombre" oninput="this.value = this.value.toUpperCase()" required>
           </div>
           <div class="mb-3">
             <label for="editarColor" class="form-label">Color</label>

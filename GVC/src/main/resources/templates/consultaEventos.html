@@ -815,71 +815,70 @@
 
 
   function cargarFacultadesEditar(campus, facultadSeleccionada) {
-    const facultadSelect = document.getElementById("facultadEditar");
-    facultadSelect.innerHTML = '<option value="">Seleccione la facultad</option>';
+  const facultadSelect = document.getElementById("facultadEditar");
+  facultadSelect.innerHTML = '<option value="">Seleccione la facultad</option>';
 
-    const facultades = {
-      "Mexicali": [
-        "Facultad de Ciencias Humanas",
-        "Facultad de Ingeniería",
-        "Facultad de Derecho",
-        "Facultad de Ciencias Administrativas",
-        "Facultad de Medicina",
-        "Facultad de Odontología",
-        "Facultad de Deportes",
-        "Facultad de Idiomas"
-      ],
-      "Tijuana": [
-        "Facultad de Contaduría y Administración",
-        "Facultad de Derecho",
-        "Facultad de Economía y Relaciones Internacionales",
-        "Facultad de Medicina y Psicología",
-        "Facultad de Odontología",
-        "Facultad de Ciencias Químicas e Ingeniería",
-        "Facultad de Artes",
-        "Facultad de Deportes",
-        "Facultad de Idiomas",
-        "Escuela de Ciencias de la Salud",
-        "Facultad de Turismo y Mercadotecnia"
-      ],
-      "Ensenada": [
-        "Facultad de Ciencias",
-        "Facultad de Ciencias Marinas",
-        "Facultad de Ingeniería, Arquitectura y Diseño",
-        "Facultad de Ciencias Administrativas y Sociales",
-        "Facultad de Idiomas",
-        "Escuela de Enología y Gastronomía",
-        "Instituto de Investigaciones Oceanológicas"
-      ],
-      "Unidad Valle de las Palmas": [
-        "Facultad de Ciencias de la Salud",
-        "Facultad de Ingeniería y Negocios",
-        "Facultad de Ciencias de la Ingeniería y Tecnología"
-      ],
-      "Tecate": [
-        "Facultad de Ingeniería y Negocios"
-      ]
-    };
-
-    if (facultades[campus]) {
-      facultades[campus].forEach(facultad => {
-        const option = document.createElement("option");
-        option.value = facultad;
-        option.text = facultad;
-        if (facultad === facultadSeleccionada) {
-          option.selected = true;
-        }
-        facultadSelect.appendChild(option);
-      });
-    }
-  }
-
-  window.onload = function() {
-    const campusSelect = document.getElementById("campus");
-    if (campusSelect.value) {
-      cargarFacultades();
-    }
+  const facultades = {
+    "Mexicali": [
+      "Facultad de Ciencias Humanas",
+      "Facultad de Ingeniería",
+      "Facultad de Derecho",
+      "Facultad de Ciencias Administrativas",
+      "Facultad de Medicina",
+      "Facultad de Odontología",
+      "Facultad de Deportes",
+      "Facultad de Idiomas"
+    ],
+    "Tijuana": [
+      "Facultad de Contaduría y Administración",
+      "Facultad de Derecho",
+      "Facultad de Economía y Relaciones Internacionales",
+      "Facultad de Medicina y Psicología",
+      "Facultad de Odontología",
+      "Facultad de Ciencias Químicas e Ingeniería",
+      "Facultad de Artes",
+      "Facultad de Deportes",
+      "Facultad de Idiomas",
+      "Escuela de Ciencias de la Salud",
+      "Facultad de Turismo y Mercadotecnia"
+    ],
+    "Ensenada": [
+      "Facultad de Ciencias",
+      "Facultad de Ciencias Marinas",
+      "Facultad de Ingeniería, Arquitectura y Diseño",
+      "Facultad de Ciencias Administrativas y Sociales",
+      "Facultad de Idiomas",
+      "Escuela de Enología y Gastronomía",
+      "Instituto de Investigaciones Oceanológicas"
+    ],
+    "Unidad Valle de las Palmas": [
+      "Facultad de Ciencias de la Salud",
+      "Facultad de Ingeniería y Negocios",
+      "Facultad de Ciencias de la Ingeniería y Tecnología"
+    ],
+    "Tecate": [
+      "Facultad de Ingeniería y Negocios"
+    ]
   };
+
+  if (facultades[campus]) {
+    facultades[campus].forEach(facultad => {
+      const option = document.createElement("option");
+      option.value = facultad;
+      option.text = facultad;
+      if (facultad === facultadSeleccionada) {
+        option.selected = true;
+      }
+      facultadSelect.appendChild(option);
+    });
+  }
+}
+
+// Agregar evento 'change' al campo 'campusEditar'
+document.getElementById('campusEditar').addEventListener('change', function () {
+  const campusSeleccionado = this.value;
+  cargarFacultadesEditar(campusSeleccionado, ""); // Se pasa un string vacío para limpiar la facultad seleccionada
+});
 
   document.addEventListener('DOMContentLoaded', function () {
     // Validar fecha mínima
